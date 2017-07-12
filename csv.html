@@ -44,7 +44,13 @@
   </div>
   
 <p>Map a function mapped over comma-seperated data. 
-pruning comments away and dead space. Data is
+pruning comments away and dead space.  For example,
+here's a simple <code>print</code> for each row:</p>
+
+<pre><code>csv("../data/weather/csv",print)
+</code></pre>
+
+<p>Data is
 assumed to start with an initial row list column
 names. If a column name includes "?", then don't read it.
 If a row ends with a comma, join it to the next line.</p>
