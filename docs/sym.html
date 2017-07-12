@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/sym.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/sym.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>()
+  <span class="k">return</span> {n=0, counts={}, most=0,mode=<span class="k">nil</span>,_ent=<span class="k">nil</span> } <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x)
+  <span class="k">if</span> x ~= IGNORE <span class="k">then</span>
+    i._ent = <span class="k">nil</span> 
+    i.n = i.n + 1
+    <span class="k">local</span> seen = i.counts[x]
+    seen = seen <span class="o">and</span> seen+1 <span class="o">or</span> 1
+    i.counts[x] = seen 
+    <span class="k">if</span> seen &gt; i.most <span class="k">then</span>
+      i.most, i.mode = seen,x <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ent</span>(i)
+  <span class="k">if</span> i._ent == <span class="k">nil</span> <span class="k">then</span> 
+    <span class="k">local</span> e = 0
+    <span class="k">for</span> _,f <span class="k">in</span> <span class="nt">pairs</span>(i.counts) <span class="k">do</span>
+      e = e - (f/i.n) * math.log((f/i.n), 2)
+    <span class="k">end</span>
+    i._ent = e
+  <span class="k">end</span>
+  <span class="k">return</span> i._ent <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ke</span>(i)
+  <span class="k">local</span> e,k = 0,0
+  <span class="k">for</span> _,f <span class="k">in</span> <span class="nt">pairs</span>(i.counts) <span class="k">do</span>
+    e = e + (f/i.n) * math.log((f/i.n), 2)
+    k = k + 1
+  <span class="k">end</span>
+  e = -1*e
+  <span class="k">return</span> k,e,k*e <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update, ent=ent, spread=ent, ke=ke}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
