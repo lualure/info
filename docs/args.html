@@ -42,19 +42,20 @@
     <a class="pilcrow" href="#section-2">&#182;</a>
   </div>
   
-<p>if arg[1] == "--args" then
-  require "tprint"
-  print(args({a=1,c=false,kkk=22},{"args"}))
-end</p>
+<p>Example usage. </p>
+
+<pre><code>if arg[1] == "--args" then
+  local args = require "args"
+  local settings = args({a=1,c=false,kkk=22},{"args"})
+  for j,setting in pairs(settings) do
+    print(j,setting) end end
+</code></pre>
+
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">member</span>(x,t)
-  <span class="k">for</span> _,y <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
-    <span class="k">if</span> x== y <span class="k">then</span> <span class="k">return</span> <span class="k">true</span> <span class="k">end</span> <span class="k">end</span>
-  <span class="k">return</span> <span class="k">false</span> <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -64,28 +65,115 @@ end</p>
   </div>
   
 <hr/>
+<p>Helper function</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">member</span>(x,t)
+  <span class="k">for</span> _,y <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
+    <span class="k">if</span> x== y <span class="k">then</span> <span class="k">return</span> <span class="k">true</span> <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> <span class="k">false</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Can be used at the function level to 
+override default settings for a function
+or at the global level, where the overrides
+come from the command line <code>arg</code>s.</p>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (settings,ignore, updates)
   updates = updates <span class="o">or</span> arg
-  ignore = ignore <span class="o">or</span> {}
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<p>Usually, read all the args.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  ignore = ignore <span class="o">or</span> {}
   <span class="k">local</span> i = 1
   <span class="k">while</span> updates[i] ~= <span class="k">nil</span>  <span class="k">do</span>
     <span class="k">local</span> flag = updates[i]
     <span class="k">local</span> b4   = #flag
     flag = flag:gsub(<span class="s">"^[-]+"</span>,<span class="s">""</span>)
     <span class="k">if</span> <span class="o">not</span> member(flag,ignore) <span class="k">then</span>
-      <span class="k">if</span> settings[flag] == <span class="k">nil</span> <span class="k">then</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>Complain if no old value to override</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>      <span class="k">if</span> settings[flag] == <span class="k">nil</span> <span class="k">then</span>
         <span class="nt">error</span>(<span class="s">"unknown flag '"</span> .. flag .. <span class="s">"'"</span>)
       <span class="k">else</span>
-        <span class="k">if</span> b4 - #flag == 2 <span class="k">then</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>If no arg to this flag, then set a boolean.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>        <span class="k">if</span> b4 - #flag == 2 <span class="k">then</span>
           settings[flag] = <span class="k">true</span>
-        <span class="k">elseif</span> b4 - #flag == 1 <span class="k">then</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>If there is an arg then....</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>        <span class="k">elseif</span> b4 - #flag == 1 <span class="k">then</span>
           <span class="k">local</span> a1 = updates[i+1]
           <span class="k">local</span> a2 = <span class="nt">tonumber</span>(a1)
-          settings[flag] = a2  <span class="o">or</span> a1
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>Set either a number of a string</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>          settings[flag] = a2  <span class="o">or</span> a1
           i = i + 1 
     <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
     i = i + 1
