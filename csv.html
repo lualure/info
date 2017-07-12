@@ -130,7 +130,7 @@ Pass that row to the calling function <code>wme.fn</code>. </p>
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">withOneLine</span>(txt,wme)
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">withOneLine</span>(txt,wme)   
   txt= txt:gsub(padding,<span class="s">"&#37;1"</span>)
           :gsub(dull,<span class="s">""</span>)
           :gsub(comments,<span class="s">""</span>) 
