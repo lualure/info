@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>/Users/timm/src/src/csv.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              /Users/timm/src/src/csv.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>csv : utilities</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> the      = <span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> notsep   = <span class="s">"([^"</span> .. the.sep .. <span class="s">"]+)"</span> <span class="c">-- not cell seperator
+</span><span class="k">local</span> dull     = <span class="s">"['\"\t\n\r]*"</span>  <span class="c">-- white space, quotes
+</span><span class="k">local</span> padding  = <span class="s">"&#37;s*(.-)&#37;s*"</span>    <span class="c">-- space around words
+</span><span class="k">local</span> comments = <span class="s">"#.*"</span>           <span class="c">-- comments
+</span><span class="k">local</span> files    = {txt=<span class="k">true</span>, csv=<span class="k">true</span>}
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">incomplete</span>(txt) <span class="c">-- must join line to next
+</span>  <span class="k">return</span> string.sub(txt,-1) == the.sep  <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ignored</span>(txt) <span class="c">-- ignore this column
+</span>  <span class="k">return</span> string.find(txt,the.ignore) == <span class="k">nil</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">cellsWeAreNotIgnoring</span>(txt,wme) 
+  <span class="k">local</span> out,col = {},0
+  <span class="k">for</span> word <span class="k">in</span> string.gmatch(txt,notsep) <span class="k">do</span>
+    col = col + 1
+    <span class="k">if</span> wme.first    <span class="k">then</span> 
+      wme.use[col] = ignored(word) <span class="k">end</span>
+    <span class="k">if</span> wme.use[col] <span class="k">then</span> 
+      out[#out+1]  = <span class="nt">tonumber</span>(word) <span class="o">or</span> word <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">withOneLine</span>(txt,wme)
+  txt= txt:gsub(padding,<span class="s">"&#37;1"</span>)
+          :gsub(dull,<span class="s">""</span>)
+          :gsub(comments,<span class="s">""</span>) 
+  <span class="k">if</span> #txt &gt; 0 <span class="k">then</span> 
+    wme.fn( cellsWeAreNotIgnoring(txt,wme) ) <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">withEachLine</span>(src,wme)
+  <span class="k">local</span> cache={}
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">line1</span>(line)
+    cache[#cache+1] = line
+    <span class="k">if</span> <span class="o">not</span> incomplete(line) <span class="k">then</span>
+       cache= withOneLine(table.concat(cache), wme) 
+       cache= {}
+       wme.first=<span class="k">false</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">if</span> files[string.sub(src,-3,-1)] <span class="k">then</span>
+    io.input(src) 
+    <span class="k">for</span> line <span class="k">in</span> io.lines() <span class="k">do</span> 
+      line1(line) <span class="k">end</span>
+  <span class="k">else</span> 
+    <span class="k">for</span> line <span class="k">in</span> src:gmatch(<span class="s">"[^\r\n]+"</span>) <span class="k">do</span>
+      line1(line) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (src,fn)
+  withEachLine(src, {fn=fn, first=<span class="k">true</span>, use={}}) <span class="k">end</span>
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
