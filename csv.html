@@ -47,7 +47,8 @@
 pruning comments away and dead space.  For example,
 here's a simple <code>print</code> for each row:</p>
 
-<pre><code>csv("../data/weather/csv",print)
+<pre><code>local csv=require "csv"
+csv("../data/weather/csv",print)
 </code></pre>
 
 <p>Data is
