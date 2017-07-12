@@ -29,6 +29,41 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<p>Matias Guijarro wrote:</p>
+<blockquote>
+    <p>I would like to change the default behaviour of Lua when
+    representing a table through the tostring() function ; I
+    would prefer to have something more like in Python for
+    example (instead of having "table: 0x8062ac0", I would
+    like to see the contents, for example { 1, 2, 3 }).</p>
+    
+    <p>So first of all I tried to set a new metatable for tables,
+    As Shmuel pointed out, table metatables are per-table, so
+    they don't really work for what you want to do.
+      Lua 5.1.1  Copyright (C) 1994-2006 Lua.org, PUC-Rio
+      > Tbl = setmetatable({}, {__tostring = function(t)
+      >>                                        return "Hello!"
+      >>                                      end})
+      > print(Tbl) -- Works for this table,
+      Hello!
+      > print({}) -- but doesn't work for other tables.
+      table: 0x493378
+    A way that will work is to simply replace the tostring
+    function itself.  Replace it with a function that calls your
+    table-to-string function for tables, and calls the original
+    tostring for everything else.
+    Roberto's Programming in Lua book explains how to write the
+    table-to-string function.  (The first edition is available
+    online: <a href="http://www.lua.org/pil/12.1.html">http://www.lua.org/pil/12.1.html</a>.)
+    As it happens, I happened to write an implementation of just
+    the functionality you're looking for a few days ago.  It is
+    below, but I encourage you to try whipping together at least
+    a simple version of your own before looking at mine.
+    Aaron</p>
+</blockquote>
+
+<p>This script makes tostring convert tables to a
+representation of their contents.</p>
 
 
 </td>
@@ -42,65 +77,6 @@
     <a class="pilcrow" href="#section-2">&#182;</a>
   </div>
   
-<p>[[</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>Matias Guijarro wrote:
-&gt; I would like to change the default behaviour of Lua when
-&gt; representing a table through the <span class="nt">tostring</span>() <span class="k">function</span> ; I
-&gt; would prefer to have something more like <span class="k">in</span> Python <span class="k">for</span>
-&gt; example (instead of having <span class="s">"table: 0x8062ac0"</span>, I would
-&gt; like to see the contents, <span class="k">for</span> example { 1, 2, 3 }).
-&gt;
-&gt; So first of all I tried to set a new metatable <span class="k">for</span> tables,
-As Shmuel pointed out, table metatables are per-table, so
-they <span class="s">'t really work for what you want to do.
-  Lua 5.1.1  Copyright (C) 1994-2006 Lua.org, PUC-Rio
-  &gt; Tbl = setmetatable({}, {__tostring = function(t)
-  &gt;&gt;                                        return "Hello!"
-  &gt;&gt;                                      end})
-  &gt; print(Tbl) -- Works for this table,
-  Hello!
-  &gt; print({}) -- but doesn'</span>t work <span class="k">for</span> other tables.
-  table: 0x493378
-A way that will work is to simply replace the <span class="nt">tostring</span>
-<span class="k">function</span> <span class="nf">itself.</span>  Replace it with a <span class="k">function</span> <span class="nf">that</span> calls your
-table-to-string <span class="k">function</span> <span class="nf"><span class="k">for</span></span> tables, <span class="o">and</span> calls the original
-<span class="nt">tostring</span> <span class="k">for</span> everything <span class="k">else</span>.
-<span class="s">'s Programming in Lua book explains how to write the
-table-to-string function.  (The first edition is available
-online: &lt;http://www.lua.org/pil/12.1.html&gt;.)
-As it happens, I happened to write an implementation of just
-the functionality you'</span>re looking <span class="k">for</span> a few days ago.  It is
-below, but I encourage you to try whipping together at least
-a simple version of your own before looking at mine.
-- Aaron
-]]
-</pre></div>
-</td>
-</tr><tr id="section-3">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-3">&#182;</a>
-  </div>
-  
-<p>This script makes tostring convert tables to a
-representation of their contents.</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>
-</pre></div>
-</td>
-</tr><tr id="section-4">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-4">&#182;</a>
-  </div>
-  
 <p>The real tostring:</p>
 
 
@@ -109,10 +85,10 @@ representation of their contents.</p>
   <div class="highlight"><pre><span class="k">local</span> _<span class="nt">tostring</span> = <span class="nt">tostring</span>
 </pre></div>
 </td>
-</tr><tr id="section-5">
+</tr><tr id="section-3">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
+    <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
 <p>Characters that have non-numeric backslash-escaped versions:</p>
@@ -132,10 +108,10 @@ representation of their contents.</p>
   [<span class="s">"\\"</span>] = <span class="s">"\\\\"</span>}
 </pre></div>
 </td>
-</tr><tr id="section-6">
+</tr><tr id="section-4">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
+    <a class="pilcrow" href="#section-4">&#182;</a>
   </div>
   
 <p>Is Str an "escapeable" character (a non-printing character other than
@@ -151,10 +127,10 @@ space, a backslash, or a double quote)?</p>
 </span><span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-7">
+</tr><tr id="section-5">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
+    <a class="pilcrow" href="#section-5">&#182;</a>
   </div>
   
 <p>Converts an "escapeable" character (a non-printing character,
