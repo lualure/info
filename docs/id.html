@@ -29,11 +29,14 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h1>id</h1>
+<p>Return an id number that has never been seen before.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> id=0
+  <div class="highlight"><pre>
+<span class="k">local</span> id=0
 <span class="k">local</span> <span class="k">function</span> <span class="nf">new</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
 <span class="k">return</span> {new=new}
 </pre></div>
