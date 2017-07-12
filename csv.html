@@ -35,12 +35,6 @@
 </td>
 <td class="code">
   <div class="highlight"><pre>
-<span class="k">local</span> the      = <span class="nt">require</span> <span class="s">"config"</span>
-<span class="k">local</span> notsep   = <span class="s">"([^"</span> .. the.sep .. <span class="s">"]+)"</span> <span class="c">-- not cell seperator
-</span><span class="k">local</span> dull     = <span class="s">"['\"\t\n\r]*"</span>  <span class="c">-- white space, quotes
-</span><span class="k">local</span> padding  = <span class="s">"&#37;s*(.-)&#37;s*"</span>    <span class="c">-- space around words
-</span><span class="k">local</span> comments = <span class="s">"#.*"</span>           <span class="c">-- comments
-</span><span class="k">local</span> files    = {txt=<span class="k">true</span>, csv=<span class="k">true</span>}
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -49,13 +43,22 @@
     <a class="pilcrow" href="#section-2">&#182;</a>
   </div>
   
-<hr/>
+<p>Map a function mapped over comma-seperated data. 
+pruning comments away and dead space. Data is
+assumed to start with an initial row list column
+names. If a column name includes "?", then don't read it.
+If a row ends with a comma, join it to the next line.</p>
+
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">incomplete</span>(txt) <span class="c">-- must join line to next
-</span>  <span class="k">return</span> string.sub(txt,-1) == the.sep  <span class="k">end</span>
+  <div class="highlight"><pre><span class="k">local</span> the      = <span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> notsep   = <span class="s">"([^"</span> .. the.sep .. <span class="s">"]+)"</span> <span class="c">-- not cell seperator
+</span><span class="k">local</span> dull     = <span class="s">"['\"\t\n\r]*"</span>  <span class="c">-- white space, quotes
+</span><span class="k">local</span> padding  = <span class="s">"&#37;s*(.-)&#37;s*"</span>    <span class="c">-- space around words
+</span><span class="k">local</span> comments = <span class="s">"#.*"</span>           <span class="c">-- comments
+</span><span class="k">local</span> files    = {txt=<span class="k">true</span>, csv=<span class="k">true</span>}
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -65,12 +68,13 @@
   </div>
   
 <hr/>
+<p>If lines end with a comma, join it to the next line.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ignored</span>(txt) <span class="c">-- ignore this column
-</span>  <span class="k">return</span> string.find(txt,the.ignore) == <span class="k">nil</span> <span class="k">end</span>
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">incomplete</span>(txt) <span class="c">-- must join line to next
+</span>  <span class="k">return</span> string.sub(txt,-1) == the.sep  <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -80,6 +84,24 @@
   </div>
   
 <hr/>
+<p>If a column name includes "?", skip that column.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ignored</span>(txt) <span class="c">-- ignore this column
+</span>  <span class="k">return</span> string.find(txt,the.ignore) == <span class="k">nil</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Reads, from row1, what columns are to be ignored
+(if any). Skipped those ignored columns for all rows.</p>
 
 
 </td>
@@ -95,13 +117,15 @@
   <span class="k">return</span> out <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-5">
+</tr><tr id="section-6">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
+    <a class="pilcrow" href="#section-6">&#182;</a>
   </div>
   
 <hr/>
+<p>Kills wihte space, irrelevant characters, comments.
+Pass that row to the calling function <code>wme.fn</code>.</p>
 
 
 </td>
@@ -114,13 +138,15 @@
     wme.fn( cellsWeAreNotIgnoring(txt,wme) ) <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-6">
+</tr><tr id="section-7">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
+    <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
 <hr/>
+<p>look at the <code>src</code> and it if ends in a <code>files</code> name,
+then read it as a file. Else, read from jat string.</p>
 
 
 </td>
@@ -135,10 +161,10 @@
        wme.first=<span class="k">false</span> <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-7">
+</tr><tr id="section-8">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
+    <a class="pilcrow" href="#section-8">&#182;</a>
   </div>
   
 <hr/>
@@ -155,13 +181,16 @@
       line1(line) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-8">
+</tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
+    <a class="pilcrow" href="#section-9">&#182;</a>
   </div>
   
 <hr/>
+<p>Main loop. Function <code>fn</code> is called for each row
+ (and that row is sent to that function as a list of
+ cell values).</p>
 
 
 </td>
