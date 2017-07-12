@@ -226,7 +226,7 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">shallowCopy</span>(t) <span class="k">return</span> map(t,same) <span class="k">end</span>
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">shallowCopy</span>(t) <span class="k">return</span> collect(t,same) <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-14">
@@ -251,11 +251,13 @@
   </div>
   
 <hr/>
+<h3>Public interface</h3>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> { first=first, last=last,same=same,copy=copy,
+  <div class="highlight"><pre>
+<span class="k">return</span> { first=first, last=last,same=same,copy=copy,
          shallowCopy=shallowCopy, member=member,map=map, 
          map2=map2, collect=collect,shuffle=shuffle}
 </pre></div>
