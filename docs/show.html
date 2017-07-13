@@ -148,9 +148,7 @@ digit after it:</p>
 <td class="code">
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">EscapeableToEscaped</span>(Char, FollowingDigit)
   <span class="k">if</span> IsEscapeable(Char) <span class="k">then</span>
-    <span class="k">local</span> Format = FollowingDigit == <span class="s">""</span>
-      <span class="o">and</span> <span class="s">"\\&#37;d"</span>
-      <span class="o">or</span> <span class="s">"\\&#37;03d"</span> .. FollowingDigit
+    <span class="k">local</span> Format = FollowingDigit == <span class="s">""</span> <span class="o">and</span> <span class="s">"\\&#37;d"</span> <span class="o">or</span> <span class="s">"\\&#37;03d"</span> .. FollowingDigit
     <span class="k">return</span> BsChars[Char]
       <span class="o">or</span> string.format(Format, string.byte(Char))
   <span class="k">else</span>
