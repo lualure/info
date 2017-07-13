@@ -29,6 +29,8 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h1>show</h1>
+
 <p>Matias Guijarro wrote:</p>
 <blockquote>
     <p>I would like to change the default behaviour of Lua when
@@ -36,31 +38,32 @@
     would prefer to have something more like in Python for
     example (instead of having "table: 0x8062ac0", I would
     like to see the contents, for example { 1, 2, 3 }).</p>
-    
-    <p>So first of all I tried to set a new metatable for tables,
-    As Shmuel pointed out, table metatables are per-table, so
-    they don't really work for what you want to do.
-      Lua 5.1.1  Copyright (C) 1994-2006 Lua.org, PUC-Rio
-      > Tbl = setmetatable({}, {__tostring = function(t)
-      >>                                        return "Hello!"
-      >>                                      end})
-      > print(Tbl) -- Works for this table,
-      Hello!
-      > print({}) -- but doesn't work for other tables.
-      table: 0x493378
-    A way that will work is to simply replace the tostring
-    function itself.  Replace it with a function that calls your
-    table-to-string function for tables, and calls the original
-    tostring for everything else.
-    Roberto's Programming in Lua book explains how to write the
-    table-to-string function.  (The first edition is available
-    online: <a href="http://www.lua.org/pil/12.1.html">http://www.lua.org/pil/12.1.html</a>.)
-    As it happens, I happened to write an implementation of just
-    the functionality you're looking for a few days ago.  It is
-    below, but I encourage you to try whipping together at least
-    a simple version of your own before looking at mine.
-    Aaron</p>
 </blockquote>
+
+<p>So first of all I tried to set a new metatable for tables,
+As Shmuel pointed out, table metatables are per-table, so
+they don't really work for what you want to do.
+  Lua 5.1.1  Copyright (C) 1994-2006 Lua.org, PUC-Rio
+  > Tbl = setmetatable({}, {__tostring = function(t)
+  >>                                        return "Hello!"
+  >>                                      end})
+  > print(Tbl) -- Works for this table,
+  Hello!
+  > print({}) -- but doesn't work for other tables.
+  table: 0x493378</p>
+
+<p>A way that will work is to simply replace the tostring
+function itself.  Replace it with a function that calls your
+table-to-string function for tables, and calls the original
+tostring for everything else.
+Roberto's Programming in Lua book explains how to write the
+table-to-string function.  (The first edition is available
+online: <a href="http://www.lua.org/pil/12.1.html">http://www.lua.org/pil/12.1.html</a>.)
+As it happens, I happened to write an implementation of just
+the functionality you're looking for a few days ago.  It is
+below, but I encourage you to try whipping together at least
+a simple version of your own before looking at mine.
+- Aaron</p>
 
 <p>This script makes tostring convert tables to a
 representation of their contents.</p>
@@ -145,9 +148,7 @@ digit after it:</p>
 <td class="code">
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">EscapeableToEscaped</span>(Char, FollowingDigit)
   <span class="k">if</span> IsEscapeable(Char) <span class="k">then</span>
-    <span class="k">local</span> Format = FollowingDigit == <span class="s">""</span>
-      <span class="o">and</span> <span class="s">"\\&#37;d"</span>
-      <span class="o">or</span> <span class="s">"\\&#37;03d"</span> .. FollowingDigit
+    <span class="k">local</span> Format = FollowingDigit == <span class="s">""</span> <span class="o">and</span> <span class="s">"\\&#37;d"</span> <span class="o">or</span> <span class="s">"\\&#37;03d"</span> .. FollowingDigit
     <span class="k">return</span> BsChars[Char]
       <span class="o">or</span> string.format(Format, string.byte(Char))
   <span class="k">else</span>
