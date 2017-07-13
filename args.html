@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/args.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/args.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h2>Args : argument handling</h2>
+
+<p>Override default settings for a function
+or, when used at the global level, override
+settings  with values from the command line <code>arg</code>s.</p>
+
+<p>This function assumes that the list of legal flags
+comes from the keys of the <code>settings</code> table.</p>
+
+<p>Example usage (for global level). </p>
+
+<pre><code>if arg[1] == "--args" then
+  local args = require "args"
+  local settings = args({a=1,c=false,kkk=22},{"args"})
+  for j,setting in pairs(settings) do
+    print(j,setting) end end
+</code></pre>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Helper function</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">member</span>(x,t)
+  <span class="k">for</span> _,y <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
+    <span class="k">if</span> x== y <span class="k">then</span> <span class="k">return</span> <span class="k">true</span> <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> <span class="k">false</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Main</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (settings,ignore, updates)
+  updates = updates <span class="o">or</span> arg
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<p>Usually, read all the args.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  ignore = ignore <span class="o">or</span> {}
+  <span class="k">local</span> i = 1
+  <span class="k">while</span> updates[i] ~= <span class="k">nil</span>  <span class="k">do</span>
+    <span class="k">local</span> flag = updates[i]
+    <span class="k">local</span> b4   = #flag
+    flag = flag:gsub(<span class="s">"^[-]+"</span>,<span class="s">""</span>)
+    <span class="k">if</span> <span class="o">not</span> member(flag,ignore) <span class="k">then</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<p>Complain if no old value to override</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>      <span class="k">if</span> settings[flag] == <span class="k">nil</span> <span class="k">then</span>
+        <span class="nt">error</span>(<span class="s">"unknown flag '"</span> .. flag .. <span class="s">"'"</span>)
+      <span class="k">else</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>If no arg to this flag, then set a boolean.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>        <span class="k">if</span> b4 - #flag == 2 <span class="k">then</span>
+          settings[flag] = <span class="k">true</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>If there is an arg then....</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>        <span class="k">elseif</span> b4 - #flag == 1 <span class="k">then</span>
+          <span class="k">local</span> a1 = updates[i+1]
+          <span class="k">local</span> a2 = <span class="nt">tonumber</span>(a1)
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>Set either a number of a string</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>          settings[flag] = a2  <span class="o">or</span> a1
+          i = i + 1 
+    <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+    i = i + 1
+  <span class="k">end</span>
+  <span class="k">return</span> settings <span class="k">end</span>
+
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/superrange.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/superrange.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<p>[[</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+# superranges : utilities
+
+DARE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License
+
+Redistribution <span class="o">and</span> use <span class="k">in</span> source <span class="o">and</span> binary forms, with
+<span class="o">or</span> without modification, are permitted provided that
+the following conditions are met:
+
+* Redistributions of source code must retain the above
+  copyright notice, this list of conditions <span class="o">and</span> the 
+  following disclaimer.
+
+* Redistributions <span class="k">in</span> binary form must reproduce the
+  above copyright notice, this list of conditions <span class="o">and</span> the 
+  following disclaimer <span class="k">in</span> the documentation <span class="o">and</span>/<span class="o">or</span> other 
+  materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names 
+  of its contributors may be used to endorse <span class="o">or</span> promote 
+  products derived from this software without specific 
+  prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS <span class="s">"AS IS"</span> AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<p>]]</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> range=<span class="nt">require</span> <span class="s">"range"</span>
+<span class="k">local</span> copy=(<span class="nt">require</span> <span class="s">"lists"</span>).copy
+<span class="k">local</span> replace=(<span class="nt">require</span> <span class="s">"str"</span>).replace_char
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">labels</span>(nums)
+  <span class="k">local</span> out={}
+  <span class="k">for</span> i =1,#nums <span class="k">do</span>
+    out[#out+1] =  {
+      most  = nums[i], 
+      label  =replace(i,string.rep(<span class="s">"_"</span>,#nums),
+                        string.char(64+i))} <span class="k">end</span> 
+  <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">same</span>(j) <span class="k">return</span> j <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (lst,x,y)
+  y = y <span class="o">or</span> <span class="k">function</span>(j) <span class="k">return</span> j[#j] <span class="k">end</span>
+  <span class="k">local</span> breaks,ranges = {},range(lst,x)
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">data</span>(j) <span class="k">return</span> ranges[j]._all._all <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">memo</span>(here,stop,_memo,    b4,inc)
+    <span class="k">if</span> stop &gt; here <span class="k">then</span> inc=1 <span class="k">else</span> inc=-1 <span class="k">end</span>
+    <span class="k">if</span> here ~= stop <span class="k">then</span> 
+       b4=  copy( memo(here+inc, stop, _memo)) <span class="k">end</span>
+    _memo[here] = num.updates(data(here), y, b4)
+    <span class="k">return</span> _memo[here] <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">combine</span>(lo,hi,all,bin,lvl)   
+    <span class="k">local</span> best = all.sd
+    <span class="k">local</span> lmemo,rmemo = {},{}
+    memo(hi,lo, lmemo) <span class="c">-- summarize i+1 using i
+</span>    memo(lo,hi, rmemo) <span class="c">-- summarize i using i+1
+</span>    <span class="k">local</span> cut, lbest, rbest
+    <span class="k">for</span> j=lo,hi-1 <span class="k">do</span>
+      <span class="k">local</span> l = lmemo[j]
+      <span class="k">local</span> r = rmemo[j+1]
+      <span class="k">local</span> tmp= l.n/all.n*l.sd + r.n/all.n*r.sd
+      <span class="k">if</span> (tmp*1.01 &lt; best) <span class="k">then</span>
+        cut  = j
+        best = tmp
+        lbest = copy(l)
+        rbest = copy(r)
+    <span class="k">end</span> <span class="k">end</span>
+    <span class="k">if</span> cut <span class="k">then</span>
+      bin = combine(lo,   cut, lbest, bin, lvl+1) + 1
+      bin = combine(cut+1, hi, rbest, bin, lvl+1)
+    <span class="k">else</span>
+      breaks[bin] = breaks[bin] <span class="o">or</span> -10^32
+      <span class="k">if</span> ranges[hi].hi &gt; breaks[bin] <span class="k">then</span>
+          breaks[bin] = ranges[hi].hi  <span class="k">end</span> <span class="k">end</span>
+    <span class="k">return</span> bin <span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  combine(1,#ranges, 
+           memo(1,#ranges,{}),
+           1,0)  
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<p>table.sort(breaks)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">return</span> labels(breaks) <span class="k">end</span>
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
