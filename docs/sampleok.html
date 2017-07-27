@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/sampleok.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/sampleok.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>sampleok : unit tests for sample</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> s=<span class="nt">require</span> <span class="s">"sample"</span>
+<span class="k">local</span> str=<span class="nt">require</span> <span class="s">"str"</span>
+<span class="k">local</span> tiles=<span class="nt">require</span> <span class="s">"tiles"</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
+  <span class="k">local</span> some=s.create(64)
+  <span class="nt">print</span>(some.most)
+  <span class="k">for</span> _=1,10000 <span class="k">do</span>
+    s.update(some,_) <span class="k">end</span>
+  table.sort(some._all)
+  <span class="nt">print</span>(some._all) 
+<span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_cliffs</span>()
+  <span class="k">local</span> n1=1
+  <span class="k">local</span> fmt = <span class="s">"&#37;5s\t&#37;5s\t&#37;20s &#37;20s\n"</span>
+  str.say(fmt, <span class="s">"n"</span>,<span class="s">"same?"</span>,<span class="s">"one"</span>,<span class="s">"two"</span>)
+  str.say(fmt, <span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>)
+  <span class="k">while</span> n1 &lt; 1.5 <span class="k">do</span>
+    <span class="k">local</span> i,j = s.create(), s.create()
+    <span class="k">for</span> _=1,100 <span class="k">do</span>
+      <span class="k">local</span> val = r.r()^0.5
+      s.update(i, val)
+      s.update(j, val*n1) 
+    <span class="k">end</span>
+    str.say(<span class="s">"&#37;5.3f\t&#37;5s\t&#37;20s\t&#37;20s\n"</span>,
+            n1,s.cliffsDelta(i,j), 
+            <span class="nt">tostring</span>(tiles.tiles(i._all,0.25)), 
+            <span class="nt">tostring</span>(tiles.tiles(j._all,0.25)))
+    n1 = n1 *1.01
+  <span class="k">end</span> <span class="k">end</span> 
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_bootstrap</span>()
+  <span class="k">local</span> n1=1
+  <span class="k">local</span> fmt = <span class="s">"&#37;5s\t&#37;5s\t&#37;20s &#37;20s\n"</span>
+  str.say(fmt, <span class="s">"n"</span>,<span class="s">"same?"</span>,<span class="s">"one"</span>,<span class="s">"two"</span>)
+  str.say(fmt, <span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>)
+  <span class="k">while</span> n1 &lt; 1.5 <span class="k">do</span>
+    <span class="k">local</span> i,j = {}, {}
+    <span class="k">for</span> _=1,128 <span class="k">do</span>
+      <span class="k">local</span> x = r.r()
+      <span class="k">local</span> val = x^1
+      i[#i+1] = val
+      j[#j+1] = val*n1 
+    <span class="k">end</span>
+    str.say(<span class="s">"&#37;5.3f\t&#37;5s\t&#37;20s\t&#37;20s\n"</span>,
+            n1,s.same(i,j), 
+            <span class="nt">tostring</span>(str.fmts(<span class="s">"&#37;5.3f"</span>,tiles.tiles(i,10,2))), 
+            <span class="nt">tostring</span>(str.fmts(<span class="s">"&#37;5.3f"</span>,tiles.tiles(j,10,2))))
+    <span class="k">if</span> <span class="k">true</span> <span class="k">then</span> <span class="k">return</span> <span class="k">true</span> <span class="k">end</span>
+    n1 = n1 *1.01
+  <span class="k">end</span> <span class="k">end</span> 
+
+r.seed(1)
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<p>_test1()
+_cliffs()</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>__bootstrap()
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/sdtree.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/sdtree.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>sdtree : iterative divisions to minimize sd</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<p>Assumes discrete data</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> row=<span class="nt">require</span> <span class="s">"row"</span>
+<span class="k">local</span> tbl=<span class="nt">require</span> <span class="s">"tbl"</span>
+<span class="k">local</span> str=<span class="nt">require</span> <span class="s">"str"</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(t,yfun,pos,attr,val)  
+  <span class="k">return</span> { _t=t, 
+          _kids={},
+          yfun = yfun,
+          pos=pos, <span class="c">-- split data at this pos
+</span>          attr= attr, val= val, 
+          stats= num.updates(t.rows,  yfun)}
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">splits</span>(t,y)
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">xpect</span>(col)
+    <span class="k">local</span> tmp = 0
+    <span class="k">for</span> _,x <span class="k">in</span> <span class="nt">pairs</span>(col.nums) <span class="k">do</span>
+      tmp = tmp +  x.sd * x.n / col.n <span class="k">end</span> 
+    <span class="k">return</span> tmp <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">whatif</span>(head,y)
+    <span class="k">local</span> col = {pos=head.pos, what=head.txt, nums={},n=0} 
+    <span class="k">for</span> _,row <span class="k">in</span> <span class="nt">pairs</span>(t.rows) <span class="k">do</span>
+       <span class="k">local</span> x = row.cells[col.pos]
+       <span class="k">if</span> x ~= the.ignore <span class="k">then</span>
+         col.n = col.n + 1
+         col.nums[x] = num.update(col.nums[x] <span class="o">or</span> num.create(), 
+                                  y(row))  <span class="k">end</span> <span class="k">end</span>
+    <span class="k">return</span> {key=xpect(col), val=col} <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> out = {}
+  <span class="k">for</span> _,h <span class="k">in</span> <span class="nt">pairs</span>(t.x.cols) <span class="k">do</span> 
+    out[#out+1] = whatif(h,y) <span class="k">end</span>
+  table.sort(out, <span class="k">function</span> (x,y) 
+                      <span class="k">return</span> x.key &lt; y.key <span class="k">end</span>)
+  <span class="k">return</span> lst.collect(out, <span class="k">function</span> (x) 
+                              <span class="k">return</span> x.val <span class="k">end</span>) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">grow1</span>(above,yfun,rows,lvl,b4,pos,attr,val)
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">pad</span>()       <span class="k">return</span> str.fmt(<span class="s">"&#37;-20s"</span>,string.rep(<span class="s">'| '</span>,lvl)) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">likeAbove</span>() <span class="k">return</span> tbl.copy(above._t,rows)  <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>print(pad())</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">if</span> #rows &gt;= the.tree.min <span class="k">then</span> 
+    <span class="k">if</span> lvl &lt;= the.tree.maxDepth <span class="k">then</span> 
+      <span class="k">local</span> here = lvl == 0 <span class="o">and</span> above <span class="o">or</span> create(likeAbove(), yfun,pos,attr,val) 
+      <span class="k">if</span> here.stats.sd &lt; b4 <span class="k">then</span> 
+        <span class="k">if</span> lvl &gt; 0 <span class="k">then</span> 
+          above._kids[ #above._kids+1 ] = here 
+        <span class="k">end</span>
+        <span class="k">local</span> cuts= splits(here._t, yfun) <span class="c">-- where to split?
+</span>        <span class="k">local</span> cut= cuts[1] <span class="c">-- where to split?
+</span></pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>divide the rows on the values in that split</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>        <span class="k">local</span> kids= {}
+        <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(rows) <span class="k">do</span>
+          <span class="k">local</span> val = r.cells[cut.pos]
+          <span class="k">if</span> val ~= the.ignore <span class="k">then</span>  <span class="c">-- remember to skip the ignores
+</span>            <span class="k">local</span> rows1    = kids[val] <span class="o">or</span> {}
+            rows1[#rows1+1] = r  <span class="c">-- push row 
+</span>            kids[val]     = rows1 <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<p>return a node</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>        <span class="k">for</span> val,rows1 <span class="k">in</span> <span class="nt">pairs</span>(kids) <span class="k">do</span>
+          <span class="k">if</span> #rows1 &lt;  #rows <span class="k">then</span>
+            grow1(here,yfun,rows1,lvl+1,here.stats.sd,cut.pos,cut.what,val) 
+  <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">grow</span>(t, y)
+  <span class="k">local</span> yfun = tbl[y](t)
+  <span class="k">local</span> root = create(t,yfun)
+  <span class="nt">print</span>(<span class="s">"----------"</span>)
+  grow1(root, yfun, t.rows,0,10^32) 
+  <span class="k">return</span> root <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-12">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-12">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">tprint</span>(tr,    lvl)
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">pad</span>()       <span class="k">return</span> string.rep(<span class="s">'| '</span>,lvl-1) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">left</span>(x)     <span class="k">return</span> str.fmt(<span class="s">"&#37;-20s"</span>,x) <span class="k">end</span>
+  lvl = lvl <span class="o">or</span> 0
+  <span class="k">local</span> suffix=<span class="s">""</span>
+  <span class="k">if</span> #tr._kids == 0 <span class="o">or</span> lvl ==0 <span class="k">then</span>
+      suffix =  str.fmt(<span class="s">"n=&#37;s mu=&#37;-.2f sd=&#37;-.2f"</span>,
+                        tr.stats.n, tr.stats.mu, tr.stats.sd) <span class="k">end</span>
+  <span class="k">if</span> lvl ==0 <span class="k">then</span>
+    <span class="nt">print</span>(<span class="s">"\n"</span>.. suffix)
+  <span class="k">else</span>
+    <span class="nt">print</span>(left(pad() .. (tr.attr <span class="o">or</span> <span class="s">""</span>) .. <span class="s">" = "</span> .. (tr.val <span class="o">or</span> <span class="s">""</span>)),
+          <span class="s">"\t:"</span>,suffix) <span class="k">end</span> 
+  <span class="k">for</span> j=1,#tr._kids <span class="k">do</span>
+      tprint(tr._kids[j],lvl+1) <span class="k">end</span> <span class="k">end</span>  
+</pre></div>
+</td>
+</tr><tr id="section-13">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-13">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">leaf</span>(tr,cells,  lvl)
+  lvl=lvl <span class="o">or</span> 0
+  <span class="k">for</span> j,kid <span class="k">in</span> <span class="nt">pairs</span>(tr._kids) <span class="k">do</span>
+    <span class="k">local</span> pos,val = kid.pos, kid.val
+    <span class="k">if</span> cells[kid.pos] == kid.val <span class="k">then</span>
+      <span class="k">return</span> leaf(kid, cells, bins, lvl+1) <span class="k">end</span> <span class="k">end</span> 
+  <span class="k">return</span> tr <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-14">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-14">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> {splits=splits,grow=grow,show=tprint,leaf=leaf}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

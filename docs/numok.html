@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/numok.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/numok.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>
+<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> str=<span class="nt">require</span> <span class="s">"str"</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
+  <span class="k">local</span> n1=1
+  <span class="k">local</span> fmt = <span class="s">"&#37;5s\t&#37;5s\t&#37;5s &#37;5s &#37;5s &#37;5s\n"</span>
+  str.say(fmt, <span class="s">"n"</span>,<span class="s">"same?"</span>,<span class="s">"mu1"</span>,<span class="s">"sd1"</span>,<span class="s">"mu2"</span>,<span class="s">"sd2"</span>)
+  str.say(fmt, <span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>)
+  <span class="k">while</span> n1 &lt; 10 <span class="k">do</span>
+    <span class="k">local</span> i,j = num.create(), num.create()
+    <span class="k">for</span> _=1,100 <span class="k">do</span>
+      <span class="k">local</span> val = r.r()^0.5
+      num.update(i, val)
+      num.update(j, val*n1) 
+    <span class="k">end</span>
+    str.say(<span class="s">"&#37;5.3f\t&#37;5s\t&#37;5.3f &#37;5.3f &#37;5.3f &#37;5.3f\n"</span>,
+            n1,num.same(i,j), i.mu,i.sd,j.mu,j.sd)
+    n1 = n1 *1.1
+  <span class="k">end</span> <span class="k">end</span> 
+
+
+r.seed(1)
+_test1()
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

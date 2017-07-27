@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/rangeok.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/rangeok.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>chopok : unit tests for chop</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+	
+<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> range=<span class="nt">require</span> <span class="s">"range"</span>
+ 
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
+  <span class="k">local</span> tmp={}
+  <span class="k">for</span> x=1,10^6 <span class="k">do</span>
+    tmp[#tmp+1] = r.r()^0.5 <span class="k">end</span>
+  <span class="k">for</span> i,k <span class="k">in</span> <span class="nt">pairs</span>(range(tmp)) <span class="k">do</span>
+    <span class="nt">print</span>(i,k) <span class="k">end</span>
+<span class="k">end</span>
+
+r.seed(2)
+o.k{_test1}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/superrangeok.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/superrangeok.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>superrangesok : unit tests for superranges</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> range=<span class="nt">require</span> <span class="s">"range"</span>
+<span class="k">local</span> super=<span class="nt">require</span> <span class="s">"superrange"</span>
+<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">x</span>(z) <span class="k">return</span> z[1] <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">y</span>(z) <span class="k">return</span> z[#z] <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">klass</span>(z) 
+  <span class="k">if</span> z &lt; 0.2 <span class="k">then</span> <span class="k">return</span> 0.2 + 2*r.r()/100 <span class="k">end</span>
+  <span class="k">if</span> z &lt; 0.6 <span class="k">then</span> <span class="k">return</span> 0.6 + 2*r.r()/100 <span class="k">end</span>
+  <span class="k">return</span>                 0.9 + 2*r.r()/100 <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
+  <span class="k">local</span> lst,n={},num.create()
+  <span class="k">for</span> _=1,10^5 <span class="k">do</span>
+    <span class="k">local</span> w=r.r()^0.5
+    num.update(n,klass(w))
+    lst[#lst+1] = {w, klass(w)} <span class="k">end</span>
+  <span class="k">for</span> j,one <span class="k">in</span> <span class="nt">pairs</span>(range(lst,x)) <span class="k">do</span>
+    <span class="nt">print</span>(<span class="s">"x"</span>,j,one) <span class="k">end</span>
+  <span class="k">for</span> j,one <span class="k">in</span> <span class="nt">pairs</span>(super(lst,x,y)) <span class="k">do</span>
+    <span class="nt">print</span>(<span class="s">"super"</span>,j,one) <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>r.seed(1)
+o.k{_test1}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/bpo.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/bpo.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>bpo : utilities</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> tbl=<span class="nt">require</span> <span class="s">"tbl"</span>
+<span class="k">local</span> tree=<span class="nt">require</span> <span class="s">"sdtree"</span>
+<span class="k">local</span> row=<span class="nt">require</span> <span class="s">"row"</span>
+<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> watch=<span class="nt">require</span> <span class="s">"watch"</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">someRest</span>(n,all)
+  <span class="k">local</span> some,rest={},{}
+  all = lst.shuffle(all)
+  <span class="k">for</span> j=1,#all <span class="k">do</span>
+    <span class="k">local</span> what = j&lt;=n <span class="o">and</span> some <span class="o">or</span> rest
+    what[#what + 1] = all[j] <span class="k">end</span>
+  <span class="k">return</span> some,rest
+<span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">surprises</span>(t)
+  <span class="k">local</span> got,want,inc
+  <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(t.rows) <span class="k">do</span>
+    <span class="k">if</span> r.xpect <span class="k">then</span>
+      got = row.dominate(r,t)
+      want = r.xpect
+      r.xpect   = <span class="k">nil</span>
+      inc = want-got <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> {want=want,got=got,inc=inc/#t.rows}
+<span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">worker</span>(lives,t1,y,some, rest, history)
+  <span class="nt">print</span>(1)
+  <span class="k">local</span> t2=tbl.discretize(t1,y)  
+  <span class="k">local</span> tr=tree.grow(t2,y)
+  <span class="nt">print</span>(lives, #rest)
+  <span class="k">if</span> lives &lt; 1 <span class="o">or</span> #rest==0 <span class="k">then</span>
+    watch.report(history)
+    <span class="k">return</span> <span class="c">-- tree.show(tr)
+</span>  <span class="k">end</span>
+  <span class="nt">print</span>(2) 
+  <span class="k">local</span> cache = {}
+  <span class="k">for</span> j=1,256 <span class="k">do</span>
+    <span class="k">local</span> r = rest[j]
+    <span class="nt">print</span>(j)
+    <span class="k">local</span> leaf= tree.leaf(tr,r.cells,t2.bins)
+    lst.push(cache,{leaf.stats.mu,
+                    j,r}) <span class="k">end</span>
+  <span class="k">local</span> cache = lst.sort(cache, lst.firsts)
+  <span class="k">local</span> best3 = lst.last(cache)
+  <span class="k">local</span> best = best3[3]
+  best.xpect = best3[1]
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<p>print(#t2.rows,best)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> doomed=best3[2]
+  rest = lst.without(rest,doomed)
+  lst.push(some,best3[3])
+  <span class="k">local</span> t3=tbl.copy(t1,some,t2)
+  watch.update(history, row.dominate(lst.last(t3.rows),t3))
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<p>print(lives,#t3.rows,surprises(t3))</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  worker(lives-1,y,t3,some,rest,history)
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<p>computer error!!! XXXX
+print("bins ",t1.bins)
+print("nrows ",#t1.rows)
+local root = S.grow(t1)
+S.show(root)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">main</span>(lives,t,y)
+  y = y <span class="o">or</span> <span class="s">"goal1"</span>
+  <span class="k">local</span> some,rest = someRest(the.bpo.pop0,t.rows)
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>local t1=T.discretize(t)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> t0=tbl.copy(t,some,t)
+  worker(lives, t0,y,some,rest,watch.create(20)) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (t)
+  main(400,t)
+<span class="k">end</span>
+
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -35,6 +35,9 @@
 <td class="code">
   <div class="highlight"><pre><span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
 <span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> tiles=<span class="nt">require</span> <span class="s">"tiles"</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(  most) <span class="k">return</span> {
   _all={},
@@ -75,7 +78,333 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update}
+  <div class="highlight"><pre><span class="k">local</span> functions adds(samples)
+  out=create()
+  <span class="k">for</span> _,sample <span class="k">in</span> <span class="nt">pairs</span>(samples) <span class="k">do</span>
+    <span class="k">for</span> _,v <span class="k">in</span> <span class="nt">pairs</span>(sample._all) <span class="k">do</span>
+      update(out,v)
+    <span class="k">end</span>
+  <span class="k">return</span> v
+  <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">cliffsDelta</span>(lst1,lst2)
+  table.sort(lst2)
+  <span class="k">local</span> lt,gt,max=0,0,#lst2
+  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(lst1) <span class="k">do</span>
+    <span class="k">local</span> pos0 = lst.bsearch(lst2,one,f)
+    <span class="k">local</span> pos = pos0
+    <span class="k">while</span> pos &lt; max <span class="o">and</span> lst2[pos] == lst2[pos+1] <span class="k">do</span> pos = pos + 1 <span class="k">end</span>
+    gt = gt + max - pos
+    <span class="k">local</span> pos = pos0
+    <span class="k">while</span> pos &gt; 1   <span class="o">and</span> lst2[pos] == lst2[pos-1] <span class="k">do</span> pos = pos - 1 <span class="k">end</span>
+    lt = lt + pos <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<p>print(lt,gt,#lst1,#lst2)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">return</span> math.abs(gt - lt) / (#lst1 * #lst2) &gt; the.sample.cliffsDelta <span class="k">end</span>
+
+<span class="k">function</span> <span class="nf">bootstrap</span>(y0,z0)
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>The bootstrap hypothesis test from
+220 to 223 of Efron's book 'An
+introduction to the boostrap'.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">sampleWithReplacement</span>(lst)
+    <span class="k">local</span> <span class="k">function</span> <span class="nf">n</span>()   <span class="k">return</span> math.floor(r.r() * #lst) + 1 <span class="k">end</span>
+    <span class="k">local</span> <span class="k">function</span> <span class="nf">one</span>() <span class="k">return</span> lst[n()] <span class="k">end</span>
+    <span class="k">local</span> out={}
+    <span class="k">for</span> i=1,#lst <span class="k">do</span> out[i] = one() <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>print(out)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>    <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">delta</span>(y,z)
+    <span class="k">return</span> (y.mu - z.mu) / (10^-64 + (y.sd/y.n + z.sd/z.n)^0.5) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(i,lst)
+    <span class="k">for</span> j=1,#lst <span class="k">do</span>
+      <span class="k">local</span> x = lst[j]
+      i.all[#i.all + 1] = x
+      i.n  = i.n + 1
+      <span class="k">local</span> delta = x - i.mu
+      i.mu = i.mu + delta / i.n
+      i.m2 = i.m2 + delta * (x - i.mu)
+      <span class="k">if</span> i.n &gt; 1 <span class="k">then</span>
+        i.sd = (i.m2 / (i.n - 1))^0.5 <span class="k">end</span> <span class="k">end</span>
+    <span class="k">return</span> i <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(lst)
+    <span class="k">return</span> updates({sum=0, n=0,mu=0, all={},m2=0,sd=0}, lst) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">add</span>(i,j)
+    <span class="k">return</span> updates( lst.copy(i), j) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-12">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-12">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> y, z = create(y0), create(z0)
+  <span class="k">local</span> x    = add(y,z)
+  <span class="k">local</span> tobs = delta(y,z)
+  <span class="k">local</span> yhat, zhat = {}, {}
+  <span class="k">for</span> i=1,#y.all <span class="k">do</span> yhat[i] = y.all[i] - y.mu + x.mu <span class="k">end</span>
+  <span class="k">for</span> i=1,#z.all <span class="k">do</span> zhat[i] = z.all[i] - z.mu + x.mu <span class="k">end</span>
+  <span class="k">local</span> bigger = 0
+  <span class="k">for</span> _ = 1,the.sample.b <span class="k">do</span>
+    <span class="k">if</span> delta(create(sampleWithReplacement(yhat)),
+             create(sampleWithReplacement(zhat))) &gt; tobs <span class="k">then</span>
+      bigger = bigger + 1 <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> bigger / the.sample.b &gt; the.num.conf/100 <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-13">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-13">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">same</span>(i,j) 
+  <span class="k">return</span> <span class="o">not</span>(cliffsDelta(i,j) <span class="o">and</span> bootstrap(i,j)) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-14">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-14">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">sk1</span>(samples,epsilon)
+  epsilon = epsilon + the.sample.epsilon
+</pre></div>
+</td>
+</tr><tr id="section-15">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-15">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">mid</span>(t) <span class="k">return</span> t._all[ math.floor(#t._all/2) ] <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-16">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-16">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
+    _all={}, sum=0,n=0} <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x) 
+    i._all[#i._all+1]=x
+    i.sum = i.sum + x
+    i.n   = i.n + 1 
+    i.mu  = i.sum/i.n <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(i, b4)
+    b4 = b4 <span class="o">or</span> create()
+    <span class="k">for</span> j=1,#t <span class="k">do</span> update(b4,t[j]) <span class="k">end</span> <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">memo</span>(here,stop,_memo,    b4,inc)
+    <span class="k">if</span> stop &gt; here <span class="k">then</span> inc=1 <span class="k">else</span> inc=-1 <span class="k">end</span>
+    <span class="k">if</span> here ~= stop <span class="k">then</span> 
+       b4=  lst.copy( memo(here+inc, stop, _memo)) <span class="k">end</span>
+    _memo[here] = updates(samples[here]._all,  b4)
+    <span class="k">return</span> _memo[here] <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-17">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-17">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">combine</span>(lo,hi,all,bin,lvl)   
+    <span class="k">local</span> best = 0
+    <span class="k">local</span> lmemo,rmemo = {},{}
+    memo(hi,lo, lmemo) <span class="c">-- summarize i+1 using i
+</span>    memo(lo,hi, rmemo) <span class="c">-- summarize i using i+1
+</span>    <span class="k">local</span> cut, lbest, rbest
+    <span class="k">for</span> j=lo,hi-1 <span class="k">do</span>
+      <span class="k">local</span> l = lmemo[j]
+      <span class="k">local</span> r = rmemo[j+1]
+      <span class="k">if</span> mid(l)*epsilon   &lt; mid(r) <span class="k">then</span>
+        <span class="k">if</span> <span class="o">not</span> same(l,r) <span class="k">then</span>
+          <span class="k">local</span> tmp= l.n/all.n*(l.mu - all.mu)^2 + 
+                     r.n/all.n*(r.mu - all.mu^2)
+          <span class="k">if</span> tmp &gt; best <span class="k">then</span>
+            cut   = j
+            best  = tmp
+            lbest = lst.copy(l)
+            rbest = lst.copy(r) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+    <span class="k">if</span> cut <span class="k">then</span>
+      bin = combine(lo,   cut, lbest, bin, lvl+1) + 1
+      bin = combine(cut+1, hi, rbest, bin, lvl+1)
+    <span class="k">else</span>
+      <span class="k">for</span> j=lo,hi <span class="k">do</span>
+        samples[j].rank = bin <span class="k">end</span> <span class="k">end</span>
+    <span class="k">return</span> bin <span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-18">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-18">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  table.sort(samples, <span class="k">function</span> (x,y) <span class="k">return</span> mid(x) &lt; mid(y) <span class="k">end</span>)
+  combine(1,#samples, memo(1,#samples,{}),1,0)  
+  <span class="k">return</span> samples <span class="k">end</span>
+
+<span class="k">function</span> <span class="nf">sk</span>(samples,epsilon) 
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">nth</span>(t,n) <span class="k">return</span> t._all[ math.floor(#t._all*n) ] <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">mid</span>(t)   <span class="k">return</span> nth(t,0.5) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">iqr</span>(t)   <span class="k">return</span> nth(t,0.75) - nth(t,0.25) <span class="k">end</span>
+  <span class="k">local</span> lo,hi= 10^64, -10^64
+  <span class="k">for</span> _,sample <span class="k">in</span> <span class="nt">pairs</span>(samples) <span class="k">do</span>
+    <span class="k">for</span> _,v <span class="k">in</span> <span class="nt">pairs</span>(sample._all) <span class="k">do</span>
+      lo = math.min(lo, v)
+      hi = math.max(hi, v) <span class="k">end</span>
+    table.sort(sample._all)
+    <span class="k">end</span> 
+  table.sort(samples, <span class="k">function</span>(a,b) <span class="k">return</span> 
+                  mid(a) &lt; mid(n) <span class="k">end</span> )
+  sk1(samples,epsilon)
+  <span class="k">for</span> _,sample <span class="k">in</span> <span class="nt">pairs</span>(samples) <span class="k">do</span>
+    <span class="k">local</span> how=tiles.how(sample._all)
+    how.lo = lo
+    how.hi = hi
+    <span class="nt">print</span>(one.rank, mid(one), iqr(one),
+          tile.show(sample._all,how)) <span class="k">end</span>  <span class="k">end</span>
+
+<span class="k">return</span> {create=create, same=same, update=update,cliffsDelta=cliffsDelta,
+        bootstrap=bootstrap,tiles=tiles}
 </pre></div>
 </td>
 </tr></tbody>

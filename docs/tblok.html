@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/tblok.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/tblok.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>tableok : unit tests for table</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>	
+<span class="k">local</span> rand=  <span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> the=  <span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> o=    <span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> tbl=  <span class="nt">require</span> <span class="s">"tbl"</span>
+<span class="k">local</span> row=  <span class="nt">require</span> <span class="s">"row"</span>
+<span class="k">local</span> super=<span class="nt">require</span> <span class="s">"superrange"</span>
+<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+<p>process 14 rows</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre> <span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
+   <span class="k">local</span> t=tbl.create(the.here .. <span class="s">"/data/weather.csv"</span>)
+  <span class="nt">print</span>(t.spec)
+   <span class="nt">assert</span>(#t.rows==14)
+   <span class="nt">assert</span>(t.rows[14].cells[1]==<span class="s">"rainy"</span>)
+   <span class="nt">assert</span>(o.nstr(t.all.nums[1].mu,4) == o.nstr(73.5714,4))
+   <span class="nt">assert</span>(o.nstr(t.all.nums[1].sd,4) ==  o.nstr(6.5717,4))
+   <span class="nt">assert</span>(t.x.syms[1].counts[<span class="s">"overcast"</span>] == 4)
+   <span class="nt">assert</span>(t.x.syms[2].counts[<span class="s">"TRUE"</span>]==6)
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+<p>process 400 rows</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">_test3</span>()
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">someShow</span>(i,j) 
+    <span class="k">local</span> r=i.rows[j]
+    <span class="k">local</span> tmp={j,r.dom}
+    <span class="k">for</span> _,c <span class="k">in</span> <span class="nt">pairs</span>(i.goals)  <span class="k">do</span>
+      tmp[#tmp+1] = r.cells[c.pos] <span class="k">end</span>
+    <span class="nt">print</span>(tmp)
+  <span class="k">end</span>
+  <span class="k">local</span> t=tbl.create(the.here .. <span class="s">"/data/auto.csv"</span>)
+  tbl.dominates(t)
+  <span class="k">for</span> j=1,5 <span class="k">do</span> someShow(t,j) <span class="k">end</span>
+  <span class="nt">print</span>(t.spec)
+  <span class="nt">print</span>(<span class="s">"..."</span>)
+  <span class="k">for</span> j=#t.rows-5,#t.rows <span class="k">do</span> someShow(t,j) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<p>for i=1,250 do row.dominates(t.rows[i],t) print(t.rows[i].dom) end</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">_test4</span>(f,y)
+   y = y <span class="o">or</span> <span class="s">"dom"</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>local function y(r,t) return row.dominate(r,t) end</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>   f = f <span class="o">or</span> <span class="s">"/data/auto.csv"</span>
+   <span class="k">local</span> t1=tbl.create(the.here .. f)
+   <span class="nt">print</span>(f,#t1.rows)
+   <span class="k">local</span> t2=tbl.discretize(t1, y) <span class="c">-- tbl[y](t1)) --  y, false)
+</span>   <span class="k">for</span> _,r1 <span class="k">in</span> <span class="nt">pairs</span>(t1.rows) <span class="k">do</span>
+     <span class="k">local</span> found = <span class="k">false</span>
+     <span class="k">for</span> _,r2 <span class="k">in</span> <span class="nt">pairs</span>(t2.rows) <span class="k">do</span>
+       <span class="k">if</span> r2.id == r1.id <span class="k">then</span>
+         found= <span class="k">true</span> <span class="k">end</span> <span class="k">end</span>
+     <span class="k">if</span> <span class="o">not</span> found <span class="k">then</span> <span class="nt">print</span>(<span class="s">"????"</span>) <span class="k">end</span> <span class="k">end</span>
+   <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(t2.x.cols) <span class="k">do</span>
+     <span class="k">if</span> head.bins <span class="k">then</span>
+       <span class="nt">print</span>(#head.bins,head.txt) <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>for k=1,5 do print(t1.rows[k].cells) end
+print("")
+for k=1,5 do print(t2.rows[k].cells) end</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>rand.r(1)
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>(f) _test4(f) <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test2</span>() _test4(<span class="s">"/data/xomo_all_short.csv"</span>) <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test3</span>() _test4(<span class="s">"/data/POM3A_short.csv"</span>) <span class="k">end</span>
+
+o.k{_test1} <span class="c">--_test2,_test3}
+</span></pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>o.k{<em>test1,</em>test2,_test3,test4}
+_test4()</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

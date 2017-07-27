@@ -63,7 +63,7 @@
 </td>
 <td class="code">
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x)
-  <span class="k">if</span> x ~= IGNORE <span class="k">then</span>
+  <span class="k">if</span> x ~= the.ignore <span class="k">then</span>
     i._ent = <span class="k">nil</span> 
     i.n = i.n + 1
     <span class="k">local</span> seen = i.counts[x]
@@ -84,6 +84,68 @@
 
 </td>
 <td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(lst,f,i)
+  i = i <span class="o">or</span> create()
+  f = f <span class="o">or</span> <span class="k">function</span> (z) <span class="k">return</span> z <span class="k">end</span>
+  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(lst) <span class="k">do</span>
+    update(i, f(one)) <span class="k">end</span> 
+  <span class="k">return</span> i <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(i,j,k) 
+  <span class="k">local</span> no = the.ignore
+  <span class="k">if</span>     j==no <span class="o">and</span> k==no <span class="k">then</span> <span class="k">return</span> 0,0
+  <span class="k">elseif</span> j == the.ignore <span class="k">then</span> <span class="k">return</span> 1,1
+  <span class="k">elseif</span> k == the.ignore <span class="k">then</span> <span class="k">return</span> 1,1
+  <span class="k">elseif</span> j==k            <span class="k">then</span> <span class="k">return</span> 0,1
+  <span class="k">else</span>                        <span class="k">return</span> 1,1
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretize</span>(i,x) 
+  <span class="k">local</span> r
+  <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
+  <span class="k">if</span> <span class="o">not</span> i.bins    <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
+  <span class="k">for</span> _,b <span class="k">in</span> <span class="nt">pairs</span>(i.bins) <span class="k">do</span>
+    r = b.label
+    <span class="k">if</span> x&lt;=b.most <span class="k">then</span> <span class="k">break</span> <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> r <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ent</span>(i)
   <span class="k">if</span> i._ent == <span class="k">nil</span> <span class="k">then</span> 
     <span class="k">local</span> e = 0
@@ -95,10 +157,10 @@
   <span class="k">return</span> i._ent <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-5">
+</tr><tr id="section-8">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
+    <a class="pilcrow" href="#section-8">&#182;</a>
   </div>
   
 <hr/>
@@ -116,10 +178,10 @@
   <span class="k">return</span> k,e,k*e <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-6">
+</tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
+    <a class="pilcrow" href="#section-9">&#182;</a>
   </div>
   
 <hr/>
@@ -127,7 +189,7 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update, ent=ent, spread=ent, ke=ke}
+  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update, updates=updates, ent=ent, spread=ent, discretize=discretize,ke=ke}
 </pre></div>
 </td>
 </tr></tbody>

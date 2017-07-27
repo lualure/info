@@ -71,7 +71,8 @@
     i.mu = i.mu + delta / i.n
     i.m2 = i.m2 + delta * (x - i.mu) 
     <span class="k">if</span> i.n &gt; 1 <span class="k">then</span> 
-      i.sd = (i.m2 / (i.n - 1))^0.5 <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+      i.sd = (i.m2 / (i.n - 1))^0.5 <span class="k">end</span> <span class="k">end</span> 
+  <span class="k">return</span> i <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -104,7 +105,20 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">spread</span>(i) <span class="k">return</span> i.sd <span class="k">end</span>
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(i,j,k) 
+  <span class="k">if</span> j == the.ignore <span class="o">and</span> k == the.ignore <span class="k">then</span>
+    <span class="k">return</span> 0,0 
+  <span class="k">elseif</span>  j == the.ignore <span class="k">then</span>
+    k = norm(i,k)
+    j =  k &lt; 0.5 <span class="o">and</span> 1 <span class="o">or</span> 0
+  <span class="k">elseif</span> k == the.ignore <span class="k">then</span>
+    j = norm(i,j)
+    k = j &lt; 0.5 <span class="o">and</span> 1 <span class="o">or</span> 0
+  <span class="k">else</span>
+    j,k = norm(i,j), norm(i,k)
+  <span class="k">end</span>
+  <span class="k">return</span> math.abs(j-k)^2,1
+<span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-6">
@@ -118,9 +132,13 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(i,x)
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretize</span>(i,x) 
   <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
-  <span class="k">return</span> (x - i.lo) / (i.hi - i.lo + 1e-32) <span class="k">end</span>
+  <span class="k">if</span> <span class="o">not</span> i.bins    <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
+  <span class="k">for</span> _,b <span class="k">in</span> <span class="nt">pairs</span>(i.bins) <span class="k">do</span>
+    r = b.label
+    <span class="k">if</span> x&lt;=b.most <span class="k">then</span> <span class="k">break</span> <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> r <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-7">
@@ -134,7 +152,149 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update, updates=updates,norm=norm,
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">spread</span>(i) <span class="k">return</span> i.sd <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(i,x)
+  <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
+  <span class="k">return</span> (x - i.lo) / (i.hi - i.lo + 1e-32) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ttest1</span>(df,first,last,crit) 
+  <span class="k">if</span> df &lt;= first  <span class="k">then</span>
+    <span class="k">return</span> crit[first] 
+  <span class="k">elseif</span>  df &gt;= last <span class="k">then</span> 
+    <span class="k">return</span> crit[last]
+  <span class="k">else</span>
+    <span class="k">local</span> n1 = first
+    <span class="k">while</span> n1 &lt; last <span class="k">do</span>
+      <span class="k">local</span> n2=n1*2
+      <span class="k">if</span> df &gt;= n1 <span class="o">and</span> df &lt;= n2 <span class="k">then</span>
+        <span class="k">local</span> old,new = crit[n1],crit[n2]
+        <span class="k">return</span> old + (new-old) * (df-n1)/(n2-n1) <span class="k">end</span> 
+      n1=n1*2 <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span>  <span class="k">function</span> <span class="nf">ttest</span>(i,j) 
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<p>debugged using https://goo.gl/CRl1Bz</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> t  = (i.mu - j.mu) / 
+              math.sqrt(math.max(10^-64, i.sd^2/i.n + j.sd^2/j.n ))
+  <span class="k">local</span> a  = i.sd^2/i.n
+  <span class="k">local</span> b  = j.sd^2/j.n
+  <span class="k">local</span> df = (a + b)^2 / (10^-64 + a^2/(i.n-1) + b^2/(j.n - 1))
+  <span class="k">local</span> c  = ttest1(math.floor( df + 0.5 ), 
+                    the.num.first,
+                    the.num.last,
+                    the.num.criticals[the.num.conf])
+  <span class="k">return</span> math.abs(t) &gt; c <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-12">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-12">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">hedges</span>(i,j)
+</pre></div>
+</td>
+</tr><tr id="section-13">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-13">&#182;</a>
+  </div>
+  
+<p>from https://goo.gl/w62iIL</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> nom   = (i.n - 1)*i.sd^2 + (j.n - 1)*j.sd^2
+  <span class="k">local</span> denom = (i.n - 1)        + (j.n - 1)
+  <span class="k">local</span> sp    = math.sqrt( nom / denom )
+  <span class="k">local</span> g     = math.abs(i.mu - j.mu) / sp  
+  <span class="k">local</span> c     = 1 - 3.0 / (4*(i.n + j.n - 2) - 1) <span class="c">-- handle small samples
+</span>  <span class="k">return</span> g * c &gt; the.num.small
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-14">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-14">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">same</span>(i,j)
+  <span class="k">return</span> <span class="o">not</span> (hedges(i,j) <span class="o">and</span> ttest(i,j)) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-15">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-15">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> {create=create, same=same, update=update, updates=updates,norm=norm,
         spread=<span class="k">function</span> (i) <span class="k">return</span> i.sd <span class="k">end</span>}
 </pre></div>
 </td>

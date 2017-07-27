@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/tiles.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/tiles.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+
+<span class="k">local</span> lst= <span class="nt">require</span> <span class="s">"lists"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">tiles</span>(i,p, jump)
+  <span class="k">local</span> p    = p <span class="o">or</span> 10
+  <span class="k">local</span> jump = jump <span class="o">or</span> 1
+  table.sort(i)
+  <span class="k">local</span> inc = #i / p
+  <span class="k">local</span> q,out = inc, {}
+  <span class="k">while</span> q &lt; #i <span class="k">do</span>
+    out[#out+1] = i[ math.floor( q ) ]
+    q = q + jump*inc <span class="k">end</span>
+  <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">function</span> <span class="nf">hows</span>(t) 
+  table.sort(t)
+  <span class="k">return</span> {
+  width=50,
+  lo = t[1],
+  hi = t[#t],
+  chops={{0.1,<span class="s">"-"</span>},
+         {0.3,<span class="s">" "</span>},
+         {0.5,<span class="s">" "</span>},
+         {0.7,<span class="s">"-"</span>},
+         {0.9,<span class="s">" "</span>}},
+  bar=<span class="s">"|"</span>,
+  star=<span class="s">"*"</span>,
+  show=<span class="s">" &#37;5.3f"</span>} <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">show</span>(t, how)
+  how = how <span class="o">or</span> hows(t)
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">fl</span>(x)    <span class="k">return</span> 1+ math.floor(x) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">pos</span>(p)   <span class="k">return</span> t[ fl(p * #t) ] <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">place</span>(x) <span class="k">return</span> fl( how.width*(x- how.lo)/(how.hi - how.lo) ) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">whats</span>(chops)
+          <span class="k">return</span>  lst.collect(chops, <span class="k">function</span> (_) <span class="k">return</span> 
+                              pos(_[1]) <span class="k">end</span> ) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">wheres</span>(what) 
+          <span class="k">return</span> lst.collect(what, <span class="k">function</span> (_) <span class="k">return</span> 
+                             place(_)  <span class="k">end</span> ) <span class="k">end</span>
+  how.lo = math.min(how.lo, t[1])
+  how.hi = math.max(how.hi, t[#t])
+  what   = whats(how.chops)
+  where  = wheres(what)
+  <span class="k">local</span> out={}
+  <span class="k">for</span> i=1,how.width <span class="k">do</span> out[i] = <span class="s">" "</span> <span class="k">end</span>
+  <span class="k">local</span> b4=1
+  <span class="k">for</span> k,now <span class="k">in</span> <span class="nt">pairs</span>(where) <span class="k">do</span>
+    <span class="k">if</span> k&gt; 1 <span class="k">then</span>
+      <span class="k">for</span> i = b4,now  <span class="k">do</span>
+        out[i] = how.chops[k-1][2] <span class="k">end</span>  <span class="k">end</span>
+    b4= now  <span class="k">end</span>
+  out[math.floor(how.width/2)] = how.bar
+  out[place(pos(0.5))]    = how.star
+  <span class="k">local</span> suffix = lst.collect(what,  <span class="k">function</span> (_) <span class="k">return</span>
+                     string.format(how.show,_) <span class="k">end</span>) 
+  <span class="k">return</span> <span class="s">"("</span> .. table.concat(out,<span class="s">""</span>) .. <span class="s">")"</span> .. 
+                table.concat(suffix,<span class="s">", "</span>) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">shows</span>(ts) 
+  <span class="k">local</span> lo,hi,out = 10^64, -10^64, {}
+  <span class="k">for</span> _,t <span class="k">in</span> <span class="nt">pairs</span>(ts) <span class="k">do</span>
+    <span class="k">for</span> _,v <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
+      lo = math.min(lo, v)
+      hi = math.max(hi, v) <span class="k">end</span>
+    table.sort(t)
+    out[#out+1] = t  <span class="k">end</span>
+  table.sort(out, <span class="k">function</span>(a,b) <span class="k">return</span> 
+                  a[math.floor(#a/2)] &lt; b[math.floor(#b/2)] <span class="k">end</span> )
+  <span class="k">return</span> lst.collect(out, <span class="k">function</span> (t) 
+                          <span class="k">local</span> how = hows(t)
+                          how.lo = lo
+                          how.hi = hi
+                          <span class="k">return</span> show(t,how) <span class="k">end</span>) <span class="k">end</span>
+
+<span class="k">return</span> {tiles=tiles, show=show, shows=shows,how=hows}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

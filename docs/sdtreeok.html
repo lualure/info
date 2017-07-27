@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>../../lib/sdtreeok.lua</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              ../../lib/sdtreeok.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h1>sdtreeok : unit tests for sdtree</h1>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+	
+<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> tbl=<span class="nt">require</span> <span class="s">"tbl"</span>
+<span class="k">local</span> tree=<span class="nt">require</span> <span class="s">"sdtree"</span>
+<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> row=<span class="nt">require</span> <span class="s">"row"</span>
+ 
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test0</span>(f,y)
+  defaults()
+  the.tree.min=10
+  y = y <span class="o">or</span> <span class="s">"goal1"</span>
+  f = f <span class="o">or</span> <span class="s">"/data/auto.csv"</span>
+  <span class="nt">print</span>(f,y)
+  <span class="k">local</span> t1=  tbl.create( the.here .. f)
+  <span class="nt">print</span>(f, #t1.rows)
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<p>end</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> t2 = tbl.discretize(t1,y)
+  <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(t2.x.cols) <span class="k">do</span>
+   <span class="k">if</span> head.bins <span class="k">then</span>
+   <span class="nt">print</span>(#head.bins,head.txt) <span class="k">end</span> <span class="k">end</span>
+  <span class="k">local</span> tr=tree.grow(t2,y)
+  <span class="nt">print</span>(tr)
+  tree.show(tr)
+  <span class="nt">print</span>(t2.spec)
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<p>doms={}
+for _,r in pairs(t1.rows) do
+doms[r.id] = row.dominate(r,t1) end
+print(t2.spec)
+print(t2.rows[1].cells)
+for <em>,r in pairs(tree.leaf(tr,t2.rows[1].cells).</em>t.rows) do
+print('#',r.id,doms[r.id],r.cells) end</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>() _test0(<span class="k">nil</span>,<span class="s">"dom"</span>) <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test2</span>() _test0(<span class="s">"/data/xomo_all_short.csv"</span>,<span class="s">"goal1"</span>) <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_test3</span>() _test0(<span class="s">"/data/POM3A_short.csv"</span>,<span class="s">"dom"</span>) <span class="k">end</span>
+
+r.seed(1)
+_test2()
+_test1()
+_test3()
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
