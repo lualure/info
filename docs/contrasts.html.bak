@@ -29,11 +29,68 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h2>Learning Contrast Sets</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'18</em>   </p>
+
+<p>This code is a post-processor to the <code>sdtree</code>
+decision-tree learner (and assumes that all
+attributes are <code>sym</code>s or discretized <code>num</code>s.</p>
+
+<p>It gets called like this:</p>
+
+<pre><code>local CON=require "contrasts" -- this package
+local TREES=require "trees"   -- returns some trees
+local TREE=require "sdtree"   -- the decision tree learner
+-- lets go
+local x=TREES.auto() -- a sample tree
+TREE.show(x)         -- show the tree
+b=CON.branches(x)
+CON.plans(b)
+CON.monitors(b)
+</code></pre>
+
+<p>Contrasts are computed
+between the branches to all nodes in a tree. 
+(and the contrast is the set delta between the
+attribute values seen the branches leading
+to <code>branch2</code> from <code>branch1</code>.</p>
+
+<p>This code ignores <em>dull</em> deltas; i.e.</p>
+
+<ul>
+    <li><em>RULE1</em>: the median value of <code>branch2</code> is not <code>better</code> than <code>branch1</code> (where <code>better</code>
+    is a customizable predicate, see below).</li>
+    <li><em>RULE2</em>: The distribution of the target variable is statistically the same in both branches;</li>
+    <li><em>RULE3</em>: The size of the delta between the branches is larger than zero.</li>
+</ul>
+
+<p>These three rules are implemented in the <code>contrasts</code> function, show below.</p>
+
+<p>Constrast sets can either be <em>plans</em> or <em>monitors</em>. </p>
+
+<ul>
+    <li>In the former, we seek changes that drive us from a lesser <code>branch1</code> to a better <code>branch2</code>. </li>
+    <li>In the latter, we seek things to avoid. These are changes which, if they happen,  would drive us from a better <code>branch1</code> to a worse <code>branch2</code>. </li>
+</ul>
+
+<p>Hence we can create plans or monitors as follows:</p>
+
+<pre><code>local function more(x,y) return x &gt; y end
+local function less(x,y) return x &lt; y end
+-- the above controls what  constrast are selected
+local function plans(branches)    
+  return contrasts(branches, more) end
+local function monitors(branches) 
+  return contrasts(branches, less) end
+</code></pre>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
 <span class="k">local</span> THE=<span class="nt">require</span> <span class="s">"config"</span>
 <span class="k">local</span> TREE=<span class="nt">require</span> <span class="s">"sdtree"</span>
 <span class="k">local</span> TREES=<span class="nt">require</span> <span class="s">"trees"</span>
@@ -48,11 +105,14 @@
   </div>
   
 <hr/>
+<p>Feature extractor from the brnaches.
+Collects all the <code>attr</code>, <code>val</code> pairs.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">has</span>(branch)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">has</span>(branch)
   <span class="k">local</span> out = {}
   <span class="k">for</span> i=1,#branch <span class="k">do</span>
     step = branch[i]
@@ -72,11 +132,14 @@
   </div>
   
 <hr/>
+<p>Generator for the branches. Walk down the tree and,
+for each node, add the branch <code>b</code> to that node to <code>out</code>.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">branches1</span>(tr,out,b)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">branches1</span>(tr,out,b)
   <span class="k">if</span> tr.attr <span class="k">then</span>
     b[#b+1] = {attr=tr.attr,val=tr.val,_stats=tr.stats} <span class="k">end</span>
   <span class="k">if</span> #b &gt; 0 <span class="k">then</span> out[#out+1] = b   <span class="k">end</span>
@@ -95,21 +158,23 @@
   </div>
   
 <hr/>
+<p>Compute the set delta between two branches.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">member2</span>(twin0,twins) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">member2</span>(twin0,twins) 
   <span class="k">for</span> _,twin1 <span class="k">in</span> <span class="nt">pairs</span>(twins) <span class="k">do</span>
     <span class="k">if</span> twin0.attr == twin1.attr <span class="o">and</span>
        twin0.val == twin1.val <span class="k">then</span>
        <span class="k">return</span> <span class="k">true</span> <span class="k">end</span> <span class="k">end</span>
   <span class="k">return</span> <span class="k">false</span> <span class="k">end</span>
 
-<span class="k">local</span> <span class="k">function</span> <span class="nf">delta</span>(held1, held2) 
+<span class="k">local</span> <span class="k">function</span> <span class="nf">delta</span>(t1, t2) 
   <span class="k">local</span> out={}
-  <span class="k">for</span> _,twin <span class="k">in</span> <span class="nt">pairs</span>(held1) <span class="k">do</span>
-    <span class="k">if</span> <span class="o">not</span> member2(twin,held2) <span class="k">then</span>
+  <span class="k">for</span> _,twin <span class="k">in</span> <span class="nt">pairs</span>(t1) <span class="k">do</span>
+    <span class="k">if</span> <span class="o">not</span> member2(twin,t2) <span class="k">then</span>
       out[#out+1] = {twin.attr, twin.val} <span class="k">end</span> <span class="k">end</span>
   <span class="k">return</span> out <span class="k">end</span>
 </pre></div>
@@ -121,23 +186,26 @@
   </div>
   
 <hr/>
+<p>The worker. This code returns at most two
+branches per node: one showing the branch to maximum
+improvement; and another showing the branch with mininum delta.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">plans</span>(branches, better)
-  better = better <span class="o">or</span> <span class="k">function</span>(x,y) <span class="k">return</span> x &gt; y <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">contrasts</span>(branches, better)
   <span class="k">for</span> i,branch1 <span class="k">in</span> <span class="nt">pairs</span>(branches) <span class="k">do</span>
     <span class="k">local</span> out={}
     <span class="k">for</span> j,branch2 <span class="k">in</span> <span class="nt">pairs</span>(branches) <span class="k">do</span>
       <span class="k">if</span> i ~= j <span class="k">then</span>
         <span class="k">local</span> num1=LST.last(branch1)._stats
         <span class="k">local</span> num2=LST.last(branch2)._stats
-        <span class="k">if</span> better(num2.mu, num1.mu)  <span class="k">then</span>
-          <span class="k">if</span> <span class="o">not</span> NUM.same(num1,num2) <span class="k">then</span>
-            <span class="k">local</span> inc = delta(branch2.has,branch1.has)
-            <span class="k">if</span> #inc &gt; 0 <span class="k">then</span>
-              out[#out+1] = {i=i,j=j,ninc=#inc,muinc=num2.mu - num1.mu,
+        <span class="k">if</span> better(num2.mu, num1.mu)  <span class="k">then</span> <span class="c">-- RULE1
+</span>          <span class="k">if</span> <span class="o">not</span> NUM.same(num1,num2) <span class="k">then</span> <span class="c">-- RULE2
+</span>            <span class="k">local</span> inc = delta(branch2.has,branch1.has)
+            <span class="k">if</span> #inc &gt; 0 <span class="k">then</span> <span class="c">-- RULE3
+</span>              out[#out+1] = {i=i,j=j,ninc=#inc,muinc=num2.mu - num1.mu,
                              inc=inc, branch1=branch1.has,mu1=num1.mu, 
                              branch2=branch2.has,mu2=num2.mu}
                <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> 
@@ -146,16 +214,136 @@
     <span class="nt">print</span>(i,<span class="s">"max mu  "</span>,out[1])
     table.sort(out, <span class="k">function</span> (x,y) <span class="k">return</span> x.ninc &lt; y.ninc <span class="k">end</span>)
     <span class="nt">print</span>(i,<span class="s">"min inc "</span>,out[1])
-
     <span class="k">end</span> <span class="k">end</span>
-
-<span class="k">local</span> <span class="k">function</span> <span class="nf">monitors</span>(branches)
-  <span class="k">return</span> plans(branches, <span class="k">function</span>(x,y)
-               <span class="k">return</span> x &lt; y <span class="k">end</span>) <span class="k">end</span>
-
-<span class="k">return</span> {monitors=monitors, plans=plans,branches=branches}
-
 </pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Plans are things we want to do. Monitors are things
+we want to avoid.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>More specfically, plans are to branches with <code>more</code> value. </p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">more</span>(x,y) <span class="k">return</span> x &gt; y <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>And monitors  are to branches with <code>less</code> value.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">less</span>(x,y) <span class="k">return</span> x &lt; y <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>Main driver</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">plans</span>(branches)    <span class="k">return</span> contrasts(branches, more) <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">monitors</span>(branches) <span class="k">return</span> contrasts(branches, less) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+<p>External interface</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> {monitors=monitors, plans=plans,branches=branches}
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>

@@ -50,7 +50,6 @@
 </td>
 <td class="code">
   <div class="highlight"><pre>
-
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -64,12 +63,22 @@ pruning comments away and dead space.  For example,
 here's a simple <code>print</code> for each row:</p>
 
 <pre><code>local csv=require "csv"
-csv("../data/weather/csv",print)
+csv(os.getenv("DataDir") .. "/data/weather.csv",print)
 </code></pre>
 
 <p>Data is assumed to start with an initial row list column
 names. If a column name includes "?", then don't read it.
 If a row ends with a comma, join it to the next line.</p>
+
+<p>This code is called using <code>csv(source, function)</code>.</p>
+
+<ul>
+    <li>If <code>source</code> is a string ending with <code>txt</code> or <code>csv</code>,
+    it assumed this string names a files from which we should
+    read the data. </li>
+    <li>Otherwise, we assume that <code>source</code>
+    is a string containing the data.</li>
+</ul>
 
 <p>TODO: the following passes each found row to a function <code>fn</code>.
 A cooler approach would be remove the need for pass round <code>fn</code>
@@ -95,6 +104,20 @@ here, we take the easy path (i.e. pass the function).</p>
   </div>
   
 <hr/>
+<h3>Control functions</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
 <p>If we are reading from a string that ends in any of
 these extensions, assume the string is a file name.</p>
 
@@ -104,13 +127,12 @@ these extensions, assume the string is a file name.</p>
   <div class="highlight"><pre><span class="k">local</span> files    = {txt=<span class="k">true</span>, csv=<span class="k">true</span>}
 </pre></div>
 </td>
-</tr><tr id="section-5">
+</tr><tr id="section-6">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
+    <a class="pilcrow" href="#section-6">&#182;</a>
   </div>
   
-<hr/>
 <p>If lines end with a comma, join it to the next line.</p>
 
 
@@ -120,13 +142,12 @@ these extensions, assume the string is a file name.</p>
 </span>  <span class="k">return</span> string.sub(txt,-1) == the.sep  <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-6">
+</tr><tr id="section-7">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
+    <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
-<hr/>
 <p>If a column name includes "?", skip that column.</p>
 
 
@@ -136,14 +157,16 @@ these extensions, assume the string is a file name.</p>
 </span>  <span class="k">return</span> string.find(txt,the.ignore) == <span class="k">nil</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-7">
+</tr><tr id="section-8">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
+    <a class="pilcrow" href="#section-8">&#182;</a>
   </div>
   
 <hr/>
-<p>Reads, from row1, what columns are to be ignored
+<h3>Column filtering</h3>
+
+<p>Reads, from <code>row1</code>, what columns are to be ignored
 (if any). Skipped those ignored columns for all rows.</p>
 
 
@@ -160,15 +183,28 @@ these extensions, assume the string is a file name.</p>
   <span class="k">return</span> out <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-8">
+</tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
+    <a class="pilcrow" href="#section-9">&#182;</a>
   </div>
   
 <hr/>
-<p>Kills wihte space, irrelevant characters, comments.
-Pass that row to the calling function <code>wme.fn</code>. </p>
+<h3>Row filtering</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<p>Pass that row to the calling function <code>wme.fn</code>. </p>
 
 
 </td>
@@ -181,13 +217,15 @@ Pass that row to the calling function <code>wme.fn</code>. </p>
     wme.fn( cellsWeAreNotIgnoring(txt,wme) ) <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-9">
+</tr><tr id="section-11">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
+    <a class="pilcrow" href="#section-11">&#182;</a>
   </div>
   
 <hr/>
+<h3>Iterator for each line.</h3>
+
 <p>look at the <code>src</code> and it if ends in a <code>files</code> name,
 then read it as a file. Else, read from jat string.</p>
 
@@ -202,20 +240,7 @@ then read it as a file. Else, read from jat string.</p>
        cache= withOneLine(table.concat(cache), wme) 
        cache= {}
        wme.first=<span class="k">false</span> <span class="k">end</span> <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-10">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-10">&#182;</a>
-  </div>
-  
-<hr/>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">if</span> files[string.sub(src,-3,-1)] <span class="k">then</span>
+  <span class="k">if</span> files[string.sub(src,-3,-1)] <span class="k">then</span>
     io.input(src) 
     <span class="k">for</span> line <span class="k">in</span> io.lines() <span class="k">do</span> 
       line1(line) <span class="k">end</span>
@@ -224,13 +249,15 @@ then read it as a file. Else, read from jat string.</p>
       line1(line) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-11">
+</tr><tr id="section-12">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-11">&#182;</a>
+    <a class="pilcrow" href="#section-12">&#182;</a>
   </div>
   
 <hr/>
+<h3>External Interface</h3>
+
 <p>Main loop. Function <code>fn</code> is called for each row
  (and that row is sent to that function as a list of
  cell values).</p>
@@ -240,7 +267,62 @@ then read it as a file. Else, read from jat string.</p>
 <td class="code">
   <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (src,fn)
   withEachLine(src, {fn=fn, first=<span class="k">true</span>, use={}}) <span class="k">end</span>
+
 </pre></div>
+</td>
+</tr><tr id="section-13">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-13">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>
