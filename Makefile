@@ -1,7 +1,7 @@
 bye: ready
-	@git status
-	@git commit -am "saving"
-	@-git push origin master
+	@- git status
+	@- git commit -am "saving"
+	@- git push origin master
 
 ready:
 	@git config --global user.name "Tim Menzies"
@@ -11,4 +11,4 @@ ready:
 	@git config --global push.default simple
 
 hi: ready
-	@-git push origin master
+	@- git push origin master
