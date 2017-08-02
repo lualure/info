@@ -51,6 +51,37 @@
   <span class="nt">print</span>(some._all) 
 <span class="k">end</span>
 
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_silly</span>() 
+  n=8
+  <span class="k">while</span> n&lt; 2500 <span class="k">do</span>
+    <span class="nt">print</span>(<span class="s">""</span>)
+    n = n*2
+    <span class="k">local</span> one,two,three,four = {},{},s.create(n),s.create(n)
+    <span class="k">for</span> i=1,10000 <span class="k">do</span>
+      v1,v2 = r.r(), r.r()
+      one[#one+1] = v1
+      two[#two+1] = v2 
+      s.update(three,v1)
+      s.update(four,v2)
+    <span class="k">end</span>
+    <span class="k">local</span> t1 = tiles.tiles(one,10,2)
+    <span class="k">local</span> t2 = tiles.tiles(two,10,2)
+    <span class="k">local</span> t3 = tiles.tiles(three._all,10,2)
+    t4 = tiles.tiles(four._all,10,2)
+    <span class="k">local</span> err1,err2=0,0
+    <span class="k">local</span> sum1,sum2=0,0
+    <span class="k">for</span> i=1,#t2 <span class="k">do</span>
+      err1=100*(t1[i] - t2[i])
+      err2=100*(t3[i] - t4[i]) 
+      sum1 = sum1+ err1
+      sum2 = sum2+ err2
+      io.write(string.format(<span class="s">"&#37;4s &#37;2s &#37;6.3f &#37;6.3f\n"</span>,n,i, err1,err2))
+    <span class="k">end</span>
+    io.write(string.format(<span class="s">"mean &#37;2s &#37;6.3f &#37;6.3f\n"</span>,<span class="s">" "</span>, sum1/#t2,sum2/#t2))
+
+  <span class="k">end</span>
+<span class="k">end</span>
+
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_cliffs</span>()
   <span class="k">local</span> n1=1
   <span class="k">local</span> fmt = <span class="s">"&#37;5s\t&#37;5s\t&#37;20s &#37;20s\n"</span>
@@ -87,26 +118,14 @@
             n1,s.same(i,j), 
             <span class="nt">tostring</span>(str.fmts(<span class="s">"&#37;5.3f"</span>,tiles.tiles(i,10,2))), 
             <span class="nt">tostring</span>(str.fmts(<span class="s">"&#37;5.3f"</span>,tiles.tiles(j,10,2))))
-    <span class="k">if</span> <span class="k">true</span> <span class="k">then</span> <span class="k">return</span> <span class="k">true</span> <span class="k">end</span>
     n1 = n1 *1.01
   <span class="k">end</span> <span class="k">end</span> 
 
 r.seed(1)
-</pre></div>
-</td>
-</tr><tr id="section-2">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-2">&#182;</a>
-  </div>
-  
-<p>_test1()
-_cliffs()</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>__bootstrap()
+_test1()
+_cliffs()
+_bootstrap()
+_silly()
 </pre></div>
 </td>
 </tr></tbody>

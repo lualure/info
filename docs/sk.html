@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>sk</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
+              <a href="https://github.com/lualure/src/blob/master/lib/sk.lua">LURE: sk</a>
+            </h1><p><a href="index.html">[Index]</a></p>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<img width=150 align=right src="https://goo.gl/QabuWK"><h1>Scott Knott test</h1><p><a href="index.html">[Index]</a></p>
+
+<p>Recursive bi-clustering of  set of <code>samples</code>.
+Before desceding into either split, pause and check
+if the splits are statistically different.
+Returns the samples, sorted on their median, labelled
+with a <code>rank</code> number. If two adjecent samples are
+statistically the same, then they get the same rank.
+If all samples get ranked "1" then that means there
+are no interesting distinctions between these samples.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> tiles=<span class="nt">require</span> <span class="s">"tiles"</span>
+<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Simple utils</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">nth</span>(t,n) <span class="k">return</span> t._all[  math.floor(#t._all*n) ] <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">mid</span>(t)   <span class="k">return</span> nth(t,0.5) <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">iqr</span>(t)   <span class="k">return</span> nth(t,0.75) - nth(t,0.25) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Here's a simple counter, used to track  <code>mu</code> and <code>all</code>.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
+  _all={}, sum=0,n=0, mu=0} <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<p>Here how to update a counter with one value <code>x</code>.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x) 
+  i._all[#i._all+1]=x
+  i.sum = i.sum + x
+  i.n   = i.n + 1 
+  i.mu  = i.sum/i.n <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<p>Here how to update a counter with many values from <code>t</code>.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(t, counter)
+  counter = counter <span class="o">or</span> create()
+  <span class="k">for</span> j=1,#t <span class="k">do</span> 
+    update(counter,t[j]) <span class="k">end</span> 
+  <span class="k">return</span> counter <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+<p>This code is always counting left and right within
+the list of samples. To save time, memo all those 
+"peeks".</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">memo</span>(samples,here,stop,_memo,    b4,inc)
+  <span class="k">if</span> stop &gt; here <span class="k">then</span> inc=1 <span class="k">else</span> inc=-1 <span class="k">end</span>
+  <span class="k">if</span> here ~= stop <span class="k">then</span>  
+     b4=  lst.copy( memo(samples,here+inc, stop, _memo)) <span class="k">end</span>
+  _memo[here] = updates(samples[here]._all,  b4)
+  <span class="k">return</span> _memo[here] <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Seek a split that maximizes the expected value
+of the square of the difference in means before
+and after the split. At that point, if the two
+splits are not statistically the same, then
+recurse into each part of the split.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (samples,epsilon,same)
+  epsilon = epsilon <span class="o">or</span> the.sample.epsilon
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">split</span>(lo,hi,all,rank,lvl)   
+    <span class="k">local</span> best,lmemo,rmemo = 0,{},{}
+    memo(samples,hi,lo, lmemo) <span class="c">-- summarize i+1 using i
+</span>    memo(samples,lo,hi, rmemo) <span class="c">-- summarize i using i+1
+</span>    <span class="k">local</span> cut, lbest, rbest
+    <span class="k">for</span> j=lo,hi-1 <span class="k">do</span> <span class="c">-- step1: look for the best cut
+</span>      <span class="k">local</span> l = lmemo[j]
+      <span class="k">local</span> r = rmemo[j+1]
+      <span class="k">if</span> mid(l)*the.sample.epsilon &lt; mid(r) <span class="k">then</span>
+        <span class="k">if</span> <span class="o">not</span> same(l,r) <span class="k">then</span>
+          <span class="k">local</span> tmp= l.n/all.n*(l.mu - all.mu)^2 + 
+                     r.n/all.n*(r.mu - all.mu)^2
+          <span class="k">if</span> tmp &gt; best <span class="k">then</span>
+            cut   = j
+            best  = tmp
+            lbest = lst.copy(l)
+            rbest = lst.copy(r) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+    <span class="k">if</span> cut <span class="k">then</span> <span class="c">-- step2a: use the cut (if you found it)
+</span>      rank = split(lo,   cut, lbest, rank, lvl+1) + 1
+      rank = split(cut+1, hi, rbest, rank, lvl+1)
+    <span class="k">else</span> <span class="c">-- step2b: otherwise, all samples get same rank
+</span>      <span class="k">for</span> j=lo,hi <span class="k">do</span>
+        samples[j].rank = rank <span class="k">end</span> <span class="k">end</span>
+    <span class="k">return</span> rank 
+  <span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>Main</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  table.sort(samples, <span class="k">function</span> (x,y) <span class="k">return</span> 
+             mid(x) &lt; mid(y) <span class="k">end</span>)
+  split(1,#samples, memo(samples,1,#samples,{}),1,0)  
+  <span class="k">return</span> samples <span class="k">end</span>
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>id</title>
+  <title>mymath</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="locco.css" />
 </head>
@@ -15,8 +15,8 @@
         <tr>
           <th class="docs">
             <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/id.lua">LURE: id</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+              <a href="https://github.com/lualure/src/blob/master/lib/mymath.lua">LURE: mymath</a>
+            </h1>
           </th>
           <th class="code">
           </th>
@@ -29,23 +29,29 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>id</h1><p><a href="index.html">[Index]</a></p>
-<p>Return an id number that has never been seen before.</p>
-
-<p>Usage:</p>
-
-<pre><code>id=require "id"
-print(id.new())
-</code></pre>
-
+<img width=150 align=right src="https://goo.gl/QabuWK"><h1>mymath : utilities</h1>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>
-<span class="k">local</span> id=0
-<span class="k">local</span> <span class="k">function</span> <span class="nf">new</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
-<span class="k">return</span> {new=new}
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+	
 </pre></div>
 </td>
 </tr></tbody>

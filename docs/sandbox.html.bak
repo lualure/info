@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>id</title>
+  <title>sandbox</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="locco.css" />
 </head>
@@ -15,8 +15,8 @@
         <tr>
           <th class="docs">
             <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/id.lua">LURE: id</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+              <a href="https://github.com/lualure/src/blob/master/lib/sandbox.lua">LURE: sandbox</a>
+            </h1>
           </th>
           <th class="code">
           </th>
@@ -29,23 +29,18 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>id</h1><p><a href="index.html">[Index]</a></p>
-<p>Return an id number that has never been seen before.</p>
-
-<p>Usage:</p>
-
-<pre><code>id=require "id"
-print(id.new())
-</code></pre>
-
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>
-<span class="k">local</span> id=0
-<span class="k">local</span> <span class="k">function</span> <span class="nf">new</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
-<span class="k">return</span> {new=new}
+  <div class="highlight"><pre><span class="k">local</span> o= <span class="nt">require</span> <span class="s">"tests"</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_one</span>(     k) 
+  k=1
+  <span class="nt">print</span>(2)
+  <span class="nt">assert</span>(1==2,<span class="s">"impossible"</span>)
+<span class="k">end</span>
+b=2
+o.k{_one}
 </pre></div>
 </td>
 </tr></tbody>

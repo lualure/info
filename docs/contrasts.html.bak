@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>contrasts</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
+              <a href="https://github.com/lualure/src/blob/master/lib/contrasts.lua">LURE: contrasts</a>
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> THE=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> TREE=<span class="nt">require</span> <span class="s">"sdtree"</span>
+<span class="k">local</span> TREES=<span class="nt">require</span> <span class="s">"trees"</span>
+<span class="k">local</span> LST=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> NUM=<span class="nt">require</span> <span class="s">"num"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">has</span>(branch)
+  <span class="k">local</span> out = {}
+  <span class="k">for</span> i=1,#branch <span class="k">do</span>
+    step = branch[i]
+    out[#out+1] = {attr=step.attr, val=step.val} <span class="k">end</span> 
+  <span class="k">return</span> out <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">have</span>(branches)
+  <span class="k">for</span> _,branch <span class="k">in</span> <span class="nt">pairs</span>(branches) <span class="k">do</span>
+    branch.has = has(branch) <span class="k">end</span> 
+  <span class="k">return</span> branches <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">branches1</span>(tr,out,b)
+  <span class="k">if</span> tr.attr <span class="k">then</span>
+    b[#b+1] = {attr=tr.attr,val=tr.val,_stats=tr.stats} <span class="k">end</span>
+  <span class="k">if</span> #b &gt; 0 <span class="k">then</span> out[#out+1] = b   <span class="k">end</span>
+  <span class="k">for</span> _,kid <span class="k">in</span> <span class="nt">pairs</span>(tr._kids) <span class="k">do</span>
+      branches1(kid,out,LST.copy(b)) <span class="k">end</span>  
+  <span class="k">return</span> out <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">branches</span>(tr)
+  <span class="k">return</span> have(branches1(tr,{},{})) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">member2</span>(twin0,twins) 
+  <span class="k">for</span> _,twin1 <span class="k">in</span> <span class="nt">pairs</span>(twins) <span class="k">do</span>
+    <span class="k">if</span> twin0.attr == twin1.attr <span class="o">and</span>
+       twin0.val == twin1.val <span class="k">then</span>
+       <span class="k">return</span> <span class="k">true</span> <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> <span class="k">false</span> <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">delta</span>(held1, held2) 
+  <span class="k">local</span> out={}
+  <span class="k">for</span> _,twin <span class="k">in</span> <span class="nt">pairs</span>(held1) <span class="k">do</span>
+    <span class="k">if</span> <span class="o">not</span> member2(twin,held2) <span class="k">then</span>
+      out[#out+1] = {twin.attr, twin.val} <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">plans</span>(branches, better)
+  better = better <span class="o">or</span> <span class="k">function</span>(x,y) <span class="k">return</span> x &gt; y <span class="k">end</span>
+  <span class="k">for</span> i,branch1 <span class="k">in</span> <span class="nt">pairs</span>(branches) <span class="k">do</span>
+    <span class="k">local</span> out={}
+    <span class="k">for</span> j,branch2 <span class="k">in</span> <span class="nt">pairs</span>(branches) <span class="k">do</span>
+      <span class="k">if</span> i ~= j <span class="k">then</span>
+        <span class="k">local</span> num1=LST.last(branch1)._stats
+        <span class="k">local</span> num2=LST.last(branch2)._stats
+        <span class="k">if</span> better(num2.mu, num1.mu)  <span class="k">then</span>
+          <span class="k">if</span> <span class="o">not</span> NUM.same(num1,num2) <span class="k">then</span>
+            <span class="k">local</span> inc = delta(branch2.has,branch1.has)
+            <span class="k">if</span> #inc &gt; 0 <span class="k">then</span>
+              out[#out+1] = {i=i,j=j,ninc=#inc,muinc=num2.mu - num1.mu,
+                             inc=inc, branch1=branch1.has,mu1=num1.mu, 
+                             branch2=branch2.has,mu2=num2.mu}
+               <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> 
+    <span class="nt">print</span>(<span class="s">""</span>)
+    table.sort(out, <span class="k">function</span> (x,y) <span class="k">return</span> x.muinc &gt; y.muinc <span class="k">end</span>)
+    <span class="nt">print</span>(i,<span class="s">"max mu  "</span>,out[1])
+    table.sort(out, <span class="k">function</span> (x,y) <span class="k">return</span> x.ninc &lt; y.ninc <span class="k">end</span>)
+    <span class="nt">print</span>(i,<span class="s">"min inc "</span>,out[1])
+
+    <span class="k">end</span> <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">monitors</span>(branches)
+  <span class="k">return</span> plans(branches, <span class="k">function</span>(x,y)
+               <span class="k">return</span> x &lt; y <span class="k">end</span>) <span class="k">end</span>
+
+<span class="k">return</span> {monitors=monitors, plans=plans,branches=branches}
+
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
