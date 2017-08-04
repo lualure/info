@@ -1,23 +1,12 @@
 digraph G {
-	bpo -> show;
-	bpo -> config;
-	bpo -> lists;
-	bpo -> tbl;
-	bpo -> sdtree;
-	bpo -> row;
-	bpo -> num;
-	bpo -> watch;
 	contrasts -> show;
 	contrasts -> config;
 	contrasts -> sdtree;
 	contrasts -> trees;
 	contrasts -> lists;
+	contrasts -> num;
 	csv -> config;
-	domtree -> show;
-	domtree -> config;
 	lists -> random;
-	mymath -> show;
-	mymath -> config;
 	num -> config;
 	range -> show;
 	range -> config;
@@ -45,6 +34,9 @@ digraph G {
 	sk -> config;
 	sk -> tiles;
 	sk -> lists;
+	spy -> show;
+	spy -> config;
+	spy -> num;
 	str -> config;
 	str -> lists;
 	superrange -> show;
@@ -69,7 +61,4 @@ digraph G {
 	trees -> config;
 	trees -> tbl;
 	trees -> sdtree;
-	watch -> show;
-	watch -> config;
-	watch -> num;
 }

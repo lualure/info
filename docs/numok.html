@@ -34,31 +34,78 @@
 </td>
 <td class="code">
   <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
-<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>
-<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
-<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
-<span class="k">local</span> str=<span class="nt">require</span> <span class="s">"str"</span>
-
-<span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
-  <span class="k">local</span> n1=1
-  <span class="k">local</span> fmt = <span class="s">"&#37;5s\t&#37;5s\t&#37;5s &#37;5s &#37;5s &#37;5s\n"</span>
-  str.say(fmt, <span class="s">"n"</span>,<span class="s">"same?"</span>,<span class="s">"mu1"</span>,<span class="s">"sd1"</span>,<span class="s">"mu2"</span>,<span class="s">"sd2"</span>)
-  str.say(fmt, <span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>)
-  <span class="k">while</span> n1 &lt; 10 <span class="k">do</span>
-    <span class="k">local</span> i,j = num.create(), num.create()
-    <span class="k">for</span> _=1,100 <span class="k">do</span>
-      <span class="k">local</span> val = r.r()^0.5
-      num.update(i, val)
-      num.update(j, val*n1) 
-    <span class="k">end</span>
-    str.say(<span class="s">"&#37;5.3f\t&#37;5s\t&#37;5.3f &#37;5.3f &#37;5.3f &#37;5.3f\n"</span>,
-            n1,num.same(i,j), i.mu,i.sd,j.mu,j.sd)
-    n1 = n1 *1.1
-  <span class="k">end</span> <span class="k">end</span> 
+<span class="k">local</span> O=<span class="nt">require</span> <span class="s">"tests"</span>
+<span class="k">local</span> R=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> NUM=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> STR=<span class="nt">require</span> <span class="s">"str"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Strange tales of verification. Here,
+the decision abdout "same?" flips at the same
+level of difference between two samples (n=1.143)
+since the effect size is ruling the roost.</p>
 
 
-r.seed(1)
-_test1()
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sd1</span>()
+  <span class="k">local</span>  i = NUM.create()
+  <span class="k">for</span> _,x <span class="k">in</span> <span class="nt">pairs</span>{9,2,5,4,12,7,8,11,9,3,7,4,12,5,4,10,9,6,9,4} <span class="k">do</span>
+    NUM.update(i,x) <span class="k">end</span>
+  <span class="k">local</span> sd = math.floor(1000*i.sd)/1000
+  <span class="nt">assert</span>(i.mu == 7)
+  <span class="nt">assert</span>(sd   == 3.06) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sd2</span>()
+  <span class="k">local</span>  i,add=NUM.watch()
+  <span class="k">for</span> _,x <span class="k">in</span> <span class="nt">pairs</span>{9,2,5,4,12,7,8,11,9,3,7,4,12,5,4,10,9,6,9,4} <span class="k">do</span>
+    add(x) <span class="k">end</span>
+  <span class="k">local</span> sd = math.floor(1000*i.sd)/1000
+  <span class="nt">assert</span>(i.mu == 7)
+  <span class="nt">assert</span>(sd   == 3.06) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sd3</span>()
+  <span class="k">local</span>  i = NUM.updates{9,2,5,4,12,7,8,11,9,3,7,4,12,5,4,10,9,6,9,4} 
+  <span class="k">local</span> sd = math.floor(1000*i.sd)/1000
+  <span class="nt">assert</span>(i.mu == 7)
+  <span class="nt">assert</span>(sd   == 3.06) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_ttest</span>()
+  <span class="k">local</span> fmt = <span class="s">"&#37;4s\t&#37;5s\t&#37;5s\t&#37;5s\t&#37;5s\t&#37;5s &#37;5s &#37;5s &#37;5s\n"</span>
+  <span class="k">for</span> _,conf <span class="k">in</span> <span class="nt">pairs</span>{95,99} <span class="k">do</span>
+    <span class="nt">print</span>(<span class="s">""</span>)
+    R.seed(1)
+    defaults()
+    the.num.conf = conf
+    STR.say(fmt, <span class="s">"conf"</span>,<span class="s">"n"</span>,<span class="s">"fx?"</span>,<span class="s">"sig?"</span>, <span class="s">"same?"</span>,<span class="s">"mu1"</span>,<span class="s">"sd1"</span>,<span class="s">"mu2"</span>,<span class="s">"sd2"</span>)
+    STR.say(fmt, <span class="s">"----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>,
+                 <span class="s">"-----"</span>,<span class="s">"-----"</span>,<span class="s">"-----"</span>)
+    <span class="k">local</span> n1=1
+    <span class="k">while</span> n1 &lt; 1.2 <span class="k">do</span>
+      <span class="k">local</span> i,j = NUM.create(), NUM.create()
+      <span class="k">local</span> <span class="k">function</span> <span class="nf">yn</span>(f,i,j) <span class="k">return</span> NUM[f](i,j) <span class="o">and</span> <span class="s">"y"</span> <span class="o">or</span> <span class="s">"."</span> <span class="k">end</span>
+      <span class="k">for</span> _=1,100 <span class="k">do</span>
+        <span class="k">local</span> val = R.r()^0.5
+        NUM.update(i, val)
+        NUM.update(j, val*n1) 
+      <span class="k">end</span>
+      STR.say(<span class="s">"&#37;4s\t&#37;5.3f\t&#37;5s\t&#37;5s\t&#37;5s\t&#37;5.3f &#37;5.3f &#37;5.3f &#37;5.3f\n"</span>,
+             the.num.conf,n1,yn(<span class="s">"hedges"</span>,i,j),
+             yn(<span class="s">"ttest"</span>,i,j),yn(<span class="s">"same"</span>,i,j), i.mu,i.sd,j.mu,j.sd) 
+      n1 = n1 *1.01
+<span class="k">end</span> <span class="k">end</span> <span class="k">end</span> 
+
+R.seed(1)
+O.k{_sd1,_sd2,_sd3,_ttest}
+_sd2()
 </pre></div>
 </td>
 </tr></tbody>

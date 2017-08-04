@@ -36,8 +36,8 @@
   <div class="highlight"><pre>## csvok : unit tests <span class="k">for</span> csv
 
 <span class="nt">require</span> <span class="s">"show"</span>
-<span class="k">local</span> o    = <span class="nt">require</span> <span class="s">"tests"</span>	
-<span class="k">local</span> csv  = <span class="nt">require</span> <span class="s">"csv"</span>
+<span class="k">local</span> O    = <span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> CSV  = <span class="nt">require</span> <span class="s">"csv"</span>
 
 <span class="k">local</span> xx=<span class="s">[[outlook,
 $temp,
@@ -64,12 +64,14 @@ rainy,71,
 91, TRUE ,no]]</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
-   csv(xx,<span class="nt">print</span>)
+   <span class="nt">print</span>(<span class="s">"First read from string..."</span>)
+   CSV(xx,<span class="nt">print</span>)
    <span class="nt">print</span>(<span class="s">""</span>)
-   csv(<span class="s">"../data/weather.csv"</span>,<span class="nt">print</span>)
+   <span class="nt">print</span>(<span class="s">"Second, read from file."</span>)
+   CSV(os.getenv(<span class="s">"Lure"</span>) .. <span class="s">"/data/weather.csv"</span>,<span class="nt">print</span>)
 <span class="k">end</span>
 
-o.k{_test1}
+O.k{_test1}
 </pre></div>
 </td>
 </tr></tbody>

@@ -36,9 +36,9 @@
 <td class="code">
   <div class="highlight"><pre>
 <span class="nt">require</span> <span class="s">"show"</span>
-<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> THE=<span class="nt">require</span> <span class="s">"config"</span>
 	
-<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> O=<span class="nt">require</span> <span class="s">"tests"</span>	
 <span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
 <span class="k">local</span> tbl=<span class="nt">require</span> <span class="s">"tbl"</span>
 <span class="k">local</span> tree=<span class="nt">require</span> <span class="s">"sdtree"</span>
@@ -47,11 +47,11 @@
  
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_test0</span>(f,y)
   defaults()
-  the.tree.min=10
+  THE.tree.min=10
   y = y <span class="o">or</span> <span class="s">"goal1"</span>
   f = f <span class="o">or</span> <span class="s">"/data/auto.csv"</span>
   <span class="nt">print</span>(f,y)
-  <span class="k">local</span> t1=  tbl.create( the.here .. f)
+  <span class="k">local</span> t1=  tbl.create( THE.here .. f)
   <span class="nt">print</span>(f, #t1.rows)
 </pre></div>
 </td>

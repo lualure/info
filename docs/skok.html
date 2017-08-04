@@ -49,18 +49,106 @@
 <td class="code">
   <div class="highlight"><pre>
 <span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> O=<span class="nt">require</span> <span class="s">"tests"</span>
 <span class="k">local</span> R=<span class="nt">require</span> <span class="s">"random"</span>
 <span class="k">local</span> SK=<span class="nt">require</span> <span class="s">"sk"</span>
 <span class="k">local</span> SAM=<span class="nt">require</span> <span class="s">"sample"</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_sk1</span>()
-  x1=SAM.updates{0.34, 0.49, 0.51, 0.6}
-  x2=SAM.updates{6,  7,  8,  9}
+  <span class="k">local</span> x1=SAM.updates{0.34, 0.49, 0.51, 0.6}
+  <span class="k">local</span> x2=SAM.updates{6,  7,  8,  9}
   x1.txt=<span class="s">"x1"</span>
   x2.txt=<span class="s">"x2"</span>
-  SAM.rank({x1,x2},1.01,SAM.same) <span class="k">end</span>
+  SAM.rank({x1,x2},1.01) <span class="k">end</span>
 
-_sk1()
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sk2</span>()
+  <span class="k">local</span> x1=SAM.updates{0.1, 0.2, 0.3, 0.4}
+  <span class="k">local</span> x2=SAM.updates{0.1, 0.2, 0.3, 0.4}
+  <span class="k">local</span> x3=SAM.updates{6,  7,  8,  9}
+  x1.txt=<span class="s">"x1"</span>
+  x2.txt=<span class="s">"x2"</span>
+  x3.txt=<span class="s">"x3"</span>
+  SAM.rank({x1,x2,x3},1.01) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sk3</span>()
+  <span class="k">local</span> x1=SAM.updates{0.34, 0.49, 0.51, 0.6}
+  <span class="k">local</span> x2=SAM.updates{0.6, 0.7, 0.8, 0.9}
+  <span class="k">local</span> x3=SAM.updates{0.15,  0.25,  0.4,  0.35}
+  <span class="k">local</span> x4=SAM.updates{0.6,  0.7,  0.8,  0.9}
+  <span class="k">local</span> x5=SAM.updates{0.1,  0.2,  0.3,  0.4}
+  x1.txt=<span class="s">"x1"</span>
+  x2.txt=<span class="s">"x2"</span>
+  x3.txt=<span class="s">"x3"</span>
+  x4.txt=<span class="s">"x4"</span>
+  x5.txt=<span class="s">"x5"</span>
+  SAM.rank({x1,x2,x3,x4,x5},1.01) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sk4</span>()
+  <span class="k">local</span> x1=SAM.updates{101,100,99,  101,99.5}
+  <span class="k">local</span> x2=SAM.updates{101,100,99,  101,100}
+  <span class="k">local</span> x3=SAM.updates{101,100,99.5,101,99}
+  <span class="k">local</span> x4=SAM.updates{101,100,99,  101,100}
+  x1.txt=<span class="s">"x1"</span>
+  x2.txt=<span class="s">"x2"</span>
+  x3.txt=<span class="s">"x3"</span>
+  x4.txt=<span class="s">"x4"</span>
+  SAM.rank({x1,x2,x3,x4},1.01) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sk5</span>()
+  <span class="k">local</span> x1=SAM.updates{11,11,11,11}
+  <span class="k">local</span> x2=SAM.updates{11,11,11,11}
+  <span class="k">local</span> x3=SAM.updates{11,11,11,11}
+  x1.txt=<span class="s">"x1"</span>
+  x2.txt=<span class="s">"x2"</span>
+  x3.txt=<span class="s">"x3"</span>
+  SAM.rank({x1,x2,x3},1.01) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sk6</span>()
+  <span class="k">local</span> x1=SAM.updates{11,11,11}
+  <span class="k">local</span> x2=SAM.updates{11,11,11}
+  <span class="k">local</span> x3=SAM.updates{32,33,34,40}
+  x1.txt=<span class="s">"x1"</span>
+  x2.txt=<span class="s">"x2"</span>
+  x3.txt=<span class="s">"x3"</span>
+  SAM.rank({x1,x2,x3},1.01) <span class="k">end</span>
+
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">_sk7</span>()
+  <span class="k">local</span> x1,x2,x3,x4,x5={},{},{},{},{}
+  <span class="k">local</span> x6,x7,x8,x9,x0={},{},{},{},{}
+  <span class="k">for</span> i=1,10^6 <span class="k">do</span>
+    x0[#x0+1] = R.r()
+    x1[#x1+1] = R.r()^0.5
+    x2[#x2+1] = R.r()^2
+    x3[#x3+1] = R.r()
+    x4[#x4+1] = R.r()^0.4
+    x5[#x5+1] = R.r()^2.2
+    x6[#x6+1] = R.r()
+    x7[#x7+1] = R.r()^0.45
+    x8[#x8+1] = R.r()^1.9
+    x9[#x9+1] = R.r()
+  <span class="k">end</span>
+  x0 = SAM.updates(x0); x0.txt=<span class="s">"x0a"</span>
+  x1 = SAM.updates(x1); x1.txt=<span class="s">"x0.5"</span>
+  x2 = SAM.updates(x2); x2.txt=<span class="s">"x2"</span>
+  x3 = SAM.updates(x3); x3.txt=<span class="s">"x0b"</span>
+  x4 = SAM.updates(x4); x4.txt=<span class="s">"x0.4"</span>
+  x5 = SAM.updates(x5); x5.txt=<span class="s">"x2.2"</span>
+  x6 = SAM.updates(x6); x6.txt=<span class="s">"x0c"</span>
+  x7 = SAM.updates(x7); x7.txt=<span class="s">"x0.45"</span>
+  x8 = SAM.updates(x8); x8.txt=<span class="s">"x1.9"</span>
+  x9 = SAM.updates(x9); x9.txt=<span class="s">"x0d"</span>
+  <span class="nt">print</span>(<span class="s">"."</span>)
+  SAM.rank({x0,x1,x2,x3,x4,x5,x6,x7,x8,x9},1.01) <span class="k">end</span>
+
+defaults()
+the.sample.width=30
+the.sample.fmtstr=<span class="s">"&#37;5s"</span>
+the.sample.fmtnum=<span class="s">"&#37;4.2f"</span>
+O.k{_sk1,_sk2,_sk3,_sk4,_sk5,_sk6,_sk7}
+<span class="nt">print</span>(<span class="s">""</span>)
+__sk7()
+
 </pre></div>
 </td>
 </tr></tbody>

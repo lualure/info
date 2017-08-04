@@ -36,17 +36,16 @@
 <td class="code">
   <div class="highlight"><pre>
 <span class="nt">require</span> <span class="s">"show"</span>
-<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
-	
-<span class="k">local</span> o=<span class="nt">require</span> <span class="s">"tests"</span>	
-<span class="k">local</span> r=<span class="nt">require</span> <span class="s">"random"</span>
-<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> THE=<span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> O=<span class="nt">require</span> <span class="s">"tests"</span>	
+<span class="k">local</span> R=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> LST=<span class="nt">require</span> <span class="s">"lists"</span>
  
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_test1</span>()
- <span class="nt">assert</span>(lst.shuffle{1,2,3,4,5} ~= 3)
- <span class="nt">assert</span>(lst.member(10,{10,20,30}))
- <span class="nt">assert</span>(lst.first{10,20,30} == 10)
- <span class="nt">assert</span>(lst.last{10,20,30} == 30)
+ <span class="nt">assert</span>(LST.shuffle{1,2,3,4,5} ~= 3)
+ <span class="nt">assert</span>(LST.member(10,{10,20,30}))
+ <span class="nt">assert</span>(LST.first{10,20,30} == 10)
+ <span class="nt">assert</span>(LST.last{10,20,30} == 30)
 <span class="k">end</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_mapping</span>()
@@ -54,7 +53,7 @@
   <span class="k">local</span> <span class="k">function</span> <span class="nf">visit</span>(w,x) 
             w.sum = w.sum + x
             w.n = w.n+1 <span class="k">end</span>
-  <span class="k">local</span> w= lst.map2({10,20,30},
+  <span class="k">local</span> w= LST.map2({10,20,30},
                     {sum=0,n=0},
                     visit)
  <span class="nt">assert</span>(w.sum== 60)
@@ -63,12 +62,12 @@
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">_copy</span>()
   <span class="k">local</span> t1={1,2,3,{4,5,6}}
-  <span class="k">local</span> t2=lst.copy(t1)
-  <span class="nt">assert</span>(lst.last(lst.last(t1)) == lst.last(lst.last(t2)))
+  <span class="k">local</span> t2=LST.copy(t1)
+  <span class="nt">assert</span>(LST.last(LST.last(t1)) == LST.last(LST.last(t2)))
   t1[4][3]=7
   <span class="nt">assert</span>(t1[4][3] == 7)
   <span class="nt">assert</span>(t2[4][3] ~= 7)
-  <span class="k">local</span> t3=lst.shallowCopy(t1)
+  <span class="k">local</span> t3=LST.shallowCopy(t1)
   t1[4][3]=8
   <span class="nt">assert</span>(t1[4][3] == 8)
   <span class="nt">assert</span>(t3[4][3] == 8)
@@ -78,10 +77,10 @@
   <span class="k">local</span> a={}
   <span class="k">for</span> i=1,100 <span class="k">do</span>
     a[i]=i^0.5 <span class="k">end</span>
-  <span class="nt">print</span>(lst.bsearch(a,5)) <span class="k">end</span>
+  <span class="nt">assert</span>(LST.bsearch(a,5)==25) <span class="k">end</span>
 
-r.seed()
-o.k{_test1,_mapping,_copy,_bsearch}
+R.seed()
+O.k{_test1,_mapping,_copy,_bsearch}
 </pre></div>
 </td>
 </tr></tbody>

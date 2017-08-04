@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>id</title>
+  <title>../../lib/id.lua</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="locco.css" />
 </head>
@@ -14,9 +14,9 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/id.lua">LURE: id</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+            <h1>
+              ../../lib/id.lua
+            </h1>
           </th>
           <th class="code">
           </th>
@@ -29,13 +29,15 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>id</h1><p><a href="index.html">[Index]</a></p>
-<p>Return an id number that has never been seen before.</p>
+<h1>Return an id number that has never been seen before.</h1>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'18</em>   </p>
 
 <p>Usage:</p>
 
-<pre><code>id=require "id"
-print(id.new())
+<pre><code>ID=require "id"
+print(ID.new())
 </code></pre>
 
 
@@ -46,7 +48,62 @@ print(id.new())
 <span class="k">local</span> id=0
 <span class="k">local</span> <span class="k">function</span> <span class="nf">new</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
 <span class="k">return</span> {new=new}
+
 </pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>
