@@ -46,6 +46,8 @@ consider a random number function
 The following code would propose breaks in that range at
 (0,0), (36,0.14), (55,0.3), (67,0.47), (80,0.6),  (100,1) which looks like this:</p>
 
+<p><img src="https://raw.githubusercontent.com/lualure/info/master/img/unsuper.png" width=300></p>
+
 <p><img src="https://raw.githubusercontent.com/lualure/info/master/img/unsuper.png" alt=""/></p>
 
 <p>Note that a line drawn through our breaks is a good approximation
