@@ -52,20 +52,50 @@ LURE: range
 in a list of numbers <code>t</code>. Such ranges
 can be visualized of as a small number of
 straight lines approximating a cumulative
-distribution function. </p>
+distribution function.  </p>
 
-<p>Optionally, the program accepts a function that can 
-extract a number out of each item in <code>t</code>.
-This is very useful for generating ranges from, say,
-the ages of a list of employess.</p>
+<p>For example, 
+consider a random number function 
+<code>R</code> and 100 numbers drawn from <code>square(R)</code>.
+The following code would propose breaks in that range at
+(0,0), (36,0.14), (55,0.3), (67,0.47), (80,0.6),  (100,1) which looks like this:</p>
 
-<p>This function returns a list of <code>range</code>s, which is a structure
-containing
-- <code>.n</code> : the number of items form <code>t</code> that fall into this range;
-- <code>._all</code> : a sample of the numbers in this range;
-- <code>.hi</code>: the highest number in this range;
-- <code>.lo</code>: the lowest number in this range;
-<code></code>.span<code>: The span is</code>.hi - .lo`.</p>
+<p><img src="img/unsuper.png" alt=""/></p>
+
+<p>Note that a line drawn through our breaks is a good approximation
+of the original curve. There are two benefits in using this approximation:</p>
+
+<ul>
+    <li>We no longer need to use, or report, the entire curve. Instead, we
+    can just break up the reasoning into a few bins.</li>
+    <li>Any subsequent supervised discritization need not reason about the
+    whole curve. Instead, that supervised discretizer needs only to
+    decide which of the breaks found by the unsupervised discretizer
+    need to be combined together.</li>
+</ul>
+
+<h3>Input</h3>
+
+<ul>
+    <li><code>t</code> (mandatory) is a list of items.</li>
+    <li><code>f</code> (optinal) is a function that can extract numbes out of items in <code>t</code> (defaults
+    to returning the whole item).
+    This is very useful for generating ranges from, say,
+    the ages of a list of employess.</li>
+</ul>
+
+<h3>Output</h3>
+
+<p>Returns a list of <code>range</code>s, which is a structure
+containing</p>
+
+<ul>
+    <li><code>.n</code> : the number of items form <code>t</code> that fall into this range;</li>
+    <li><code>._all</code> : a sample of the numbers in this range;</li>
+    <li><code>.hi</code>: the highest number in this range;</li>
+    <li><code>.lo</code>: the lowest number in this range;
+    <code></code>.span<code>: The span is</code>.hi - .lo`.</li>
+</ul>
 
 <p>The numbers in the input list <code>t</code> are broken  such that</p>
 
@@ -77,7 +107,7 @@ containing
     some <code>enough</code> valie (controlled by <code>the.chop.cohen</code>).</li>
 </ul>
 
-<p>Example usage:</p>
+<h3>Example usage</h3>
 
 <pre><code>RANGE=require "range"
 R=require "random"
@@ -89,7 +119,7 @@ for i,r in pairs(RANGE(tmp)) do
   print(i, r.n, r.lo, r.hi) end 
 </code></pre>
 
-<p>Configuration</p>
+<h3>Configuration</h3>
 
 <ul>
     <li>the.chop.cohen: <code>epsilon</code> = sdOfnums*cohen. If set larger, 
@@ -211,7 +241,7 @@ for range generation</p>
     <a class="pilcrow" href="#section-6">&#182;</a>
   </div>
   
-<p>Breaks holding under <em>enough</em> are ignored.</p>
+<p>Any range holding less than <em>enough</em> items is ignored.</p>
 
 
 </td>
@@ -225,7 +255,7 @@ for range generation</p>
     <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
-<p>Breaks smaller than <em>epsilon</em> are ignored.</p>
+<p>Any range whose span is  less than <em>epsilon</em> is ignored.</p>
 
 
 </td>
@@ -272,17 +302,30 @@ for range generation</p>
          x1 &gt; last <span class="o">and</span>
          i.now.n       &gt; i.enough  <span class="o">and</span>
          i.now.span    &gt; i.epsilon <span class="o">and</span>
-         i.num.n - j   &gt; i.enough  <span class="o">and</span>
-         i.num.hi - x1 &gt; i.epsilon 
-      <span class="k">then</span> nextRange(i) <span class="k">end</span> 
-      last = x1  <span class="k">end</span> <span class="k">end</span>
-  <span class="k">return</span> i.ranges <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
     <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>these last two tests stop the final range being too small</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>         i.num.n - j   &gt; i.enough  <span class="o">and</span>
+         i.num.hi - x1 &gt; i.epsilon 
+      <span class="k">then</span> nextRange(i) <span class="k">end</span> 
+      last = x1  <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> i.ranges <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
   </div>
   
 <hr/>

@@ -29,13 +29,23 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h2>Rows in a table</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August, 2018</em></p>
+
+<p>A <code>row</code> is a slave module to  <code>tbl</code>.
+<code>Rows</code> are where <code>tbl</code>s store one line of data.
+Note that it is not possible to test <code>row</code>s without
+also testing <code>tbl</code>s.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> id=  <span class="nt">require</span> <span class="s">"id"</span>
-<span class="k">local</span> lst= <span class="nt">require</span> <span class="s">"lists"</span>
-<span class="k">local</span> num= <span class="nt">require</span> <span class="s">"num"</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> ID=  <span class="nt">require</span> <span class="s">"id"</span>
+<span class="k">local</span> LST= <span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> NUM= <span class="nt">require</span> <span class="s">"num"</span>
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -45,13 +55,14 @@
   </div>
   
 <hr/>
+<p><code>Row</code>s have a unique id and cells of data.</p>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>()
-  <span class="k">return</span> {id=id.new(),   cells={}} <span class="k">end</span>
+  <span class="k">return</span> {id=ID.new(),   cells={}} <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -61,12 +72,15 @@
   </div>
   
 <hr/>
+<p>When <code>row</code> data is added, go to the <code>tbl</code> headers and
+update their counts of what numbers and symbols have been seen</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,cells,t)
-  i.cells=lst.copy(cells)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,cells,t)
+  i.cells=LST.copy(cells)
   <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(t.all.cols) <span class="k">do</span>
     head.what.update(head, cells[head.pos]) <span class="k">end</span>
   <span class="k">return</span> i <span class="k">end</span>
@@ -79,16 +93,18 @@
   </div>
   
 <hr/>
+<p>Copied <code>row</code>s have the same unique id but their
+cells are held in a different container.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">copy</span>(i)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">copy</span>(i)
   <span class="k">local</span> j = create()
-  j.cells = lst.copy(i.cells) <span class="c">-- get different cells
+  j.cells = LST.copy(i.cells) <span class="c">-- get different cells
 </span>  j.id = i.id <span class="c">-- keep their same id (for reference purposes)
-</span>  <span class="k">return</span> j
-<span class="k">end</span>
+</span>  <span class="k">return</span> j <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-5">
@@ -98,18 +114,25 @@
   </div>
   
 <hr/>
+<p>The distance between two <code>row</code>s  is normalized 0..1
+by dividing it by the maximum possible distance.
+To compute that distance, rows ask each column for
+a function <code>f</code> that determines the distance between
+two values in that kind of column (to see how that works,
+look at <code>distance</code> in <code>num.lua</code> and <code>sym.lua</code>).</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(i,j,t)
-  <span class="k">local</span> d,n=0,10^-64
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(i,j,t)
+  <span class="k">local</span> d,n,p=0,10^-64,0.5
   <span class="k">for</span> _,col <span class="k">in</span> <span class="nt">pairs</span>(t.x.cols) <span class="k">do</span>
     <span class="k">local</span> f = col.what.distance
     <span class="k">local</span> d1,n1 = f(col, i.cells[col.pos], j.cells[col.pos])
     d = d + d1
     n = n + n1 <span class="k">end</span>
-  <span class="k">return</span> d^0.5 / n^0.5 <span class="k">end</span>
+  <span class="k">return</span> d^p / n^p <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-6">
@@ -119,11 +142,15 @@
   </div>
   
 <hr/>
+<p>A <code>row</code>s position can be projected using the cosine rule
+onto a line running between two other points (called
+<code>west</code> and <code>east</code>).</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">x</span>(i,west,east,t,      c)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">x</span>(i,west,east,t,      c)
   <span class="k">local</span> c= c <span class="o">or</span> distance(west,east,t)
   <span class="k">local</span> b= distance(i,east,t)
   <span class="k">local</span> a= distance(i,west, t)
@@ -138,11 +165,23 @@
   </div>
   
 <hr/>
+<p>Imagine we have some function <code>f</code> that inputs a <code>row</code>,
+and outputs some value calulated for that <code>row.</code> Then,
+given a new <code>row</code> (without that value), 
+then that value can be extraloated from
+two other <code>row</code>s. Note that the following code assumes
+<code>f(west) &amp;le; f(east)</code>.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">extrapolate</span>(i,west, east,f,t,c)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">extrapolate</span>(i,west, east,f,t,c)
+  <span class="k">local</span> x0,c = x(i,west,east,t,c)
+  <span class="k">local</span> x1,x2,y1,y2 = 0,c,f(west,t), f(east,t)
+  <span class="k">local</span> m  = (y2 - y1) / (x2 - x1) <span class="c">-- rise/run
+</span>  <span class="k">local</span> b  = y2 - m*x2  <span class="c">-- the slope
+</span>  <span class="k">return</span> m * x0 + b <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-8">
@@ -151,17 +190,27 @@
     <a class="pilcrow" href="#section-8">&#182;</a>
   </div>
   
-<p>west is the lesser of west,east</p>
+<hr/>
+<p>To see if row <code>i</code> dominates rows <code>j</code> in table <code>t</code>,
+then sum the difference in  the goal values between
+the two rows (we raise that difference to an exponent to make
+any such difference "shout load").</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> x0,c = x(i,west,east,t,c)
-  <span class="k">local</span> x1,x2,y1,y2 = 0,c,f(west,t), f(east,t)
-  <span class="k">local</span> m  = (y2 - y1) / (x2 - x1) <span class="c">-- rise/run
-</span>  <span class="k">local</span> b  = y2 - m*x2  <span class="c">-- the slope
-</span>  <span class="k">return</span> m * x0 + b
-<span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">dominate1</span>(i,j,t)
+  <span class="k">local</span> e,n = 2.71828,#t.goals
+  <span class="k">local</span> sum1,sum2=0,0
+  <span class="k">for</span> _,col <span class="k">in</span> <span class="nt">pairs</span>(t.goals)  <span class="k">do</span>
+    <span class="k">local</span> w= col.weight
+    <span class="k">local</span> x= NUM.norm(col, i.cells[col.pos])
+    <span class="k">local</span> y= NUM.norm(col, j.cells[col.pos])
+    sum1 = sum1 - e^(w * (x-y)/n)
+    sum2 = sum2 - e^(w * (y-x)/n) 
+  <span class="k">end</span> 
+  <span class="k">return</span> sum1/n &lt; sum2/n <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-9">
@@ -171,22 +220,21 @@
   </div>
   
 <hr/>
+<p>Count how many times row <code>i</code> dominates row <code>j</code> (where
+"domination" is computed by the function <code>f</code>).</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">dominate1</span>(i,j,t)
-  <span class="k">local</span> e,n = 2.71828,#t.goals
-  <span class="k">local</span> sum1,sum2=0,0
-  <span class="k">for</span> _,col <span class="k">in</span> <span class="nt">pairs</span>(t.goals)  <span class="k">do</span>
-    <span class="k">local</span> w= col.weight
-    <span class="k">local</span> x= num.norm(col, i.cells[col.pos])
-    <span class="k">local</span> y= num.norm(col, j.cells[col.pos])
-    sum1 = sum1 - e^(w * (x-y)/n)
-    sum2 = sum2 - e^(w * (y-x)/n) 
-  <span class="k">end</span> 
-  <span class="k">return</span> sum1/n &lt; sum2/n 
-<span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">dominate</span>(i,t,f) 
+  f = f <span class="o">or</span> dominate1
+  <span class="k">local</span> tmp = 0
+  <span class="k">for</span> x,j <span class="k">in</span> <span class="nt">pairs</span>(t.rows) <span class="k">do</span>
+    <span class="k">if</span> i.id ~= j.id <span class="k">then</span> 
+      <span class="k">if</span> f(i,j,t) <span class="k">then</span>
+        tmp= tmp + 1  <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> 
+  <span class="k">return</span> tmp <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-10">
@@ -196,17 +244,13 @@
   </div>
   
 <hr/>
+<p>External Interface</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">dominate</span>(i,t) 
-  <span class="k">local</span> tmp = 0
-  <span class="k">for</span> x,j <span class="k">in</span> <span class="nt">pairs</span>(t.rows) <span class="k">do</span>
-    <span class="k">if</span> i.id ~= j.id <span class="k">then</span> 
-      <span class="k">if</span> dominate1(i,j,t) <span class="k">then</span>
-        tmp= tmp + 1  <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> 
-  <span class="k">return</span> tmp <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">return</span> {create=create, update=update,dominate=dominate,copy=copy}
 </pre></div>
 </td>
 </tr><tr id="section-11">
@@ -215,13 +259,53 @@
     <a class="pilcrow" href="#section-11">&#182;</a>
   </div>
   
-<h2>i.dom end</h2>
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update,dominate=dominate,copy=copy}
-</pre></div>
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>
