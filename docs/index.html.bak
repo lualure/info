@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/index.lua">LURE: index</a>
+            <h1>
+              /Users/timm/src/lib/index.lua
             </h1>
           </th>
           <th class="code">
@@ -35,7 +35,6 @@
 <td class="code">
   <div class="highlight"><pre>
 
-
 (Auto-generated. Do <span class="o">not</span> edit.)
 </pre></div>
 </td>
@@ -51,7 +50,6 @@
     <li><a href="contrasts.html">contrasts</a> </li>
     <li><a href="csv.html">csv</a> </li>
     <li><a href="id.html">id</a> </li>
-    <li><a href="index.html">index</a> </li>
     <li><a href="lists.html">lists</a> </li>
     <li><a href="num.html">num</a> </li>
     <li><a href="random.html">random</a> </li>
