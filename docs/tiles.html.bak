@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/tiles.lua">LURE: tiles</a>
+            <h1>
+              /Users/timm/gits/lualure/src/lib/tiles.lua
             </h1>
           </th>
           <th class="code">
@@ -157,7 +157,11 @@
                           how.hi = hi
                           <span class="k">return</span> show(t,how) <span class="k">end</span>) <span class="k">end</span>
 
-<span class="k">return</span> {tiles=tiles, show=show, shows=shows,how=hows}
+<span class="k">local</span> <span class="k">function</span> <span class="nf">showAndPrint</span>(ts) 
+  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(shows(ts)) <span class="k">do</span>
+    <span class="nt">print</span>(one) <span class="k">end</span> <span class="k">end</span>
+
+<span class="k">return</span> {tiles=tiles, show=show, <span class="nt">print</span>=showAndPrint,shows=shows,how=hows}
 </pre></div>
 </td>
 </tr></tbody>

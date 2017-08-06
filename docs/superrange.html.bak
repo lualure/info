@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/superrange.lua">LURE: superrange</a>
+            <h1>
+              /Users/timm/gits/lualure/src/lib/superrange.lua
             </h1>
           </th>
           <th class="code">
@@ -29,12 +29,43 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>superranges : utilities</h1>
+<h1>superranges : utilities</h1>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August, 2018</em></p>
+
+<p>R
+Use this code to find "natural ranges"
+in a list of numbers <code>t</code>. Such ranges
+can be visualized of as a small number of
+straight lines approximating a cumulative
+distribution function.  </p>
+
+<p>For example, 
+consider a random number function 
+<code>R</code> and 100 numbers drawn from <code>square(R)</code>.
+The following code would propose breaks in that range at
+(0,0), (36,0.14), (55,0.3), (67,0.47), (80,0.6),  (100,1) which looks like this:</p>
+
+<p><img src="https://raw.githubusercontent.com/lualure/info/master/img/unsuper.png" alt=""/></p>
+
+<p>Note that a line drawn through our breaks is a good approximation
+of the original curve. There are two benefits in using this approximation:</p>
+
+<ul>
+    <li>We no longer need to use, or report, the entire curve. Instead, we
+    can just break up the reasoning into a few bins.</li>
+    <li>Any subsequent supervised discritization need not reason about the
+    whole curve. Instead, that supervised discretizer needs only to
+    decide which of the breaks found by the unsupervised discretizer
+    need to be combined together.</li>
+</ul>
+
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>
+  <div class="highlight"><pre>-
 <span class="nt">require</span> <span class="s">"show"</span>
 <span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
 <span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>

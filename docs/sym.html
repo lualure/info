@@ -14,9 +14,23 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/sym.lua">LURE: sym</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/sym.lua">browse</a> 
+</p>
+<h1> 
+LURE: sym
+</h1>
+              
           </th>
           <th class="code">
           </th>
@@ -29,11 +43,36 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h2>Incrementally watch a stream of symbols</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'18</em>   </p>
+
+<p>Use this code to incrementally monitor the frequency
+counts and entropy of
+of a stream of numbers. </p>
+
+<p>Simple usage:</p>
+
+<pre><code>local i = SYM.create()
+for word in string.gmatch(words,"([^ ]+)" ) do
+     SYM.update(i,word) end
+print(SYM.ent(i)) end
+</code></pre>
+
+<p>For those who like less typing:</p>
+
+<pre><code>local i,add = SYM.watch()
+for word in string.gmatch(words,"([^ ]+)" ) do
+  add(word) end
+print(SYM.ent(i)) end
+</code></pre>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
+  <div class="highlight"><pre> 
+<span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -43,11 +82,14 @@
   </div>
   
 <hr/>
+<h3>Creation</h3>
+<p>Create a new watcher.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>()
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>()
   <span class="k">return</span> {n=0, counts={}, most=0,mode=<span class="k">nil</span>,_ent=<span class="k">nil</span> } <span class="k">end</span>
 </pre></div>
 </td>
@@ -58,11 +100,14 @@
   </div>
   
 <hr/>
+<h3>Update</h3>
+<p>Update a watcher <code>i</code> with one value <code>x</code>.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x)
   <span class="k">if</span> x ~= the.ignore <span class="k">then</span>
     i._ent = <span class="k">nil</span> 
     i.n = i.n + 1
@@ -80,16 +125,15 @@
   </div>
   
 <hr/>
+<h2>Handy short cout</h2>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(lst,f,i)
-  i = i <span class="o">or</span> create()
-  f = f <span class="o">or</span> <span class="k">function</span> (z) <span class="k">return</span> z <span class="k">end</span>
-  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(lst) <span class="k">do</span>
-    update(i, f(one)) <span class="k">end</span> 
-  <span class="k">return</span> i <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">watch</span>()
+  <span class="k">local</span> i = create()
+  <span class="k">return</span> i, <span class="k">function</span> (x) <span class="k">return</span> update(i,x) <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-5">
@@ -99,11 +143,51 @@
   </div>
   
 <hr/>
+<h3>Updates</h3>
+<p>Update a watcher <code>i</code> with many values from <code>t</code>.
+Optionally:</p>
+
+<ul>
+    <li>filter every value in <code>t</code> through some function <code>f</code>. </li>
+    <li>If an filter every value in <code>t</code> through some function <code>f</code>. </li>
+    <li>If an <code>all</code> value is supplied, the update <code>all</code>. Else
+    return a new watcher.</li>
+</ul>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(i,j,k) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(lst,f,i)
+  i = i <span class="o">or</span> create()
+  f = f <span class="o">or</span> <span class="k">function</span> (z) <span class="k">return</span> z <span class="k">end</span>
+  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(lst) <span class="k">do</span>
+    update(i, f(one)) <span class="k">end</span> 
+  <span class="k">return</span> i <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Distance</h3>
+<p>Using a watcher <code>i</code>, work of the distance between
+two values <code>j</code> and <code>k</code>. If either is unknown,
+the return the max possible distance. If both are
+unknown, just return nothing.</p>
+
+<p>Returns two numbers <code>x,y</code> where <code>x</code> is the distance
+and <code>y</code> is 0,1 depending on whether or not we are returning
+nothing.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(i,j,k) 
   <span class="k">local</span> no = the.ignore
   <span class="k">if</span>     j==no <span class="o">and</span> k==no <span class="k">then</span> <span class="k">return</span> 0,0
   <span class="k">elseif</span> j == the.ignore <span class="k">then</span> <span class="k">return</span> 1,1
@@ -114,18 +198,53 @@
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-6">
+</tr><tr id="section-7">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
+    <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
 <hr/>
+<h3>Normalization</h3>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretize</span>(i,x) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(i,x)
+  <span class="k">return</span> x <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Map numbers to a range.</h3>
+<p><code>i</code> is a list of pairs {x.label, x.most}.
+Find <code>x</code>'s label with this list.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>XXXX why is this even here? discrete syms should be syms???</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">discretize</span>(i,x) 
   <span class="k">local</span> r
   <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
   <span class="k">if</span> <span class="o">not</span> i.bins    <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
@@ -135,18 +254,36 @@
   <span class="k">return</span> r <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-7">
+</tr><tr id="section-10">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
+    <a class="pilcrow" href="#section-10">&#182;</a>
   </div>
   
 <hr/>
+<h3>Entropy</h3>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ent</span>(i)
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<p>Takes a little time to calculate.  So we cache the
+result (and note that <code>update</code> zaps <code>_ent</code> whenever
+new data arrives.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">ent</span>(i)
   <span class="k">if</span> i._ent == <span class="k">nil</span> <span class="k">then</span> 
     <span class="k">local</span> e = 0
     <span class="k">for</span> _,f <span class="k">in</span> <span class="nt">pairs</span>(i.counts) <span class="k">do</span>
@@ -157,18 +294,21 @@
   <span class="k">return</span> i._ent <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-8">
+</tr><tr id="section-12">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
+    <a class="pilcrow" href="#section-12">&#182;</a>
   </div>
   
 <hr/>
+<h3>KE</h3>
+<p>Needed for Fayyad-Irrani. Is this even used?</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ke</span>(i)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">ke</span>(i)
   <span class="k">local</span> e,k = 0,0
   <span class="k">for</span> _,f <span class="k">in</span> <span class="nt">pairs</span>(i.counts) <span class="k">do</span>
     e = e + (f/i.n) * math.log((f/i.n), 2)
@@ -178,19 +318,77 @@
   <span class="k">return</span> k,e,k*e <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-9">
+</tr><tr id="section-13">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
+    <a class="pilcrow" href="#section-13">&#182;</a>
   </div>
   
 <hr/>
+<h3>External Interface</h3>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update, updates=updates, ent=ent, spread=ent, discretize=discretize,ke=ke}
+  <div class="highlight"><pre>
+<span class="k">return</span> {create=create, update=update, updates=updates, 
+        ent=ent, spread=ent, discretize=discretize,
+        ke=ke,watch=watch}
 </pre></div>
+</td>
+</tr><tr id="section-14">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-14">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>

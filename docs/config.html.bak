@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/config.lua">LURE: config</a>
+            <h1>
+              /Users/timm/gits/lualure/src/lib/config.lua
             </h1>
           </th>
           <th class="code">
@@ -29,7 +29,11 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>Global settings</h1>
+<h2>Global settings</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August, 2018</em>  </p>
+
 <p>Used by many files</p>
 
 
@@ -45,8 +49,8 @@
             epsilon=1.01,
             fmtstr=<span class="s">"&#37;20s"</span>,
             fmtnum=<span class="s">"&#37;5.3f"</span>,
-            cliffsDelta=0.147 <span class="c">-- small
-</span></pre></div>
+            cliffsDelta=0.147 
+</pre></div>
 </td>
 </tr><tr id="section-2">
 <td class="docs">
@@ -54,17 +58,12 @@
     <a class="pilcrow" href="#section-2">&#182;</a>
   </div>
   
-<p>cliffsDelta=0.33 -- small
-cliffsDelta=0.474 -- small</p>
+<p>small,medium,large=0.147,0.33,0.474</p>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>            },
-  bpo=    { pop0=20,
-            score=64,
-            max=1,
-            min=1},
   tree=   { ish=1.00,
             min=2, 
             maxDepth=10},
@@ -72,7 +71,20 @@ cliffsDelta=0.474 -- small</p>
             cohen=0.2},
   num=    { conf=95,
             small=0.38,
-            first=3, 
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<p>small,medium = 0.38,1</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>            first=3, 
             last=96,
             criticals = {
               [95] = {[ 3]=3.182,[ 6]=2.447,[12]=2.179,
@@ -84,6 +96,60 @@ cliffsDelta=0.474 -- small</p>
 the= defaults()
 <span class="k">return</span> the
 </pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>

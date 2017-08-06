@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/random.lua">LURE: random</a>
+            <h1>
+              /Users/timm/gits/lualure/src/lib/random.lua
             </h1>
           </th>
           <th class="code">
@@ -29,14 +29,19 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>random</h1>
-<p>Lua's math.random() is an interface to the C rand() function
+<h2>Random number generator</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August, 2018</em> </p>
+
+<p>Lua's <code>math.random()</code> is an interface to the C rand() function
 provided by the OS libc. This implementation varies by platform
-so the numbers it generates also varies. </p>
+so the numbers it generates also varies from platform to
+platform</p>
 
-<p>Can't have that (tests won't port across platforms)</p>
+<p>Can't have that: tests won't port across platforms.</p>
 
-<p>The following is library is recommended as a
+<p>The following library is recommended as a
 replacement for the ANSI C rand() and srand()
 functions, particularly in simulation applications
 where the statistical 'goodness' of the random
@@ -50,21 +55,32 @@ and the smallest and largest possible values are (1
 / m) and 1 - (1 / m) respectively. For more details
 see:</p>
 
-<p>"Random Number Generators: Good Ones Are Hard To Find"
-Steve Park and Keith Miller
-Communications of the ACM, October 1988</p>
+<ul>
+    <li>"Random Number Generators: Good Ones Are Hard To Find"
+    Steve Park and Keith Miller
+    Communications of the ACM, October 1988</li>
+</ul>
 
 <p>Also, the raw random number generator is wrapped in a
 97 table to increase randomness.</p>
 
+<p>Typical usage:</p>
+
+<pre><code> R=require "random" 
+ R.seed(1)
+ print(R.r())
+</code></pre>
+
+<hr/>
+<p>Magic numbers</p>
+
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>
-<span class="k">local</span> seed0 = 10013
-<span class="k">local</span> seed  = seed0
-<span class="k">local</span> multipler = 16807.0
-<span class="k">local</span> modulus = 2147483647.0
+  <div class="highlight"><pre><span class="k">local</span> seed0       = 10013
+<span class="k">local</span> seed        = seed0
+<span class="k">local</span> multipler   = 16807.0
+<span class="k">local</span> modulus     = 2147483647.0
 <span class="k">local</span> randomtable = <span class="k">nil</span>
 </pre></div>
 </td>
@@ -75,11 +91,17 @@ Communications of the ACM, October 1988</p>
   </div>
   
 <hr/>
+<p>New seed is calulated from the old seed.
+New random number is calculated from the new seed.
+Cycle= 2,147,483,646 numbers</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">park_miller_randomizer</span>()
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">park_miller_randomizer</span>()
+  seed = (multipler * seed) &#37; modulus
+  <span class="k">return</span> seed / modulus <span class="k">end</span> 
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -88,13 +110,16 @@ Communications of the ACM, October 1988</p>
     <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
-<p>cycle= 2,147,483,646 numbers</p>
+<hr/>
+<p>Set the random number seed</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>  seed = (multipler * seed) &#37; modulus
-  <span class="k">return</span> seed / modulus <span class="k">end</span> 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">rseed</span>(n)
+  <span class="k">if</span> n <span class="k">then</span> seed = n <span class="k">else</span> seed = seed0 <span class="k">end</span>
+  randomtable = <span class="k">nil</span> <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -104,13 +129,16 @@ Communications of the ACM, October 1988</p>
   </div>
   
 <hr/>
+<p>Set the random number seed using Lua stuff
+(note: will generate different numbers on
+different platforms.)</p>
+
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">rseed</span>(n)
-  <span class="k">if</span> n <span class="k">then</span> seed = n <span class="k">else</span> seed = seed0 <span class="k">end</span>
-  randomtable = <span class="k">nil</span> <span class="k">end</span>
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">system</span>()
+  <span class="k">return</span> rseed(math.random()*modulus) <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-5">
@@ -120,26 +148,13 @@ Communications of the ACM, October 1988</p>
   </div>
   
 <hr/>
+<p>Main driver</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">system</span>()
-  <span class="k">return</span> rseed(math.random()*modulus) <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-6">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
-  </div>
-  
-<hr/>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">another</span> (       x,i)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">another</span> (       x,i)
   <span class="k">if</span> randomtable == <span class="k">nil</span> <span class="k">then</span>
     randomtable = {}
     <span class="k">for</span> i = 1, 97 <span class="k">do</span>
@@ -150,6 +165,22 @@ Communications of the ACM, October 1988</p>
   <span class="k">return</span> x <span class="k">end</span> 
 </pre></div>
 </td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Public interface</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">return</span> {seed=rseed, system=system,r=another}
+</pre></div>
+</td>
 </tr><tr id="section-7">
 <td class="docs">
   <div class="pilwrap">
@@ -158,11 +189,51 @@ Communications of the ACM, October 1988</p>
   
 <hr/>
 
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {seed=rseed, system=system,r=another}
-</pre></div>
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>

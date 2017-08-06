@@ -14,9 +14,23 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/index.lua">LURE: index</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/index.lua">browse</a> 
+</p>
+<h1> 
+LURE: index
+</h1>
+              
           </th>
           <th class="code">
           </th>
@@ -34,9 +48,6 @@
 </td>
 <td class="code">
   <div class="highlight"><pre>
-
-
-(Auto-generated. Do <span class="o">not</span> edit.)
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -45,16 +56,28 @@
     <a class="pilcrow" href="#section-2">&#182;</a>
   </div>
   
+<p>(Auto-generated. Do not edit.)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
 <ul>
-    <li><a href="args.html">args</a> </li>
+    <li><a href="LICENSE.html">LICENSE</a> </li>
     <li><a href="config.html">config</a> </li>
     <li><a href="contrasts.html">contrasts</a> </li>
     <li><a href="csv.html">csv</a> </li>
-    <li><a href="domtree.html">domtree</a> </li>
     <li><a href="id.html">id</a> </li>
     <li><a href="index.html">index</a> </li>
     <li><a href="lists.html">lists</a> </li>
-    <li><a href="mymath.html">mymath</a> </li>
     <li><a href="num.html">num</a> </li>
     <li><a href="random.html">random</a> </li>
     <li><a href="range.html">range</a> </li>
@@ -64,6 +87,7 @@
     <li><a href="sdtree.html">sdtree</a> </li>
     <li><a href="show.html">show</a> </li>
     <li><a href="sk.html">sk</a> </li>
+    <li><a href="spy.html">spy</a> </li>
     <li><a href="str.html">str</a> </li>
     <li><a href="superrange.html">superrange</a> </li>
     <li><a href="sym.html">sym</a> </li>
@@ -71,8 +95,219 @@
     <li><a href="tests.html">tests</a> </li>
     <li><a href="tiles.html">tiles</a> </li>
     <li><a href="trees.html">trees</a> </li>
-    <li><a href="watch.html">watch</a> </li>
 </ul>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>LURE: SE for  Data Mining</h2>
+
+<p><img align=right src="https://avatars6.githubusercontent.com/u/30064709?v=4&amp;s=200"></p>
+
+
+<p>This code is bait:</p>
+
+<ul>
+    <li>A gauntlet that I throw down asking you "do better!". </li>
+    <li>A temptation to make you reflect on what (and how) services should be added to data mining software.</li>
+</ul>
+
+<h3>Motivation</h3>
+
+<p>There has been <a href="https://goo.gl/NAs3Nu">much recent work applying data miners to software engineering</a>. But what about the
+other way around? What software engineering principles should be apply to data miners? After decades
+of use of data miners, what services should we demand from our data miners, and how do we build those services?</p>
+
+<p>LURE is a workbench for  exploring SE for data mining.
+The premise of LURE is that data miners are <em>not</em> black boxes that we should buy, then uncritically use "as-is",
+without modification.
+Rather,
+data miners are just software and software contains 100s of design choices that effects what is learned:</p>
+
+<ul>
+    <li>Some of those choices may not be appropriate for your specific needs. </li>
+    <li>Also, some of those choices
+    might actually be sub-optimum for your domain.</li>
+    <li>Further, if you actually understand the internals of a data miner, you can mix and match what data miners
+    do in order to provide useful and innovative solutions to your data mining tasks.</li>
+</ul>
+
+<p>So LURE is a set of minimal data mining tools designed with the goal of letting their students "roll their sleeves up"
+to muck around inside data miners. The code is written in LUA since that makes it very protale, small footprint,
+succinct, and hence easily modifable (and for students who not know how to write LUA code,
+I can use LURE as a kind of assignment specification; e.g. write this code in your favorite language).</p>
+
+<h3>Status</h3>
+
+<p>LURE is about 
+about one-third
+built and about one-tenth tested. But its good to have dreams since 
+<a href="https://www.poetryfoundation.org/poems/43745/andrea-del-sarto">"a man's (sic) reach should exceed his grasp, Or what's a heaven for?"</a>.</p>
+
+<p>The goal of this code is to offer <em>baseline</em> implementations of the following operators. </p>
+
+<ul>
+    <li>Note that I describe these as <em>baselines</em>.  LURE currently implements
+    some of the above (and more each week)</li>
+    <li>But you should be critical of the technical
+    choices I made in that implmenetation. What simplifications did I
+    make? What better technologies should I use? What did I overlook?</li>
+    <li>And (here's the trap) if you think you can handle the above in (e.g.)
+    <a href="https://www.tensorflow.org/">TensorFlow</a>
+    or <a href="http://torch.ch/">Torch</a> or using 100 other methods,  I would
+    lean forward and say "yes? really? show me how".</li>
+</ul>
+
+
+<p>|Operator | What| Why|
+|------:|:--------|:--------|
+|<em>Comprehensible</em>:|  Something we can read, argue with | Essential for communities critiquing ideas. If the only person reading a model is a carbureter, then we can expect little push back. But if your models are about policies that humans have to implement, then I take it as axiomatic that humans will want to read and critique the models.|
+|<em>Fast</em>:|  Not a CPU hog | Reproducing  and improving an old ideas means that you can reproduce that old result. Also, certifying that new ideas often means multiple runs overy many sub-samples of the data. Such  reproducability and certification is impractical when such repreduction is impractically slow|
+|<em>Light</em>:| Small memory footprint |Again, reproducing an old data mining experiment or certifying a new result means that the resources required for reproduction are not exobertant. |
+|<em>Goal-aware</em>:| Different goals means different models. AND multiple goals = no problem!|This is important since most data miners build models that optimizer for a single goal (e.g. minimize error or least-square error) yet business users often wnat their data miners to achieve many goals. |
+|<em>Humble</em> :|  Can publish succinct certification envelope (so we know when not to trust)| Delivered data mined models should be able to recognize when new data is out-of-scope of anything they've seen before. This means, at runtime, having access to the data used to build that model. Note that phrase <em>succinct</em> here: certification envelopes cannot include all the data relating to a model, otherwise every hard drive in the world will soon fill up.  |
+|<em>Privacy-aware</em>:|  Can hide an individual's data|This is essential when sharing a certification envelope | 
+|<em>Shareable</em>:|  Knows how to transfer models, data, between contexts. | Such transfer usually requires some transformation of the soruce data to the target data.|
+|<em>Context-aware</em>:|  Knows that local parts of data generate different models. | While general principles are good, so too is how to handle particular contexts. For example, in general, exercise is good for maintaining healthy. However, in the particular context of  patients who have jsut had cardiac surgery, then that general principle has to be carefully tailored to particular patients. | ideas need to be updated. |
+|<em>Self-tuning</em>:|  And can do it quickly| Many experiments show that we can't just use data miners off-the-shelf.  Rather, if their control parameters are tuned, then we can get much better data mining results.|
+|<em>Anomaly-aware</em>:|  Can detect when new inputs differ from old training data| This is the trigger for when old
+|<em>Incremental</em>:|  Can update old models with new data| Anomaly detectors tell us something has to change.  Incremental learners tell us what to change.| </p>
+
+<h3>Install</h3>
+
+<h4>Using LuaRocks</h4>
+
+<p>Coming soon.</p>
+
+<h4>Using Github</h4>
+
+<p>Check out the repo, then create an environment
+variable <code>Lure</code> to hold the repo's localtion.</p>
+
+<pre><code>git clone http://github.com/lualure/src src
+Lure=$PWD/src 
+</code></pre>
+
+<p>Add the following function to your $HOME/.bashrc.</p>
+
+<pre><code>lure() { 
+  f=$(basename $1 .lua).lua
+  shift
+  if [ -f "$Lure/lib/$f" ]; then
+    LUA_PATH="$Lure/lib/?.lua;;" $(which luajit) $Lure/lib/$f "$*"
+    return 0
+  fi
+  echo "not found $f"
+}
+</code></pre>
+
+<p>Make sure your source this code; e.g. logout then log
+back in or (much faster):</p>
+
+<pre><code>. ~/.bashrc
+</code></pre>
+
+<h3>Test</h3>
+
+<p>Change directories to some other part of your computer (away from the source code). Then
+try to run any code from lure. e.g.</p>
+
+<pre><code>$ lure listsok
+# test: 1
+0.000167 secs
+# test: 2
+1.1e-05 secs
+# test: 3
+3.9999999999997e-06 secs
+# test: 4
+4e-05 secs
+:pass 4 :fail 0 :percentPass 100
+-- Global: the
+-- Global: defaults
+</code></pre>
+
+<p>The above code is reporting that none of the <code>listsok</code> tests can file fault with the <code>lists</code>
+functions (hence <code>:fail 0</code>). It also shows that those tests run fast (in tenths of milliseconds)
+and that this code suffers from only two globals <code>the</code> and <code>defaults</code> (and these two are meant to
+be the only defaults known to  the system-- see the notes on coding style, below).</p>
+
+<h3>Coding Style</h3>
+
+<p>If you are rading my code, it might save some time if you <a href="STYLE.md">know my Lua writing style</a>.</p>
+
+
+<h3>Learning Lure</h3>
+
+<ul>
+    <li>website: <a href="https://lualure.github.io/info/">https://lualure.github.io/info/</a></li>
+    <li><a href="https://twitter.com/lua_lured">news</a></li>
+    <li><a href="https://groups.google.com/forum/#!forum/lualure">discuss</a></li>
+    <li><a href="https://github.com/lualure/src/issues">issues</a> </li>
+</ul>
+
+<h3>Learning Lua</h3>
+
+<p>Some great on-line resources:</p>
+
+<ul>
+    <li>Quick start http://tylerneylon.com/a/learn-lua/</li>
+    <li><a href="https://www.lua.org/pil/">Read the book</a>.
+    <ul>
+        <li>The 4th edition in <a href="https://goo.gl/D4dwGi">on Amazon</a>.</li>
+        <li>The 2nd edition (which is still pretty good) is available <a href="https://goo.gl/jgwXVZ">on-line</a>.</li>
+    </ul></li>
+</ul>
+
+
+<h2>Legal</h2>
+
+<p>LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the 
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the 
+    following disclaimer in the documentation and/or other 
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names 
+    of its contributors may be used to endorse or promote 
+    products derived from this software without specific 
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
 
 
 </td>

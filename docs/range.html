@@ -14,9 +14,23 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/range.lua">LURE: range</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/range.lua">browse</a> 
+</p>
+<h1> 
+LURE: range
+</h1>
+              
           </th>
           <th class="code">
           </th>
@@ -29,16 +43,101 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>range : simple discretiation</h1><p><a href="index.html">[Index]</a></p>
-<p>View the <a href="../range.lua">source on-line</a>.</p>
+<h2>range : simple discretiation</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August, 2018</em></p>
+
+<p>Use this code to find "natural ranges"
+in a list of numbers <code>t</code>. Such ranges
+can be visualized of as a small number of
+straight lines approximating a cumulative
+distribution function.  </p>
+
+<p>For example, 
+consider a random number function 
+<code>R</code> and 100 numbers drawn from <code>square(R)</code>.
+The following code would propose breaks in that range at
+(0,0), (36,0.14), (55,0.3), (67,0.47), (80,0.6),  (100,1) which looks like this:</p>
+
+<p><img src="https://raw.githubusercontent.com/lualure/info/master/img/unsuper.png" alt=""/></p>
+
+<p>Note that a line drawn through our breaks is a good approximation
+of the original curve. There are two benefits in using this approximation:</p>
+
+<ul>
+    <li>We no longer need to use, or report, the entire curve. Instead, we
+    can just break up the reasoning into a few bins.</li>
+    <li>Any subsequent supervised discritization need not reason about the
+    whole curve. Instead, that supervised discretizer needs only to
+    decide which of the breaks found by the unsupervised discretizer
+    need to be combined together.</li>
+</ul>
+
+<h3>Input</h3>
+
+<ul>
+    <li><code>t</code> (mandatory) is a list of items.</li>
+    <li><code>f</code> (optinal) is a function that can extract numbes out of items in <code>t</code> (defaults
+    to returning the whole item).
+    This is very useful for generating ranges from, say,
+    the ages of a list of employess.</li>
+</ul>
+
+<h3>Output</h3>
+
+<p>Returns a list of <code>range</code>s, which is a structure
+containing</p>
+
+<ul>
+    <li><code>.n</code> : the number of items form <code>t</code> that fall into this range;</li>
+    <li><code>._all</code> : a sample of the numbers in this range;</li>
+    <li><code>.hi</code>: the highest number in this range;</li>
+    <li><code>.lo</code>: the lowest number in this range;
+    <code></code>.span<code>: The span is</code>.hi - .lo`.</li>
+</ul>
+
+<p>The numbers in the input list <code>t</code> are broken  such that</p>
+
+<ul>
+    <li>no range contaons too few numbers (controlled by <code>the.chop.m</code>)</li>
+    <li>each range is different to the next one by some <code>epsilon</code>
+    value (controlled by <code>the.chop.cohen</code>).</li>
+    <li>the <code>span</code> of the range (<code>hi - lo</code>) is greater than
+    some <code>enough</code> valie (controlled by <code>the.chop.cohen</code>).</li>
+</ul>
+
+<h3>Example usage</h3>
+
+<pre><code>RANGE=require "range"
+R=require "random"
+
+local tmp={}
+for x=1,1000 do
+  tmp[#tmp+1] = R.r()^2 end
+for i,r in pairs(RANGE(tmp)) do
+  print(i, r.n, r.lo, r.hi) end 
+</code></pre>
+
+<h3>Configuration</h3>
+
+<ul>
+    <li>the.chop.cohen: <code>epsilon</code> = sdOfnums*cohen. If set larger, 
+    then the number of ranges
+    will decrease</li>
+    <li>the.chop.m: <code>enough</code> = length(t)^m. If set larger, the number of ranges will decrease</li>
+    <li>the.sample.most: controls how many samples are kept per range.
+    If set smaller, then ranges uses less memory.</li>
+</ul>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
 <span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
-<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
-<span class="k">local</span> some=<span class="nt">require</span> <span class="s">"sample"</span>
+<span class="k">local</span> NUM=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> SOME=<span class="nt">require</span> <span class="s">"sample"</span>
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -48,13 +147,14 @@
   </div>
   
 <hr/>
-<p>Initialize a table for range info</p>
+<p>Initialize a range</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
-  _all= some.create(),
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
+  _all= SOME.create(),
   n  = 0,
   hi = -2^63,
   lo =  2^63,
@@ -70,14 +170,16 @@
 <hr/>
 <p>Update range  <em>i</em>  with
 some numuerc <em>x</em> found from within
-<em>one</em>.</p>
+<em>one</em>. Note that, for effeciency sake, we only keep <code>SOME</code> numbers
+(not all of them). </p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,one, x)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,one, x)
   <span class="k">if</span> x ~= the.ignore <span class="k">then</span>
-    some.update(i._all, one)
+    SOME.update(i._all, one)
     i.n = i.n + 1
     <span class="k">if</span> x &gt; i.hi <span class="k">then</span> i.hi = x  <span class="k">end</span>
     <span class="k">if</span> x &lt; i.lo <span class="k">then</span> i.lo = x  <span class="k">end</span>
@@ -100,7 +202,8 @@ range onto the list of all ranges
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">nextRange</span>(i) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">nextRange</span>(i) 
   i.now  = create()
   i.ranges[#i.ranges+1] = i.now <span class="k">end</span>
 </pre></div>
@@ -112,19 +215,24 @@ range onto the list of all ranges
   </div>
   
 <hr/>
-<p>Initialize a range maneger,</p>
+<p>Initialize the control parameters
+for range generation</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">rangeManager</span>(lst, x)  
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">rangeManager</span>(t, x)  
   <span class="k">local</span> _ = { 
     x     = x,
     cohen = the.chop.cohen,
     m     = the.chop.m,
-    size  = #lst,
+    size  = #t,
     ranges= {} <span class="c">-- list of all known ranges 
 </span>  }
+  nextRange(_)
+  _.num = NUM.updates(t, _.x)
+  _.hi  = _.num.hi
 </pre></div>
 </td>
 </tr><tr id="section-6">
@@ -133,15 +241,12 @@ range onto the list of all ranges
     <a class="pilcrow" href="#section-6">&#182;</a>
   </div>
   
-<p>Breaks holding under <em>enough</em> are ignored.</p>
+<p>Any range holding less than <em>enough</em> items is ignored.</p>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>  _._.enough = _.size^_.m
-  nextRange(_)
-  _.num = num.updates(lst, _.x)
-  _.hi  = _.num.hi
 </pre></div>
 </td>
 </tr><tr id="section-7">
@@ -150,7 +255,7 @@ range onto the list of all ranges
     <a class="pilcrow" href="#section-7">&#182;</a>
   </div>
   
-<p>Breaks smaller than <em>epsilon</em> are ignored.</p>
+<p>Any range whose span is  less than <em>epsilon</em> is ignored.</p>
 
 
 </td>
@@ -169,27 +274,27 @@ range onto the list of all ranges
 <p>Return a function that </p>
 
 <ul>
-    <li>Sorts a <em>lst</em> of
+    <li>Sorts a <em>t</em> of
     items according to the values found by
     the function <em>x</em>.</li>
     <li>Then divides that sort into <em>ranges</em>
     of size of at least <em>enough</em> which
-    break the <em>lst</em> into items of at least
+    break the <em>t</em> into items of at least
     <em>epsilon</em> in size.</li>
 </ul>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (lst, x,       last)
+  <div class="highlight"><pre><span class="k">return</span> <span class="k">function</span> (t, x,       last)
   x= x <span class="o">or</span> <span class="k">function</span> (z) <span class="k">return</span> z <span class="k">end</span> <span class="c">-- _x_ defaults to the identity
-</span>  table.sort(lst, <span class="k">function</span> (z1,z2) 
+</span>  table.sort(t, <span class="k">function</span> (z1,z2) 
                     <span class="k">local</span> one,two=x(z1),x(z2)
                     <span class="k">return</span> one ~=the.ignore <span class="o">and</span> 
                            two ~=the.ignore <span class="o">and</span> 
                            one &lt; two <span class="k">end</span> )
-  <span class="k">local</span> i= rangeManager(lst, x)
-  <span class="k">for</span> j,one <span class="k">in</span> <span class="nt">pairs</span>(lst) <span class="k">do</span>
+  <span class="k">local</span> i= rangeManager(t, x)
+  <span class="k">for</span> j,one <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
     <span class="k">local</span> x1 = x(one)
     <span class="k">if</span> x1 ~= the.ignore <span class="k">then</span>
       update(i.now, one, x1)
@@ -197,12 +302,79 @@ range onto the list of all ranges
          x1 &gt; last <span class="o">and</span>
          i.now.n       &gt; i.enough  <span class="o">and</span>
          i.now.span    &gt; i.epsilon <span class="o">and</span>
-         i.num.n - j   &gt; i.enough  <span class="o">and</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>these last two tests stop the final range being too small</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>         i.num.n - j   &gt; i.enough  <span class="o">and</span>
          i.num.hi - x1 &gt; i.epsilon 
       <span class="k">then</span> nextRange(i) <span class="k">end</span> 
       last = x1  <span class="k">end</span> <span class="k">end</span>
   <span class="k">return</span> i.ranges <span class="k">end</span>
 </pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>
