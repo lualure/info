@@ -170,50 +170,84 @@ built and about one-tenth tested. But its good to have dreams since
 
 <h3>Operators</h3>
 
-<p><em>Comprehensible</em>:
-- Something we can read, argue with 
-- Essential for communities critiquing ideas. If the only person reading a model is a carbureter, then we can expect little push back. But if your models are about policies that humans have to implement, then I take it as axiomatic that humans will want to read and critique the models.</p>
+<p><em>Comprehensible</em>:</p>
 
-<p><em>Fast</em>:
--   Not a CPU hog 
--  Reproducing  and improving an old ideas means that you can reproduce that old result. Also, certifying that new ideas often means multiple runs overy many sub-samples of the data. Such  reproducability and certification is impractical when such repreduction is impractically slow</p>
+<ul>
+    <li>Something we can read, argue with </li>
+    <li>Essential for communities critiquing ideas. If the only person reading a model is a carbureter, then we can expect little push back. But if your models are about policies that humans have to implement, then I take it as axiomatic that humans will want to read and critique the models.</li>
+</ul>
 
-<p><em>Light</em>:
--  Small memory footprint 
-- Again, reproducing an old data mining experiment or certifying a new result means that the resources required for reproduction are not exobertant. </p>
+<p><em>Fast</em>:</p>
 
-<p><em>Goal-aware</em>:
--  Different goals means different models. AND multiple goals = no problem!
-- This is important since most data miners build models that optimizer for a single goal (e.g. minimize error or least-square error) yet business users often wnat their data miners to achieve many goals. </p>
+<ul>
+    <li>Not a CPU hog </li>
+    <li>Reproducing  and improving an old ideas means that you can reproduce that old result. Also, certifying that new ideas often means multiple runs overy many sub-samples of the data. Such  reproducability and certification is impractical when such repreduction is impractically slow</li>
+</ul>
 
-<p><em>Humble</em> :
--   Can publish succinct certification envelope (so we know when not to trust)
--  Delivered data mined models should be able to recognize when new data is out-of-scope of anything they've seen before. This means, at runtime, having access to the data used to build that model. Note that phrase <em>succinct</em> here: certification envelopes cannot include all the data relating to a model, otherwise every hard drive in the world will soon fill up.  </p>
+<p><em>Light</em>:</p>
 
-<p><em>Privacy-aware</em>:
--   Can hide an individual's data
-- This is essential when sharing a certification envelope </p>
+<ul>
+    <li>Small memory footprint </li>
+    <li>Again, reproducing an old data mining experiment or certifying a new result means that the resources required for reproduction are not exobertant. </li>
+</ul>
 
-<p><em>Shareable</em>:
--   Knows how to transfer models, data, between contexts. 
--  Such transfer usually requires some transformation of the soruce data to the target data.</p>
+<p><em>Goal-aware</em>:</p>
 
-<p><em>Context-aware</em>:
--   Knows that local parts of data generate different models. 
--  While general principles are good, so too is how to handle particular contexts. For example, in general, exercise is good for maintaining healthy. However, in the particular context of  patients who have jsut had cardiac surgery, then that general principle has to be carefully tailored to particular patients. 
--  ideas need to be updated. </p>
+<ul>
+    <li>Different goals means different models. AND multiple goals = no problem!</li>
+    <li>This is important since most data miners build models that optimizer for a single goal (e.g. minimize error or least-square error) yet business users often wnat their data miners to achieve many goals. </li>
+</ul>
 
-<p><em>Self-tuning</em>:
--   And can do it quickly
--  Many experiments show that we can't just use data miners off-the-shelf.  Rather, if their control parameters are tuned, then we can get much better data mining results.</p>
+<p><em>Humble</em> :</p>
 
-<p><em>Anomaly-aware</em>:
--   Can detect when new inputs differ from old training data
--  This is the trigger for when old</p>
+<ul>
+    <li>Can publish succinct certification envelope (so we know when not to trust)</li>
+    <li>Delivered data mined models should be able to recognize when new data is out-of-scope of anything they've seen before. This means, at runtime, having access to the data used to build that model. Note that phrase <em>succinct</em> here: certification envelopes cannot include all the data relating to a model, otherwise every hard drive in the world will soon fill up.  </li>
+</ul>
 
-<p><em>Incremental</em>:
--   Can update old models with new data
--  Anomaly detectors tell us something has to change.  Incremental learners tell us what to change.</p>
+<p><em>Privacy-aware</em>:</p>
+
+<ul>
+    <li>Can hide an individual's data</li>
+    <li>This is essential when sharing a certification envelope </li>
+</ul>
+
+<p><em>Shareable</em>:</p>
+
+<ul>
+    <li>Knows how to transfer models, data, between contexts. </li>
+    <li>Such transfer usually requires some transformation of the soruce data to the target data.</li>
+</ul>
+
+<p><em>Context-aware</em>:</p>
+
+<ul>
+    <li>Knows that local parts of data generate different models. </li>
+    <li>While general principles are good, so too is how to handle particular contexts. For example, in general, exercise is good for maintaining healthy. However, in the particular context of  patients who have jsut had cardiac surgery, then that general principle has to be carefully tailored to particular patients. </li>
+    <li>ideas need to be updated. </li>
+</ul>
+
+<p><em>Self-tuning</em>:</p>
+
+<ul>
+    <li>And can do it quickly</li>
+    <li>Many experiments show that we can't just use data miners off-the-shelf.  Rather, if their control parameters are tuned, then we can get much better data mining results.</li>
+</ul>
+
+<p><em>Anomaly-aware</em>:</p>
+
+<ul>
+    <li>Can detect when new inputs differ from old training data</li>
+    <li>This is the trigger for when old</li>
+</ul>
+
+
+<p><em>Incremental</em>:</p>
+
+<ul>
+    <li>Can update old models with new data</li>
+    <li>Anomaly detectors tell us something has to change.  Incremental learners tell us what to change.</li>
+</ul>
 
 
 <h3>Install</h3>
