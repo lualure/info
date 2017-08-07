@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>_style</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/_style.lua">browse</a> 
+</p>
+<h1> 
+LURE: _style
+</h1>
+              
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h2>My Coding standards (for Lua)</h2>
+
+<p>tim@menzies.us <br/>
+August'17</p>
+
+<hr/>
+<h3>Timm's Lua Coding style</h3>
+
+<p>If you are rading my code, it will save you time to know how I write my Lua.</p>
+
+<h4>Execution</h4>
+
+<p>Always use <code>luajit</code> (its faster). </p>
+
+<p>Always have <code>Lure</code> set to the LURE directory:</p>
+
+<pre><code>  Lure=PathtoLureDir
+</code></pre>
+
+<p>Always have date files in `$Lure/data'.</p>
+
+<p>Always have <code>LUA_PATH</code>  set to include the LURE directory. For example, your run command might be:</p>
+
+<pre><code>  LUA_PATH="$Lure/lib/?.lua;;" $(which luajit) file.lua
+</code></pre>
+
+<h4>Formatting</h4>
+
+<p>Indents = 2 spaces (no tabs).</p>
+
+<p>Short variable names; e.g. not <code>self</code> but <code>i</code>.</p>
+
+<p>Join all lines that are only  <code>end</code>. For example:</p>
+
+<pre><code>local function map(t,f)
+  if t then
+    for i,v in pairs(t) do f(v) end end end
+</code></pre>
+
+<p>Module names should be upper case (that's my goal, and that convention is 
+sweeping out through my code).  E.g.</p>
+
+<pre><code>local CSV = require "csv"
+</code></pre>
+
+<h4>Test suites</h4>
+
+<p>The file <code>X.lua</code> may have demo code in <code>Xok.lua</code>.</p>
+
+<ul>
+    <li>Use <code>random.lua</code> not the built-in random number generator since mine ins platform independent
+    (same numbers, different platforms-- better for writing unit tests).</li>
+</ul>
+
+<h4>Documentation</h4>
+
+<p>Add documents to enable <code>locco</code>-style documentation</p>
+
+<pre><code> ./locco.lua yourCode.lua -- generates docs/yourCode.html
+</code></pre>
+
+<p>Some rules:</p>
+
+<ul>
+    <li>No file called <code>index.lua</code> (messes up my documentation system)</li>
+    <li>Html written to lib/docs</li>
+    <li>Your <code>.gitignore</code> should ignore <code>docs</code> folder.</li>
+</ul>
+
+<p>Separate functions with lines:</p>
+
+<pre><code> function love()
+   talk()
+   if laugh() then
+     return smile() end end
+ --------------------------
+ function hate()
+   fight()
+   steal()
+   return 1 end
+</code></pre>
+
+<h4>Directories</h4>
+
+<p>All files in the same directory.</p>
+
+<p>All data in "/data" underneath some path name mentioned on <code>os.getenv("Lure")</code>.`</p>
+
+<h4>Printing</h4>
+
+<p>All files use <code>require "show"</code> which changes the default version of <code>print</code> and <code>tostring</code>. Note
+that to hide a field from being printed (e.g. since it is too long), make its first letter an underscore.</p>
+
+
+<h4>Encapsulation</h4>
+
+<p>Module-based polytheism</p>
+
+<ul>
+    <li>Modules usually have <code>create</code> <code>update</code> <code>updates</code></li>
+    <li>Module names are UPPER CASE</li>
+    <li>Most functions and variables are local</li>
+    <li>Modules end by returning a table of functions</li>
+</ul>
+
+<h4>Temptations (to avoid)</h4>
+
+<p>No use of meta tables (that way, madness lies).</p>
+
+<p>No OO tricks:</p>
+
+<ul>
+    <li>So many ways to do it in Lua... I found that I never stop experimenting.</li>
+    <li>And people hate my OO code: so many
+    levels of redirection. So I took the hint.
+    Keep in simple. <a href="http://sunnyday.mit.edu/16.355/hatton-les.pdf">Or risk consuing people</a>.</li>
+</ul>
+
+<h4>Configuration</h4>
+
+<p>Global configuration options stored in <code>config</code> and reset to defaults using <code>defaults()</code>
+(which are stored in the global <code>the</code>). So
+a standard experiment starts with</p>
+
+<pre><code>require "show"
+local R=require "random"
+local O=require "tests"
+local XX=require "moduleURtesting"
+
+local function _test1()
+  defaults() -- set the defaults
+  the.this.that = 10 -- override a default
+  do something with XX
+  assert(something)
+end 
+
+local function _anotherTest()
+  defaults() -- set the defaults
+  the.this.that = 4321 -- override a default
+  do something else with XXX
+  assert(something)
+end 
+
+R.seed(1) -- set the random seed
+O.k{_test1,_anotherTest} -- counts assertion failures, continue even if 1 crashes
+</code></pre>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://goo.gl/tjtpbE">
+LURE, Copyright (c) 2017, Tim Menzies <br/>
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the 
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the 
+    following disclaimer in the documentation and/or other 
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names 
+    of its contributors may be used to endorse or promote 
+    products derived from this software without specific 
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
