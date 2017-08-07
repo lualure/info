@@ -14,8 +14,8 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/show.lua">LURE: show</a>
+            <h1>
+              /Users/timm/src/lib/show.lua
             </h1>
           </th>
           <th class="code">
@@ -29,7 +29,7 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<img width=150 align=right src="https://goo.gl/QabuWK"><h1>show</h1>
+<h2>Recrusively printing table items</h2>
 
 <p>Matias Guijarro wrote:</p>
 <blockquote>
@@ -42,15 +42,17 @@
 
 <p>So first of all I tried to set a new metatable for tables,
 As Shmuel pointed out, table metatables are per-table, so
-they don't really work for what you want to do.
-  Lua 5.1.1  Copyright (C) 1994-2006 Lua.org, PUC-Rio
-  > Tbl = setmetatable({}, {__tostring = function(t)
-  >>                                        return "Hello!"
-  >>                                      end})
-  > print(Tbl) -- Works for this table,
-  Hello!
-  > print({}) -- but doesn't work for other tables.
-  table: 0x493378</p>
+they don't really work for what you want to do.</p>
+
+<pre><code>Lua 5.1.1  Copyright (C) 1994-2006 Lua.org, PUC-Rio
+&gt; Tbl = setmetatable({}, {__tostring = function(t)
+&gt;&gt;                                        return "Hello!"
+&gt;&gt;                                      end})
+&gt; print(Tbl) -- Works for this table,
+Hello!
+&gt; print({}) -- but doesn't work for other tables.
+table: 0x493378
+</code></pre>
 
 <p>A way that will work is to simply replace the tostring
 function itself.  Replace it with a function that calls your
@@ -157,4 +159,242 @@ digit after it:</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>Quotes a string in a Lua- and human-readable way.  (This is a
+replacement for string.format's <code>q</code>  placeholder, whose result
+isn't always human readable.)</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">StrToStr</span>(Str)
+  <span class="k">return</span> <span class="s">'"'</span> .. string.gsub(Str, <span class="s">"(.)(&#37;d?)"</span>, EscapeableToEscaped) .. <span class="s">'"'</span>
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>Quote a string into lua form (including the non-printable characters from
+0-31, and from 127-255).</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">quote</span>(_)
+  <span class="k">local</span> fmt = string.format
+  <span class="k">local</span> _ = fmt(<span class="s">"&#37;q"</span>, _)
+  _ = _)
+  _ = string.gsub(_, <span class="s">"\\\n"</span>, <span class="s">"\\n"</span>)
+  _ = _ = string.gsub(_, <span class="s">"[&#37;z\1-\31,\127-\255]"</span>, <span class="k">function</span> (x)
+  <span class="k">return</span> fmt(<span class="s">"\\&#37;03d"</span>,string.byte(x))
+  <span class="k">end</span>)
+  <span class="k">return</span> _
+<span class="k">end</span>
+
+StrToStr = quote
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>Lua keywords:</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> Keywords = {[<span class="s">"and"</span>] = <span class="k">true</span>, [<span class="s">"break"</span>] = <span class="k">true</span>, [<span class="s">"do"</span>] = <span class="k">true</span>,
+  [<span class="s">"else"</span>] = <span class="k">true</span>, [<span class="s">"elseif"</span>] = <span class="k">true</span>, [<span class="s">"end"</span>] = <span class="k">true</span>, [<span class="s">"false"</span>] = <span class="k">true</span>,
+  [<span class="s">"for"</span>] = <span class="k">true</span>, [<span class="s">"function"</span>] = <span class="k">true</span>, [<span class="s">"if"</span>] = <span class="k">true</span>, [<span class="s">"in"</span>] = <span class="k">true</span>,
+  [<span class="s">"local"</span>] = <span class="k">true</span>, [<span class="s">"nil"</span>] = <span class="k">true</span>, [<span class="s">"not"</span>] = <span class="k">true</span>, [<span class="s">"or"</span>] = <span class="k">true</span>,
+  [<span class="s">"repeat"</span>] = <span class="k">true</span>, [<span class="s">"return"</span>] = <span class="k">true</span>, [<span class="s">"then"</span>] = <span class="k">true</span>,
+  [<span class="s">"true"</span>] = <span class="k">true</span>, [<span class="s">"until"</span>] = <span class="k">true</span>, [<span class="s">"while"</span>] = <span class="k">true</span>}
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>Is Str an identifier?</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">IsIdent</span>(Str)
+  <span class="k">return</span> <span class="o">not</span> Keywords[Str] <span class="o">and</span> string.find(Str, <span class="s">"^[&#37;a_][&#37;w_]*$"</span>)
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<p>Converts a non-table to a Lua- and human-readable string:</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ScalarToStr</span>(Val)
+  <span class="k">local</span> Ret
+  <span class="k">local</span> Type = <span class="nt">type</span>(Val)
+  <span class="k">if</span> Type == <span class="s">"string"</span> <span class="k">then</span>
+    Ret = StrToStr(Val)
+  <span class="k">elseif</span> Type == <span class="s">"function"</span> <span class="o">or</span> Type == <span class="s">"userdata"</span> <span class="o">or</span> Type == <span class="s">"thread"</span> <span class="k">then</span>
+    Ret = <span class="s">"&lt;"</span> .. __tostring(Val) .. <span class="s">"&gt;"</span>
+  <span class="k">else</span>
+    Ret = _<span class="nt">tostring</span>(Val)
+  <span class="k">end</span> 
+  <span class="k">return</span> Ret
+<span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">private</span>(str)
+  <span class="k">return</span> <span class="nt">type</span>(str) == <span class="s">"string"</span> <span class="o">and</span> str:sub(1,1) == <span class="s">"_"</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<p>Converts a table to a Lua- and human-readable string.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">TblToStr</span>(Tbl, Seen)
+  Seen = Seen <span class="o">or</span> {}
+  <span class="k">local</span> Ret = {}
+  <span class="k">if</span> <span class="o">not</span> Seen[Tbl] <span class="k">then</span>
+    Seen[Tbl] = <span class="k">true</span>
+    <span class="k">local</span> LastArrayKey = 0
+    <span class="k">for</span> Key, Val <span class="k">in</span> <span class="nt">pairs</span>(Tbl) <span class="k">do</span>
+      <span class="k">if</span> <span class="o">not</span> private(Key) <span class="k">then</span>
+        <span class="k">if</span> <span class="nt">type</span>(Key) == <span class="s">"table"</span> <span class="k">then</span>
+          Key = <span class="s">"["</span> .. TblToStr(Key, Seen) .. <span class="s">"]"</span>
+        <span class="k">elseif</span> <span class="o">not</span> IsIdent(Key) <span class="k">then</span>
+          <span class="k">if</span> <span class="nt">type</span>(Key) == <span class="s">"number"</span> <span class="o">and</span> Key == LastArrayKey + 1 <span class="k">then</span>
+</pre></div>
+</td>
+</tr><tr id="section-12">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-12">&#182;</a>
+  </div>
+  
+<p>Don't mess with Key if it's an array key.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>            LastArrayKey = Key
+          <span class="k">else</span>
+            Key = <span class="s">"["</span> .. ScalarToStr(Key) .. <span class="s">"]"</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+        <span class="k">if</span> <span class="nt">type</span>(Val) == <span class="s">"table"</span> <span class="k">then</span>
+          Val = TblToStr(Val, Seen)
+        <span class="k">else</span>
+          Val = ScalarToStr(Val)
+        <span class="k">end</span>
+        Ret[#Ret + 1] =
+          (<span class="nt">type</span>(Key) == <span class="s">"string"</span>
+            <span class="o">and</span> (Key .. <span class="s">"= "</span>) <span class="c">-- Explicit key.
+</span>            <span class="o">or</span> <span class="s">""</span>) <span class="c">-- Implicit array key.
+</span>          .. Val
+      <span class="k">end</span>
+    <span class="k">end</span>
+    Ret = <span class="s">"{"</span> .. table.concat(Ret, <span class="s">", "</span>) .. <span class="s">"}"</span>
+  <span class="k">else</span>
+    Ret = <span class="s">"&lt;cycle to "</span> .. __tostring(Tbl) .. <span class="s">"&gt;"</span>
+  <span class="k">end</span>
+  <span class="k">return</span> Ret
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-13">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-13">&#182;</a>
+  </div>
+  
+<p>A replacement for tostring that prints tables in Lua- and
+human-readable format:</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">function</span> <span class="nf"><span class="nt">tostring</span></span>(Val)
+  <span class="k">return</span> <span class="nt">type</span>(Val) == <span class="s">"table"</span>
+    <span class="o">and</span> TblToStr(Val)
+    <span class="o">or</span> _<span class="nt">tostring</span>(Val)
+<span class="k">end</span>
+
+</pre></div>
+</td>
+</tr><tr id="section-14">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-14">&#182;</a>
+  </div>
+  
+<p>A test function:</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">_tostringTest</span>()
+  <span class="k">local</span> Fnc = table.sort <span class="c">--function() end
+</span>  <span class="k">local</span> Tbl = {}
+  Tbl[Tbl] = Tbl
+  <span class="k">local</span> Tbls = {
+    {},
+    {1, <span class="k">true</span>, 3},
+    {Foo = <span class="s">"Bar"</span>},
+    {[<span class="s">"*Foo*"</span>] = <span class="s">"Bar"</span>},
+    {Fnc},
+    {[{}] = {}},
+    {1, 2, 3, {4, 5}},
+    Tbl,
+  }
+  <span class="k">local</span> Strs = {
+    <span class="s">"{}"</span>,
+    <span class="s">"{1, true, 3}"</span>,
+    <span class="s">'{Foo= "Bar"}'</span>,
+    <span class="s">'{["*Foo*"]= "Bar"}'</span>,
+    <span class="s">'{&lt;'</span> .. __tostring(Fnc) .. <span class="s">'&gt;}'</span>,
+    <span class="s">"{[{}]= {}}"</span>,
+    <span class="s">"{1, 2, 3, {4, 5}}"</span>,
+    <span class="s">"{[&lt;cycle to "</span> .. __tostring(Tbl) .. <span class="s">"&gt;]= &lt;cycle to "</span>
+      .. __tostring(Tbl) .. <span class="s">"&gt;}"</span>,
+  }
+  <span class="k">for</span> I, Tbl <span class="k">in</span> <span class="nt">ipairs</span>(Tbls) <span class="k">do</span>
+    <span class="nt">print</span>(<span class="nt">tostring</span>(Tbl))
+    <span class="nt">assert</span>(<span class="nt">tostring</span>(Tbl) == Strs[I],
+      <span class="s">"Assertion failed on "</span> .. __tostring(<span class="nt">tostring</span>(Tbl)))
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">return</span> {tests=_tostringTest}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

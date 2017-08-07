@@ -14,9 +14,23 @@
       <thead>
         <tr>
           <th class="docs">
-            <img width=150 align=right src="https://goo.gl/QabuWK"><h1>
-              <a href="https://github.com/lualure/src/blob/master/lib/csv.lua">LURE: csv</a>
-            </h1><p><a href="index.html">[Index]</a></p>
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/csv.lua">browse</a> 
+</p>
+<h1> 
+LURE: csv
+</h1>
+              
           </th>
           <th class="code">
           </th>
@@ -29,7 +43,7 @@
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
-<h2>Utilities for reading CSV files</h2>
+<h2>Utilities for reading CSV  data</h2>
 
 
 </td>
@@ -58,19 +72,21 @@
     <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
-<p>Map a function mapped over comma-seperated data. 
-pruning comments away and dead space.  For example,
-here's a simple <code>print</code> for each row:</p>
+<ul>
+    <li>Read comma seperated data from string of file.</li>
+    <li>Kill spurious white space, comments</li>
+    <li>If lines end in "<code>,</code>", concat with next line.</li>
+    <li>If on row1, the column has a "<code>?</code>" in it, skip that column.</li>
+    <li>Convert cells to numbers or strings (as appropriate).</li>
+    <li>Pass the cells from each line to a function <code>fn</code>.</li>
+</ul>
+
+<p>Sample usage:</p>
 
 <pre><code>local csv=require "csv"
-csv(os.getenv("DataDir") .. "/data/weather.csv",print)
+csv(os.getenv("DataDir") .. "/data/weather.csv",
+   print)
 </code></pre>
-
-<p>Data is assumed to start with an initial row list column
-names. If a column name includes "?", then don't read it.
-If a row ends with a comma, join it to the next line.</p>
-
-<p>This code is called using <code>csv(source, function)</code>.</p>
 
 <ul>
     <li>If <code>source</code> is a string ending with <code>txt</code> or <code>csv</code>,
@@ -80,17 +96,12 @@ If a row ends with a comma, join it to the next line.</p>
     is a string containing the data.</li>
 </ul>
 
-<p>TODO: the following passes each found row to a function <code>fn</code>.
-A cooler approach would be remove the need for pass round <code>fn</code>
-and make all this an iterator. BUT, iterators in Lua and
-nuanced more complex than other languages (like Python). So
-here, we take the easy path (i.e. pass the function).</p>
-
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> the      = <span class="nt">require</span> <span class="s">"config"</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> the      = <span class="nt">require</span> <span class="s">"config"</span>
 <span class="k">local</span> notsep   = <span class="s">"([^"</span> .. the.sep .. <span class="s">"]+)"</span> <span class="c">-- not cell seperator
 </span><span class="k">local</span> dull     = <span class="s">"['\"\t\n\r]*"</span>  <span class="c">-- white space, quotes
 </span><span class="k">local</span> padding  = <span class="s">"&#37;s*(.-)&#37;s*"</span>    <span class="c">-- space around words

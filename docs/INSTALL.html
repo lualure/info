@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>INSTALL</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/INSTALL.lua">browse</a> 
+</p>
+<h1> 
+LURE: INSTALL
+</h1>
+              
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'18</em>   </p>
+
+
+<hr/>
+
+<p><a href="WHY">Why</a> | Install | <a href="WHAT">What</a> | <a href="GUIDE">Guide</a> | <a href="STYLE">Style</a> </p>
+
+<hr/>
+
+<h3>Using LuaRocks</h3>
+
+<p>Coming soon.</p>
+
+<h3>Using Github</h3>
+
+<p>Check out the repo, then create an environment
+variable <code>Lure</code> to hold the repo's location.</p>
+
+<pre><code>git clone http://github.com/lualure/src src
+Lure=$PWD/src 
+</code></pre>
+
+<p>Add the following function to your $HOME/.bashrc.</p>
+
+<pre><code>lure() { 
+  f=$(basename $1 .lua).lua
+  shift
+  if [ -f "$Lure/lib/$f" ]; then
+    LUA_PATH="$Lure/lib/?.lua;;" $(which luajit) $Lure/lib/$f "$*"
+    return 0
+  fi
+  echo "not found $f"
+}
+</code></pre>
+
+<p>Make sure your source this code; e.g. logout then log
+back in or (much faster):</p>
+
+<pre><code>. ~/.bashrc
+</code></pre>
+
+<h3>Test</h3>
+
+<p>Change directories to some other part of your computer (away from the source code). Then
+try to run any code from lure. e.g.</p>
+
+<pre><code>$ lure listsok
+# test: 1
+0.000167 secs
+# test: 2
+1.1e-05 secs
+# test: 3
+3.9999999999997e-06 secs
+# test: 4
+4e-05 secs
+:pass 4 :fail 0 :percentPass 100
+-- Global: the
+-- Global: defaults
+</code></pre>
+
+<p>The above code is reporting that none of the <code>listsok</code> tests can file fault with the <code>lists</code>
+functions (hence <code>:fail 0</code>). It also shows that those tests run fast (in tenths of milliseconds)
+and that this code suffers from only two globals <code>the</code> and <code>defaults</code> (and these two are meant to
+be the only defaults known to  the system-- see the notes on coding style, below).</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

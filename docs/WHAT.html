@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>WHAT</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://github.com/lualure/src/blob/master/lib/WHAT.lua">browse</a> 
+</p>
+<h1> 
+LURE: WHAT
+</h1>
+              
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<hr/>
+
+<p><a href="WHY">Why</a> | <a href="INSTALL">Install</a> | What | <a href="GUIDE">Guide</a> | <a href="STYLE">Style</a> </p>
+
+<hr/>
+
+<p>I claim data science is about science; i.e. it is about 
+a community carefully curating and improving a collecting of idea. So, according to this claim, it is not
+enough to merely make conclusions. Rather, those conclusions need to be monitoried and updated (when appropriate).</p>
+
+<p>The following operators are a set of  tools I say need to be part of any data mining toolkit that supports
+science. 
+THere is no claim here of completeness of these tools. 
+You should be very critical of the technical
+choices I made in that implementation. What simplifications did I
+make? What better technologies should I use? What did I overlook?
+If you think you can handle the above in (e.g.)
+<a href="https://www.tensorflow.org/">TensorFlow</a>
+  or <a href="http://torch.ch/">Torch</a> or using 100 other methods,  I would
+lean forward and say "yes? really? show me how".</p>
+
+
+<p><em>Comprehension</em>:</p>
+
+<ul>
+    <li>Something we can read, argue with </li>
+    <li>Essential for communities critiquing ideas. If the only person reading a model is a carburetor, then we can expect little push back. But if your models are about policies that humans have to implement, then I take it as axiomatic that humans will want to read and critique the models.</li>
+</ul>
+
+<p><em>Fast</em>:</p>
+
+<ul>
+    <li>Not a CPU hog </li>
+    <li>Reproducing  and improving an old ideas means that you can reproduce that old result. Also, certifying that new ideas often means multiple runs over many sub-samples of the data. Such  reproducibility and certification is impractical when such reproduction is impractically slow</li>
+</ul>
+
+<p><em>Light</em>:</p>
+
+<ul>
+    <li>Small memory footprint </li>
+    <li>Again, reproducing an old data mining experiment or certifying a new result means that the resources required for reproduction are not exorbitant. </li>
+</ul>
+
+<p><em>Goal-aware</em>:</p>
+
+<ul>
+    <li>Different goals means different models. AND multiple goals = no problem!</li>
+    <li>This is important since most data miners build models that optimizer for a single goal (e.g. minimize error or least-square error) yet business users often want their data miners to achieve many goals. </li>
+</ul>
+
+<p><em>Humble</em> :</p>
+
+<ul>
+    <li>Can publish succinct certification envelope (so we know when not to trust)</li>
+    <li>Delivered data mined models should be able to recognize when new data is out-of-scope of anything they've seen before. This means, at runtime, having access to the data used to build that model. Note that phrase <em>succinct</em> here: certification envelopes cannot include all the data relating to a model, otherwise every hard drive in the world will soon fill up.  </li>
+</ul>
+
+<p><em>Privacy-aware</em>:</p>
+
+<ul>
+    <li>Can hide an individual's data</li>
+    <li>This is essential when sharing a certification envelope </li>
+</ul>
+
+<p><em>Shareable</em>:</p>
+
+<ul>
+    <li>Knows how to transfer models, data, between contexts. </li>
+    <li>Such transfer usually requires some transformation of the source data to the target data.</li>
+</ul>
+
+<p><em>Context-aware</em>:</p>
+
+<ul>
+    <li>Knows that local parts of data generate different models. </li>
+    <li>While general principles are good, so too is how to handle particular contexts. For example, in general, exercise is good for maintaining healthy. However, in the particular context of  patients who have just had cardiac surgery, then that general principle has to be carefully tailored to particular patients. 
+    ideas need to be updated. </li>
+</ul>
+
+<p><em>Self-tuning</em>:</p>
+
+<ul>
+    <li>And can do it quickly</li>
+    <li>Many experiments show that we can't just use data miners off-the-shelf.  Rather, if their control parameters are tuned, then we can get much better data mining results.</li>
+</ul>
+
+<p><em>Anomaly-aware</em>:</p>
+
+<ul>
+    <li>Can detect when new inputs differ from old training data</li>
+    <li>This is the trigger for when old</li>
+</ul>
+
+
+<p><em>Incremental</em>:</p>
+
+<ul>
+    <li>Can update old models with new data</li>
+    <li>Anomaly detectors tell us something has to change.  Incremental learners tell us what to change.</li>
+</ul>
+
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -15,7 +15,7 @@
         <tr>
           <th class="docs">
             <h1>
-              /Users/timm/gits/lualure/src/lib/num.lua
+              /Users/timm/src/lib/num.lua
             </h1>
           </th>
           <th class="code">
@@ -65,10 +65,10 @@ print(x.mu, x,sd)
 
 <p>A shortcut:</p>
 
-<pre><code>local i,add=NUM.watch()
+<pre><code>local i,addi = NUM.watch()
 for _,x in pairs{9,2,5,4,12,7,8,11,9,3,7,
                  4,12,5,4,10,9,6,9,4} do
-   add(x) end
+   addi(x) end
 print(i.mu, i.sd)
 </code></pre>
 

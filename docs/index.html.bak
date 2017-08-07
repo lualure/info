@@ -57,9 +57,13 @@
   </div>
   
 <ul>
-    <li><a href="DATA.html">DATA</a> </li>
+    <li><a href="GUIDE.html">GUIDE</a> </li>
+    <li><a href="INSTALL.html">INSTALL</a> </li>
     <li><a href="LICENSE.html">LICENSE</a> </li>
+    <li><a href="README.html">README</a> </li>
     <li><a href="STYLE.html">STYLE</a> </li>
+    <li><a href="WHAT.html">WHAT</a> </li>
+    <li><a href="WHY.html">WHY</a> </li>
     <li><a href="config.html">config</a> </li>
     <li><a href="contrasts.html">contrasts</a> </li>
     <li><a href="csv.html">csv</a> </li>

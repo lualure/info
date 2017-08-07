@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>README</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              /Users/timm/src/lib/README.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+[Home](INDEX) | [Why](WHY) | [What](WHAT) | [Guide](GUIDE)
+
+
+&lt;img align=right src=<span class="s">"https://avatars6.githubusercontent.com/u/30064709?v=4&amp;s=200"</span>&gt;
+
+
+There has been [much recent work applying data miners to software engineering](https://goo.gl/NAs3Nu). But what about the
+other way around? What software engineering principles should be apply to data miners? After decades
+of use of data miners, what services should we demand from our data miners, <span class="o">and</span> how <span class="k">do</span> we build those services?
+
+LURE is a workbench <span class="k">for</span>  exploring SE <span class="k">for</span> data mining.
+The premise of LURE is that data miners are _not_ black boxes that we should buy, <span class="k">then</span> uncritically use <span class="s">"as-is"</span>,
+without modification.
+Rather,
+data miners are just software <span class="o">and</span> software contains 100s of design choices that effects what is learned:
+
+- Some of those choices may <span class="o">not</span> be appropriate <span class="k">for</span> your specific needs. 
+- Also, some of those choices
+might actually be sub-optimum <span class="k">for</span> your domain.
+- Further, <span class="k">if</span> you actually understand the internals of a data miner, you can mix <span class="o">and</span> match what data miners
+<span class="k">do</span> <span class="k">in</span> order to provide useful <span class="o">and</span> innovative solutions to your data mining tasks.
+
+So LURE is a set of minimal data mining tools designed with the goal of letting their students <span class="s">"roll their sleeves up"</span>
+to muck around inside data miners. The code is written <span class="k">in</span> LUA since that makes it very portable, small footprint,
+succinct, <span class="o">and</span> hence easily modifiable (<span class="o">and</span> <span class="k">for</span> students who <span class="o">not</span> know how to write LUA code,
+I can use LURE as a kind of assignment specification; e.g. write this code <span class="k">in</span> your favorite language).
+
+
+### Status
+
+LURE is about 
+about one-third
+built <span class="o">and</span> about one-tenth tested. But its good to have dreams since 
+[<span class="s">"a man's (sic) reach should exceed his grasp, Or what's a heaven for?"</span>](https://www.poetryfoundation.org/poems/43745/andrea-del-sarto).
+
+
+## Legal
+
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License
+
+Redistribution <span class="o">and</span> use <span class="k">in</span> source <span class="o">and</span> binary forms, with
+<span class="o">or</span> without modification, are permitted provided that
+the following conditions are met:
+
+- Redistributions of source code must retain the above
+  copyright notice, this list of conditions <span class="o">and</span> the 
+  following disclaimer.
+- Redistributions <span class="k">in</span> binary form must reproduce the
+  above copyright notice, this list of conditions <span class="o">and</span> the 
+  following disclaimer <span class="k">in</span> the documentation <span class="o">and</span>/<span class="o">or</span> other 
+  materials provided with the distribution.
+- Neither the name of the copyright holder nor the names 
+  of its contributors may be used to endorse <span class="o">or</span> promote 
+  products derived from this software without specific 
+  prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS <span class="s">"AS IS"</span> AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

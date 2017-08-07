@@ -15,7 +15,7 @@
         <tr>
           <th class="docs">
             <h1>
-              /Users/timm/gits/lualure/src/lib/sym.lua
+              /Users/timm/src/lib/sym.lua
             </h1>
           </th>
           <th class="code">
@@ -48,9 +48,9 @@ print(SYM.ent(i)) end
 
 <p>For those who like less typing:</p>
 
-<pre><code>local i,add = SYM.watch()
+<pre><code>local i,addi = SYM.watch()
 for word in string.gmatch(words,"([^ ]+)" ) do
-  add(word) end
+  addi(word) end
 print(SYM.ent(i)) end
 </code></pre>
 
