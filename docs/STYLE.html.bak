@@ -39,7 +39,7 @@ August'17</p>
 
 <hr/>
 
-<p>If you are rading my code, it will save you time to know how I write my Lua.</p>
+<p>If you are reading my code, it will save you time to know how I write my Lua.</p>
 
 <h4>Execution</h4>
 
@@ -54,7 +54,7 @@ August'17</p>
 
 <p>Always have <code>LUA_PATH</code>  set to include the LURE directory. For example, your run command might be:</p>
 
-<pre><code>  LUA_PATH="$Lure/lib/?.lua;;" $(which luajit) file.lua
+<pre><code>  LUA_PATH="$Lure/lib/?.lua;;" $(which luajit) file.l
 </code></pre>
 
 <h4>Formatting</h4>

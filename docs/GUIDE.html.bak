@@ -57,9 +57,10 @@
 <p>Read notes  on the LURE <a href="STYLE">LUA coding style</a>. Note, in particular, that some of the
 <code>X.lua</code> files have <code>Xok.lua</code> demo/test files.</p>
 
+<hr/>
 <h3>File Groupings</h3>
 
-<p>The functions in LURE fall into the following  groups</p>
+<p>As of August 8 2017, the files of LURE divide into the following  groups</p>
 
 <pre><code> base       support    stats    table    learners
  ------     -------    ------   -----    -----------
@@ -103,12 +104,45 @@
 <p>Code for studying single distributions (and for studying multiple distributions, see <em>table</em>, below).</p>
 
 <ul>
-    <li>show.lua</li>
-    <li>config</li>
-    <li>tests.lua</li>
-    <li><a href="tiles">tiles.lua</a>:</li>
-    <li><a href="spy">spy.lua</a>: basic lists utilities
-    Support One of my core data structures is <code>tbl</code> (table). Its a place to store</li>
+    <li><a href="num">num.lua</a>: watches a stream of numbers, summarized as Gaussians</li>
+    <li><a href="range">range.lua</a>: divides a list of numbers into a set of breaks. Note that this uses a dumb <code>unsupervosed</code>
+    approach. For a smaller approach, that reflects over the class variable, see <a href="superranges">superranges.lua</a>.</li>
+    <li><a href="sample">sample.lua</a>: watches a stream of numbers, keeps a random sample, never keeps more than (say) 
+    a few hundred values.</li>
+    <li><a href="spy">spy.lua</a>: watches numbers and, every so often, prints out the current stats.</li>
+    <li><a href="sym">sym.lua</a>: watches a stream of symbols</li>
+    <li><a href="sk">sk.lua</a>: ranks  a list of <code>sample</code>s, using a recursive top-down bi-clustering algorithm;</li>
+    <li><a href="tiles">tiles.lua</a>: divides a table of numbers into percentiles. Not very smart (for a smarter approach, see <code>range</code>).</li>
+</ul>
+
+<p>Note also that the "watcher" modules (<code>num</code>, <code>sym</code>, <code>spy</code> and <code>sample</code>) all have a very similar protocol:</p>
+
+<ul>
+    <li><code>create</code>: make new watcher</li>
+    <li><code>update</code>: add an item to a watcher</li>
+    <li><code>updates</code>: add many items to a watcher, optionally filtered through some function <code>f</code>. Returns a new
+    watcher unless an optional third argument is supplied (in which case, the item is addes to this third arg).</li>
+    <li><code>watch</code>: returns a new watcher <em>and</em> a convenience function for adding values to this watcher.</li>
+</ul>
+
+<p>Another shared protocol is between <code>num</code> and <code>sym</code>:</p>
+
+<ul>
+    <li><code>distance</code> between two items (and if one or both are the <code>unknown</code> symbol react appropriately)</li>
+    <li><code>norm</code> (called by <code>distance</code>) to reduce numbers to the range 0..1 min..max (and for <code>sym</code>s, this function just
+    returns the value</li>
+</ul>
+
+<p>Also, we can test is two <code>num</code> and <code>sample</code> distributions are statistically the same. </p>
+
+<ul>
+    <li><p>For <code>num</code>s, we use parametric Gaussian effect size and significance tests;</p></li>
+    <li><p>For <code>sample</code>s, we use non-parametric effect size and significance tests (Scott-Knot in the <a href="sk">sk.lua</a> file, 
+    bootstrap, and cliff's delta be checked </p></li>
+    <li><p>tests.lua</p></li>
+    <li><p><a href="tiles">tiles.lua</a>:</p></li>
+    <li><p><a href="spy">spy.lua</a>: basic lists utilities
+    Support One of my core data structures is <code>tbl</code> (table). Its a place to store</p></li>
 </ul>
 
 <p><code>row</code>s of data. Each column in   <code>tbl</code> has a header that is a <code>num</code> or a <code>sym</code> 
