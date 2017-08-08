@@ -346,7 +346,8 @@ show everything).</p>
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">maprint</span>(t, first, last)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">maprint</span>(t, first, last)
   first = first <span class="o">or</span> #t
   <span class="k">for</span> j=1,first <span class="k">do</span> <span class="nt">print</span>(j,t[j]) <span class="k">end</span>
   <span class="k">if</span> last <span class="k">then</span>

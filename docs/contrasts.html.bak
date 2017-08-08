@@ -79,7 +79,9 @@ to <code>branch2</code> from <code>branch1</code>.</p>
 
 <pre><code>local function more(x,y) return x &gt; y end
 local function less(x,y) return x &lt; y end
+
 -- the above controls what  constrast are selected
+
 local function plans(branches)    
   return contrasts(branches, more) end
 local function monitors(branches) 

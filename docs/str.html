@@ -25,7 +25,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblu
 <a href="https://twitter.com/lua_lured">news</a> |
 <a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
 <a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/LICENSE.md">license</a> 
+<a href="https://lualure.github.io/info/LICENSE">license</a> 
 </p>
 <h1> 
 LURE: str
@@ -54,7 +54,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblu
 <a href="https://twitter.com/lua_lured">news</a> |
 <a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
 <a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/LICENSE.md">license</a> 
+<a href="https://lualure.github.io/info/LICENSE">license</a> 
 </p>
 <h1> 
 LURE: str
@@ -82,7 +82,7 @@ LURE: str
 <td class="code">
   <div class="highlight"><pre>
 <span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
-<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> LST=<span class="nt">require</span> <span class="s">"lists"</span>
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -147,9 +147,9 @@ LURE: str
 </td>
 <td class="code">
   <div class="highlight"><pre>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">fmts</span>(control, ...)
+<span class="k">local</span> <span class="k">function</span> <span class="nf">fmts</span>(control, t)
   <span class="k">return</span> table.concat(
-          lst.collect(<span class="nt">unpack</span>{...},<span class="k">function</span> (_)
+          LST.collect(t,<span class="k">function</span> (_)
                 <span class="k">return</span> string.format(control, _) <span class="k">end</span>),<span class="s">","</span>) <span class="k">end</span>
 </pre></div>
 </td>

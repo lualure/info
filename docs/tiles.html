@@ -25,7 +25,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblu
 <a href="https://twitter.com/lua_lured">news</a> |
 <a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
 <a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/LICENSE.md">license</a> 
+<a href="https://lualure.github.io/info/LICENSE">license</a> 
 </p>
 <h1> 
 LURE: tiles
@@ -43,11 +43,22 @@ LURE: tiles
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h2>Show percentils</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'18</em>   </p>
+
+
+<p>This is a low-level routine that just pretty
+prints a box plot of lists of numbers. Best
+described via example. Try <code>lua tilesok.lua</code>
+for pretty-prints of three distributions.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
 <span class="k">local</span> THE = <span class="nt">require</span> <span class="s">"config"</span>
 <span class="k">local</span> LST= <span class="nt">require</span> <span class="s">"lists"</span>
 </pre></div>
@@ -59,11 +70,15 @@ LURE: tiles
   </div>
   
 <hr/>
+<p>Sort list <code>i</code>, break into `1/p' sections,
+print section 1, then print every <code>jump</code>
+section after that.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">tiles</span>(i,p, jump)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span>   tiles(i,p, jump)
   <span class="k">local</span> p    = p <span class="o">or</span> 10
   <span class="k">local</span> jump = jump <span class="o">or</span> 1
   table.sort(i)
@@ -82,11 +97,13 @@ LURE: tiles
   </div>
   
 <hr/>
+<p>Control settings for the <code>show</code> function</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">hows</span>(t) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">hows</span>(t) 
   table.sort(t)
   <span class="k">return</span> {
   width=50,
@@ -109,15 +126,18 @@ LURE: tiles
   </div>
   
 <hr/>
+<p>Generate a list that is a pretty print a list of numbers <code>t</code></p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">show</span>(t, how)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">show</span>(t, how)
   how = how <span class="o">or</span> hows(t)
   <span class="k">local</span> <span class="k">function</span> <span class="nf">fl</span>(x)    <span class="k">return</span> 1+ math.floor(x) <span class="k">end</span>
   <span class="k">local</span> <span class="k">function</span> <span class="nf">pos</span>(p)   <span class="k">return</span> t[ fl(p * #t) ] <span class="k">end</span>
-  <span class="k">local</span> <span class="k">function</span> <span class="nf">place</span>(x) <span class="k">return</span> fl( how.width*(x- how.lo)/(how.hi - how.lo+10^-32) ) <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">place</span>(x) 
+         <span class="k">return</span> fl( how.width*(x- how.lo)/(how.hi - how.lo+10^-32) ) <span class="k">end</span>
   <span class="k">local</span> <span class="k">function</span> <span class="nf">whats</span>(chops)
           <span class="k">return</span>  LST.collect(chops, <span class="k">function</span> (_) <span class="k">return</span> 
                               pos(_[1]) <span class="k">end</span> ) <span class="k">end</span>
@@ -151,11 +171,16 @@ LURE: tiles
   </div>
   
 <hr/>
+<p>Using the min/max of all the numbers anywhere in
+a table of tables of numbers <code>ts</code>, Generate a 
+pretty print of the tables of numbers <code>ts</code>,
+then print them</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">shows</span>(ts) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">shows</span>(ts) 
   <span class="k">local</span> lo,hi,out = 10^64, -10^64, {}
   <span class="k">for</span> _,t <span class="k">in</span> <span class="nt">pairs</span>(ts) <span class="k">do</span>
     <span class="k">for</span> _,v <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
@@ -170,13 +195,94 @@ LURE: tiles
                           how.lo = lo
                           how.hi = hi
                           <span class="k">return</span> show(t,how) <span class="k">end</span>) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>Convenience function. Generate and pring</p>
 
-<span class="k">local</span> <span class="k">function</span> <span class="nf">showAndPrint</span>(ts) 
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">showAndPrint</span>(ts) 
   <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(shows(ts)) <span class="k">do</span>
     <span class="nt">print</span>(one) <span class="k">end</span> <span class="k">end</span>
-
-<span class="k">return</span> {tiles=tiles, show=show, <span class="nt">print</span>=showAndPrint,shows=shows,how=hows}
 </pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+<p>External interface</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> {tiles=tiles, show=show, 
+        <span class="nt">print</span>=showAndPrint,shows=shows,how=hows}
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>
