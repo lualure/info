@@ -38,26 +38,37 @@
 <p>Why | <a href="INSTALL">Install</a> | <a href="WHAT">What</a> | <a href="Guide">Guide</a> | <a href="STYLE">Style</a> </p>
 
 <hr/>
-<p>-
-<img align=right src="https://avatars6.githubusercontent.com/u/30064709?v=4&amp;s=200"></p>
+
+<p>LURE is a set of minimal data mining tools designed with the goal of letting their students "roll their sleeves up"
+to muck around inside data miners. </p>
+
+<p>The code is written in LUA since:</p>
+
+<ul>
+    <li>That makes it very portable;</li>
+    <li>LUA programs are not resource intensive;</li>
+    <li>LUA code are very succinct and hence easily modifiable;</li>
+    <li>LUA code is quite readable so for students who not know how to write LUA code;
+    I can use LURE as a kind of executable specification; e.g. write this code in your favorite language).</li>
+    <li>There are some interesting LUA data mining tool likes e.g. <a href="http://torch.ch/">TORCH</a>.</li>
+</ul>
 
 <p>This  code offers  <em>baseline</em> implementations of a set of <em>software science operators</em> which,
-I say, are needed for data science.</p>
-
-<p>It is  bait,  a dare, a taunt temptation, a  gauntlet that I throw down asking you "do better!". 
-It is a taunt and a temptation to make you consider what <em>else</em> we need in data mining software.</p>
-
-
-<p>Note that I describe this work  as a  <em>baselines</em>.  LURE currently implements
-some of my operators (and more each week)
+I say, are needed for data science.
 But you should be very critical of the technical
 choices I made in that implementation. What simplifications did I
-make? What better technologies should I use? What did I overlook?</p>
-
-<p>And (here's the trap) if you think you can handle the above in (e.g.)
+make? What better technologies should I use? What did I overlook?
+And (here's the trap) if you think you can handle the above in (e.g.)
 <a href="https://www.tensorflow.org/">TensorFlow</a>
   or <a href="http://torch.ch/">Torch</a> or using 100 other methods,  I would
 lean forward and say "yes? really? show me how".</p>
+
+<h3>Status</h3>
+
+<p>LURE is about 
+about one-third
+built and about one-tenth tested. But its good to have dreams since 
+<a href="https://www.poetryfoundation.org/poems/43745/andrea-del-sarto">"a man's (sic) reach should exceed his grasp, Or what's a heaven for?"</a>.</p>
 
 <h3>Motivation</h3>
 
@@ -78,23 +89,11 @@ data miners are just software and software contains 100s of design choices that 
     do in order to provide useful and innovative solutions to your data mining tasks.</li>
 </ul>
 
-<p>So LURE is a set of minimal data mining tools designed with the goal of letting their students "roll their sleeves up"
-to muck around inside data miners. The code is written in LUA since that makes it very portable, small footprint,
-succinct, and hence easily modifiable (and for students who not know how to write LUA code,
-I can use LURE as a kind of assignment specification; e.g. write this code in your favorite language).</p>
-
-<h3>Status</h3>
-
-<p>LURE is about 
-about one-third
-built and about one-tenth tested. But its good to have dreams since 
-<a href="https://www.poetryfoundation.org/poems/43745/andrea-del-sarto">"a man's (sic) reach should exceed his grasp, Or what's a heaven for?"</a>.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>
-<span class="nt">require</span> <span class="s">"show"</span>
+  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
 </pre></div>
 </td>
 </tr><tr id="section-2">

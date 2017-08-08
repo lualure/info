@@ -61,23 +61,27 @@
 
 <p>The functions in LURE fall into the following  groups</p>
 
-<ul>
-    <li>base code:</li>
-    <li>support code:</li>
-    <li>table code:</li>
-    <li>misc code.</li>
-</ul>
+<pre><code> base       support    stats    table    learners
+ ------     -------    ------   -----    -----------
+ config     csv        num      row      contrasts
+ show       id         range    tbl      sdtree    
+ tests      lists      sample            superrange
+            random     spy               trees
+            str        sym
+                       sk
+                       tiles                     
+</code></pre>
 
 <h3>Base code</h3>
 
-<p>The following code should be assumed to be global across all the rest.</p>
+<p>The following <em>base</em> code should be assumed to be global across all the rest.</p>
 
 <ul>
+    <li><a href="config">config.lua</a>: store global options in the global <code>the</code>.  These can be changed by the other code, then reset
+    to the default values by <code>defaults()</code>.</li>
     <li><a href="show">show.lua</a>: changes LUA's default printer such that printing a table also prints
                     its contents (recursively). To avoid printing very long items,
                     give them a keyname starting with `_`.</li>
-    <li><a href="config">config.lua</a>: store global options in the global <code>the</code>.  These can be changed by the other code, then reset
-    to the default values by <code>defaults()</code>.</li>
     <li><a href="tests">tests.lua</a>: a simple unit test framework.</li>
 </ul>
 
@@ -86,16 +90,25 @@
 <p>Simple stand alone utilities.</p>
 
 <ul>
-    <li><p><a href="random">random.lua</a>: random number generation that is stable across different platforms.
-    This is a nice place to see how a basic LUA module is formed.</p></li>
-    <li><p><a href="str">str.lua</a>: basic string routines: print lists of item, replace characters, etc</p></li>
-    <li><p><a href="lists">lists.lua</a>: basic lists utilities</p></li>
-    <li><p><a href="csv">csv.lua</a>: reads comma seperates values from strings or files. Pass each found row to a function.</p></li>
-    <li><p><a href="tiles">tiles.lua</a>:</p></li>
-    <li><p>show.lua</p></li>
-    <li><p>config</p></li>
-    <li><p>tests.lua
-    Support One of my core data structures is <code>tbl</code> (table). Its a place to store</p></li>
+    <li><a href="csv">csv.lua</a>: reads comma seperates values from strings or files. Pass each found row to a function.</li>
+    <li><a href="id">id.lua</a>: generates uniqie ids;</li>
+    <li><a href="lists">lists.lua</a>: basic lists utilities</li>
+    <li><a href="random">random.lua</a>: random number generation that is stable across different platforms.
+    This is a nice place to see how a basic LUA module is formed.</li>
+    <li><a href="str">str.lua</a>: basic string routines: print lists of item, replace characters, etc</li>
+</ul>
+
+<h3>Stats code</h3>
+
+<p>Code for studying single distributions (and for studying multiple distributions, see <em>table</em>, below).</p>
+
+<ul>
+    <li>show.lua</li>
+    <li>config</li>
+    <li>tests.lua</li>
+    <li><a href="tiles">tiles.lua</a>:</li>
+    <li><a href="spy">spy.lua</a>: basic lists utilities
+    Support One of my core data structures is <code>tbl</code> (table). Its a place to store</li>
 </ul>
 
 <p><code>row</code>s of data. Each column in   <code>tbl</code> has a header that is a <code>num</code> or a <code>sym</code> 
@@ -147,7 +160,7 @@ the independent symbolics together etc.</p>
 </td>
 <td class="code">
   <div class="highlight"><pre>
-<span class="nt">require</span> <span class="s">"1"</span>
+<span class="nt">require</span> <span class="s">"show"</span>
 
 </pre></div>
 </td>

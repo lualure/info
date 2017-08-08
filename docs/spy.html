@@ -25,7 +25,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblu
 <a href="https://twitter.com/lua_lured">news</a> |
 <a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
 <a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/lib/spy.lua">browse</a> 
+<a href="https://github.com/lualure/src/blob/master/LICENSE.md">license</a> 
 </p>
 <h1> 
 LURE: spy
@@ -43,22 +43,7 @@ LURE: spy
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
- <a href="https://github.com/lualure/src"><img 
-style="position: absolute; top: 0; right: 0; border: 0;" 
-src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
-alt="Fork me on GitHub" 
-data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
-<img width=150 align=right src="https://goo.gl/QabuWK">
-<p>
-<a href="index.html">home</a> |
-<a href="https://twitter.com/lua_lured">news</a> |
-<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
-<a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/lib/spy.lua">browse</a> 
-</p>
-<h1> 
-LURE: spy
-</h1>
+<h2>Watch over a stream, regularly reporting</h2>
 
 
 </td>
@@ -66,7 +51,7 @@ LURE: spy
   <div class="highlight"><pre>
 <span class="nt">require</span> <span class="s">"show"</span>
 <span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
-<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> NUM=<span class="nt">require</span> <span class="s">"num"</span>
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -76,14 +61,16 @@ LURE: spy
   </div>
   
 <hr/>
+<p>Create  a new watcher</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(n)  <span class="k">return</span> {
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(n)  <span class="k">return</span> {
   reportEvery = n,
   m           = 0,
-  stats       = num.create(),
+  stats       = NUM.create(),
   all         = {}
 } <span class="k">end</span>
 </pre></div>
@@ -95,11 +82,13 @@ LURE: spy
   </div>
   
 <hr/>
+<p> Report</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">report</span>(i,x) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">report</span>(i,x) 
   <span class="nt">print</span>{n=i.stats.n, mu=i.stats.mu, sd=i.stats.sd} <span class="k">end</span>
 </pre></div>
 </td>
@@ -110,17 +99,20 @@ LURE: spy
   </div>
   
 <hr/>
+<p>Update watcher <code>i</code> with one value <code>x</code></p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x) 
-  i.m = i.m + 1
-  num.update(i.stats,x)
-  <span class="k">if</span> i.m &#37; i.reportEvery == 0 <span class="k">then</span>
-    i.all[#i.all + 1] = i.stats
-    report(i)
-    i.stats = num.create() <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,x) 
+  <span class="k">if</span> x~= the.ignore <span class="k">then</span>
+    i.m = i.m + 1
+    NUM.update(i.stats,x)
+    <span class="k">if</span> i.m &#37; i.reportEvery == 0 <span class="k">then</span>
+      i.all[#i.all + 1] = i.stats
+      report(i)
+      i.stats = NUM.create() <span class="k">end</span> <span class="k">end</span>
   <span class="k">return</span> i <span class="k">end</span>
 </pre></div>
 </td>
@@ -131,16 +123,15 @@ LURE: spy
   </div>
   
 <hr/>
+<p>Handy short cut</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(lst,f,i)
-  i = i <span class="o">or</span> create()
-  f = f <span class="o">or</span> <span class="k">function</span> (z) <span class="k">return</span> z <span class="k">end</span>
-  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(lst) <span class="k">do</span>
-    update(i, f(one)) <span class="k">end</span> 
-  <span class="k">return</span> i <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">watch</span>(n)
+  <span class="k">local</span> i=create(n)
+  <span class="k">return</span> i, <span class="k">function</span> (x) <span class="k">return</span> update(i,x) <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-6">
@@ -150,13 +141,98 @@ LURE: spy
   </div>
   
 <hr/>
+<p>Update a watcher <code>i</code> with many values from <code>t</code>.
+Optionally:</p>
+
+<ul>
+    <li>filter every value in <code>t</code> through some function <code>f</code>. </li>
+    <li>If an filter every value in <code>t</code> through some function <code>f</code>. </li>
+    <li>If an <code>all</code> value is supplied, the update <code>all</code>. Else
+    return a new watcher.</li>
+</ul>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {create=create, update=update,updates=updates, report=report}
-	
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(lst,f,i)
+  i = i <span class="o">or</span> create()
+  f = f <span class="o">or</span> <span class="k">function</span> (z) <span class="k">return</span> z <span class="k">end</span>
+  <span class="k">for</span> _,one <span class="k">in</span> <span class="nt">pairs</span>(lst) <span class="k">do</span>
+    update(i, f(one)) <span class="k">end</span> 
+  <span class="k">return</span> i <span class="k">end</span>
 </pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+<p>Public interface</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">return</span> {create=create, update=update, updates=updates, 
+        watch=watch, report=report}
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>
