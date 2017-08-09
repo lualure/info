@@ -32,7 +32,7 @@
 <h2>range : simple discretiation</h2>
 
 <p><em>tim@menzies.us</em> <br/>
-<em>August, 2018</em></p>
+<em>August, 2017</em></p>
 
 <p>Use this code to find "natural ranges"
 in a list of numbers <code>t</code>. Such ranges
