@@ -25,7 +25,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblu
 <a href="https://twitter.com/lua_lured">news</a> |
 <a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
 <a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/LICENSE.md">license</a> 
+<a href="https://lualure.github.io/info/LICENSE">license</a> 
 </p>
 <h1> 
 LURE: trees
@@ -43,15 +43,35 @@ LURE: trees
     <a class="pilcrow" href="#section-1">&#182;</a>
   </div>
   
+<h2>Return some trees</h2>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'18</em>   </p>
+
+<p>This code is a convenience function to return trees from data files known to ship with LUA.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+  <div class="highlight"><pre>
+<span class="nt">require</span> <span class="s">"show"</span>
 <span class="k">local</span> THE=<span class="nt">require</span> <span class="s">"config"</span>
 <span class="k">local</span> TBL=<span class="nt">require</span> <span class="s">"tbl"</span>
 <span class="k">local</span> TREE=<span class="nt">require</span> <span class="s">"sdtree"</span>
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<p>Main driver. Reads, discretize a table then generates a decision tree.</p>
 
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(f,y)
   y = y <span class="o">or</span> <span class="s">"goal1"</span>
   f = f <span class="o">or</span> <span class="s">"/data/auto.csv"</span>
@@ -59,21 +79,111 @@ LURE: trees
   <span class="k">return</span> TREE.grow(
            TBL.discretize( TBL.create(f),y), 
                            y) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<p>Sample data</p>
 
-<span class="k">local</span> <span class="k">function</span> <span class="nf">auto</span>(y)      
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">auto</span>(y)      
    <span class="k">return</span> create(<span class="s">"/data/auto.csv"</span>,y <span class="o">or</span> <span class="s">"dom"</span>) <span class="k">end</span>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">pom3a</span>(y)     
   <span class="k">return</span> create(<span class="s">"/data/POM3A_short.csv"</span>,y <span class="o">or</span> <span class="s">"dom"</span>) <span class="k">end</span>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">xomo</span>(y)      
   <span class="k">return</span> create( <span class="s">"/data/xomo_all_short.csv"</span>,y <span class="o">or</span> <span class="s">"dom"</span>) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<p>Sample data (with different goals)</p>
 
-<span class="k">local</span> <span class="k">function</span> <span class="nf">autogoal1</span>()  <span class="k">return</span> auto(<span class="s">"goal1"</span>) <span class="k">end</span>
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">autogoal1</span>()  <span class="k">return</span> auto(<span class="s">"goal1"</span>) <span class="k">end</span>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">pom3agoal1</span>() <span class="k">return</span> pom3a(<span class="s">"goal1"</span>) <span class="k">end</span>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">xomogoal1</span>(y) <span class="k">return</span> xomo(<span class="s">"goal1"</span>) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<p>External interface</p>
 
-<span class="k">return</span> {auto=auto, pom3a=pom3a, xomo=xomo, autogoal1=autogoal1,
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">return</span> {auto=auto, pom3a=pom3a, xomo=xomo, autogoal1=autogoal1,
         pom3agoal1=pom3agoal1, xomogoal1=xomogoal1}
 </pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+
+<h2>Legal</h2>
+
+<p><img align=right width=150 src="https://www.xn--ppensourced-qfb.com/media/reviews/photos/original/e2/b9/b3/22-bsd-3-clause-new-or-revised-modified-license-60-1424101605.png">
+LURE, Copyright (c) 2017, Tim Menzies
+All rights reserved, BSD 3-Clause License</p>
+
+<p>Redistribution and use in source and binary forms, with
+or without modification, are permitted provided that
+the following conditions are met:</p>
+
+<ul>
+    <li>Redistributions of source code must retain the above
+    copyright notice, this list of conditions and the
+    following disclaimer.</li>
+    <li>Redistributions in binary form must reproduce the
+    above copyright notice, this list of conditions and the
+    following disclaimer in the documentation and/or other
+    materials provided with the distribution.</li>
+    <li>Neither the name of the copyright holder nor the names
+    of its contributors may be used to endorse or promote
+    products derived from this software without specific
+    prior written permission.</li>
+</ul>
+
+<p>THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND
+CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL
+THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
+IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.</p>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre></pre></div>
 </td>
 </tr></tbody>
     </table>

@@ -136,14 +136,31 @@
 <p>Also, we can test is two <code>num</code> and <code>sample</code> distributions are statistically the same. </p>
 
 <ul>
-    <li><p>For <code>num</code>s, we use parametric Gaussian effect size and significance tests;</p></li>
-    <li><p>For <code>sample</code>s, we use non-parametric effect size and significance tests (Scott-Knot in the <a href="sk">sk.lua</a> file, 
-    bootstrap, and cliff's delta be checked </p></li>
-    <li><p>tests.lua</p></li>
-    <li><p><a href="tiles">tiles.lua</a>:</p></li>
-    <li><p><a href="spy">spy.lua</a>: basic lists utilities
-    Support One of my core data structures is <code>tbl</code> (table). Its a place to store</p></li>
+    <li>For <code>num</code>s, we use parametric Gaussian effect size and significance tests;</li>
+    <li>For <code>sample</code>s, we use non-parametric effect size and significance tests (Scott-Knot in the <a href="sk">sk.lua</a> file, 
+    bootstrap, and cliff's delta be checked </li>
 </ul>
+
+<p>Learner code</p>
+
+<p>The  discretzation and tree growing code (in <a href="superranges">superranges.lua</a> and <a href="strree">sdtree.lua</a>) needs to know the 
+dependent variable. Hence, that code accepts  a <code>y</code> function otherwise the code won't know how to split the data. Currently,
+two such functions are defined:</p>
+
+<ul>
+    <li>"dom": divide trees on the "domination score" (how many times the objectives in one row dominate others)</li>
+    <li>"goal1" divides the data according to the first  numeric goal.</li>
+</ul>
+
+<p>To define other goal functions, edit <code>tbl.lua</code>.</p>
+
+
+<p>that needs to bassed into 
+that needs to be passed in withi
+- tests.lua
+- <a href="tiles">tiles.lua</a>:
+- <a href="spy">spy.lua</a>: basic lists utilities
+Support One of my core data structures is <code>tbl</code> (table). Its a place to store</p>
 
 <p><code>row</code>s of data. Each column in   <code>tbl</code> has a header that is a <code>num</code> or a <code>sym</code> 
 and that header maintains a summary of what was seen in each column.</p>

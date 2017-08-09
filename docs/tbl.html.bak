@@ -35,7 +35,17 @@
 <em>August'18</em>   </p>
 
 <p>One of my core data structures is <code>tbl</code> (table). Its a place to store
-<code>row</code>s of data. Each column in   <code>tbl</code> has a header that is a <code>num</code> or a <code>sym</code> 
+<code>row</code>s of data. </p>
+
+<ul>
+    <li>Whend ata comes in from disk. I store it as a <code>tbl</code>;</li>
+    <li>When data in one <code>tbl</code> is divided, the divisions are <code>tbl</code>s.</li>
+    <li>When we cluster, each lucster it its own <code>tbl</code>.</li>
+    <li>When we build a denogram (a recursive division of data into sub-data, then subn-s data, then sub-sub-sub data, etc)
+    then each node in that tree is <code>tbl</code>.</li>
+</ul>
+
+<p>Each column in   <code>tbl</code> has a header that is a <code>num</code> or a <code>sym</code> 
 and that header maintains a summary of what was seen in each column.</p>
 
 <p><code>Tbl</code>s are very useful.</p>

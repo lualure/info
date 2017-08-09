@@ -50,7 +50,8 @@ to muck around inside data miners. </p>
     <li>LUA code is quite readable so for students who not know how to write LUA code;</li>
     <li>LUA code are very succinct and hence easily modifiable;</li>
     <li>LUA programs are not resource intensive;</li>
-    <li>That makes it very portable;</li>
+    <li>LUA code ports very easily to other platforms.</li>
+    <li>LUA is fun!</li>
 </ul>
 
 <p>This  code offers  <em>baseline</em> implementations of a set of <em>software science operators</em> which,
