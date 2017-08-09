@@ -38,33 +38,30 @@
 <code>row</code>s of data. </p>
 
 <ul>
-    <li>Whend ata comes in from disk. I store it as a <code>tbl</code>;</li>
+    <li>When data comes in from disk, it gets  stored  it as a <code>tbl</code>;</li>
     <li>When data in one <code>tbl</code> is divided, the divisions are <code>tbl</code>s.</li>
-    <li>When we cluster, each lucster it its own <code>tbl</code>.</li>
-    <li>When we build a denogram (a recursive division of data into sub-data, then subn-s data, then sub-sub-sub data, etc)
+    <li>When we cluster, each cluster is its own <code>tbl</code>.</li>
+    <li>When we build a denogram (a recursive division of data into sub-data, then sub-sub data, then sub-sub-sub data, etc)
     then each node in that tree is <code>tbl</code>.</li>
 </ul>
 
 <p>Each column in   <code>tbl</code> has a header that is a <code>num</code> or a <code>sym</code> 
 and that header maintains a summary of what was seen in each column.</p>
 
-<p><code>Tbl</code>s are very useful.</p>
-
-<p><code>Tbl</code>s can be read in from ascii files or strings (see <code>csv.lua</code>) or
-copied from other <code>tbl</code>s (plus or minus some of the <code>row</code>s of that other table.</p>
-
-<p><code>Tbl</code> data is read one row at a time using <code>update</code>:</p>
+<p><code>Tbl</code>s are incremental readers of rows of data. As rows are found, we can throw them at a table:</p>
 
 <ul>
     <li>If this is other than  the first <code>row</code> then <code>Tbl</code> assumes it is a <code>row</code> to be stored in the table.
     As a side-effect of storage, all the column headers are updated.</li>
     <li>If this is the first <code>row</code>
     then <code>Tbl</code> assumes it is a <code>header</code> that lists the names and types of each column.
-       -- If the name contains <code>?</code>, then <code>Tbl</code> should ignore this column;
-       -- If the name contains <code>&lt;,&gt;</code>, then the column can be categoried as a numeric goal to eb minimized or maximized;
-       -- If the name contains <code>!</code>, then the column can be categorised as a   symbolic goal, to be used in classification;
-       -- If the name contains <code>$</code>, then the column is categorised as a  numeric indepedent variable;
-       -- Otherwise, the column can be categories as  a symbolic independent variable.</li>
+    <ul>
+        <li>If the name contains <code>?</code>, then <code>Tbl</code> should ignore this column;</li>
+        <li>If the name contains <code>&lt;,&gt;</code>, then the column can be categoried as a numeric goal to eb minimized or maximized;</li>
+        <li>If the name contains <code>!</code>, then the column can be categorised as a   symbolic goal, to be used in classification;</li>
+        <li>If the name contains <code>$</code>, then the column is categorised as a  numeric indepedent variable;</li>
+        <li>Otherwise, the column can be categories as  a symbolic independent variable.</li>
+    </ul></li>
 </ul>
 
 <p>Note that there is nothing hard-wired in this code about <code>?&lt;&gt;!$</code>. These can be easily changed in 
@@ -88,20 +85,31 @@ the <code>categories</code> function. </p>
 
 <p>Note that a column can have multiple categories (see <code>categories</code>). This is done
 since sometimes we have to (e.g.) process all the numerics together or  process all
-the independent symbolics together etc.</p>
+the independent symbolics together etc. For an example of a column in multiple categories, a <code>&lt;</code> column is</p>
 
+<ul>
+    <li>.all.cols </li>
+    <li>.y.cols </li>
+    <li>.all.nums </li>
+    <li>.goals </li>
+    <li>.less</li>
+    <li>.y.nums</li>
+</ul>
+
+<p>Note that each column gets one, and only one <code>num</code> or <code>sym</code> header structure and that header structure
+may be stored in multiple categories.</p>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>
 <span class="k">local</span> the=<span class="nt">require</span> <span class="s">"config"</span>
-<span class="k">local</span> num=<span class="nt">require</span> <span class="s">"num"</span>
-<span class="k">local</span> sym=<span class="nt">require</span> <span class="s">"sym"</span>
-<span class="k">local</span> row=<span class="nt">require</span> <span class="s">"row"</span>
-<span class="k">local</span> csv=<span class="nt">require</span> <span class="s">"csv"</span>
-<span class="k">local</span> lst=<span class="nt">require</span> <span class="s">"lists"</span>
-<span class="k">local</span> super=<span class="nt">require</span> <span class="s">"superrange"</span>
+<span class="k">local</span> NUM=<span class="nt">require</span> <span class="s">"num"</span>
+<span class="k">local</span> SYM=<span class="nt">require</span> <span class="s">"sym"</span>
+<span class="k">local</span> ROW=<span class="nt">require</span> <span class="s">"row"</span>
+<span class="k">local</span> CSV=<span class="nt">require</span> <span class="s">"csv"</span>
+<span class="k">local</span> LST=<span class="nt">require</span> <span class="s">"lists"</span>
+<span class="k">local</span> SUPER=<span class="nt">require</span> <span class="s">"superrange"</span>
 </pre></div>
 </td>
 </tr><tr id="section-2">
@@ -111,15 +119,21 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Create a new table</h3>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
   rows={}, 
   spec={}, 
   goals={} , less={}, more={}, 
   name={},
+  all={nums={}, syms={}, cols={}}, <span class="c">-- all columns
+</span>  x  ={nums={}, syms={}, cols={}}, <span class="c">-- all independent columns
+</span>  y  ={nums={}, syms={}, cols={}}  <span class="c">-- all depednent   columns
+</span>} <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -128,15 +142,24 @@ the independent symbolics together etc.</p>
     <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
-<p>goals={less={}, more={}, cols={}}</p>
+<hr/>
+<h3>Define column categories.</h3>
+<p>Input the column header <code>txt</code> and look for the special characters "$,&lt;,>,!".</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>  all={nums={}, syms={}, cols={}}, <span class="c">-- all columns
-</span>  x  ={nums={}, syms={}, cols={}}, <span class="c">-- all independent columns
-</span>  y  ={nums={}, syms={}, cols={}}  <span class="c">-- all depednent   columns
-</span>} <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">categories</span>(i,txt)
+  <span class="k">local</span> spec =  {
+    {when= <span class="s">"&#37;$"</span>, what= NUM, weight= 1, where= {i.all.cols, i.x.cols, i.all.nums,                  i.x.nums}},
+    {when= <span class="s">"&lt;"</span>,  what= NUM, weight=-1, where= {i.all.cols, i.y.cols, i.all.nums, i.goals, i.less, i.y.nums}},
+    {when= <span class="s">"&gt;"</span>,  what= NUM, weight= 1, where= {i.all.cols, i.y.cols, i.all.nums, i.goals, i.more, i.y.nums}},
+    {when= <span class="s">"!"</span>,  what= SYM, weight= 1, where= {i.all.cols, i.y.cols,             i.all.syms}},
+    {when= <span class="s">""</span>,   what= SYM, weight= 1, where= {i.all.cols, i.x.cols,             i.all.syms,      i.x.syms}}}
+  <span class="k">for</span> _,want <span class="k">in</span> <span class="nt">pairs</span>(spec) <span class="k">do</span>
+    <span class="k">if</span> string.find(txt,want.when) ~= <span class="k">nil</span> <span class="k">then</span>
+      <span class="k">return</span> want.what, want.weight, want.where <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -146,34 +169,14 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Define table  column headers</h3>
+<p>Called on the first row ever passed to a table.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">categories</span>(i,txt)
-  <span class="k">local</span> spec =  {
-    {when= <span class="s">"&#37;$"</span>, what= num, weight= 1, where= {i.all.cols, i.x.cols, i.all.nums,                  i.x.nums}},
-    {when= <span class="s">"&lt;"</span>,  what= num, weight=-1, where= {i.all.cols, i.y.cols, i.all.nums, i.goals, i.less, i.y.nums}},
-    {when= <span class="s">"&gt;"</span>,  what= num, weight= 1, where= {i.all.cols, i.y.cols, i.all.nums, i.goals, i.more, i.y.nums}},
-    {when= <span class="s">"!"</span>,  what= sym, weight= 1, where= {i.all.cols, i.y.cols,             i.all.syms}},
-    {when= <span class="s">""</span>,   what= sym, weight= 1, where= {i.all.cols, i.x.cols,             i.all.syms,      i.x.syms}}}
-  <span class="k">for</span> _,want <span class="k">in</span> <span class="nt">pairs</span>(spec) <span class="k">do</span>
-    <span class="k">if</span> string.find(txt,want.when) ~= <span class="k">nil</span> <span class="k">then</span>
-      <span class="k">return</span> want.what, want.weight, want.where <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-5">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
-  </div>
-  
-<hr/>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">header</span>(i,cells)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">header</span>(i,cells)
   i.spec = cells
   <span class="k">for</span> col,cell <span class="k">in</span> <span class="nt">ipairs</span>(cells) <span class="k">do</span>
     <span class="k">local</span> what, weight, wheres = categories(i,cell)
@@ -188,6 +191,29 @@ the independent symbolics together etc.</p>
   <span class="k">return</span> i <span class="k">end</span>
 </pre></div>
 </td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Define a row of data</h3>
+<p>Called on every row after row one.
+Note that such rows are stored in the <code>ROW</code> struct.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">data</span>(i,cells,old)
+  <span class="k">local</span> new = ROW.update(ROW.create(),cells,i)
+  i.rows[#i.rows+1] = new
+  <span class="k">if</span> old <span class="k">then</span>
+    new.id=old.id <span class="k">end</span>
+  <span class="k">return</span> new <span class="k">end</span>
+</pre></div>
+</td>
 </tr><tr id="section-6">
 <td class="docs">
   <div class="pilwrap">
@@ -195,16 +221,16 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Update a table with a row of cells</h3>
+<p>Calls <code>header</code> for row1 and <code>data</code> for all other rows</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">data</span>(i,cells,old)
-  <span class="k">local</span> new = row.update(row.create(),cells,i)
-  i.rows[#i.rows+1] = new
-  <span class="k">if</span> old <span class="k">then</span>
-    new.id=old.id <span class="k">end</span>
-  <span class="k">return</span> new <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,cells) 
+  <span class="k">local</span> fn= #i.spec==0 <span class="o">and</span> header <span class="o">or</span> data
+  <span class="k">return</span> fn(i,cells) <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-7">
@@ -214,13 +240,40 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Copy a table</h3>
+
+<p>If <code>from</code> == <code>full</code> then copy all rows from the old
+table to the new.</p>
+
+<p>If <code>from</code> is a number then copy than number of rows
+(selected at random from the old to new table).</p>
+
+<p>If <code>from</code> is another table then add the rows in that
+table into this new table.</p>
+
+<p>Note that when rows are copied as deep copies; i.e.
+the contents move but not the container (so updates
+to the old table will not effect the new table).</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,cells) 
-  <span class="k">local</span> fn= #i.spec==0 <span class="o">and</span> header <span class="o">or</span> data
-  <span class="k">return</span> fn(i,cells) <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">copy</span>(i, from) 
+  <span class="k">local</span> j=create()
+  header(j, LST.copy(i.spec)) 
+  <span class="k">if</span> from==<span class="s">"full"</span> <span class="k">then</span>
+    <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(i.rows) <span class="k">do</span>
+      data(j, LST.copy(r.cells))  <span class="k">end</span>
+  <span class="k">elseif</span> <span class="nt">type</span>(from)==<span class="s">'number'</span> <span class="k">then</span>
+    LST.shuffle(i.rows)
+    <span class="k">for</span> k=1,from <span class="k">do</span>
+      data(j, LST.copy(i.rows[k].cells)) <span class="k">end</span> 
+  <span class="k">elseif</span> <span class="nt">type</span>(from)==<span class="s">'table'</span> <span class="k">then</span>
+    <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(from) <span class="k">do</span>
+      data(j, LST.copy(r.cells),r) <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> j 
+<span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-8">
@@ -230,24 +283,18 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<p>suspect this is broken</p>
+
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">copy</span>(i, from) 
-  <span class="k">local</span> j=create()
-  header(j, lst.copy(i.spec)) 
-  <span class="k">if</span> from==<span class="s">"full"</span> <span class="k">then</span>
-    <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(i.rows) <span class="k">do</span>
-      data(j, lst.copy(r.cells))  <span class="k">end</span>
-  <span class="k">elseif</span> <span class="nt">type</span>(from)==<span class="s">'number'</span> <span class="k">then</span>
-    lst.shuffle(i.rows)
-    <span class="k">for</span> k=1,from <span class="k">do</span>
-      data(j, lst.copy(i.rows[k].cells)) <span class="k">end</span> 
-  <span class="k">elseif</span> <span class="nt">type</span>(from)==<span class="s">'table'</span> <span class="k">then</span>
-    <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(from) <span class="k">do</span>
-      data(j, lst.copy(r.cells),r) <span class="k">end</span> <span class="k">end</span>
-  <span class="k">return</span> j 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">discretizeCells</span>(i,cells) 
+  out=LST.copy(cells)
+  <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(i.x.cols) <span class="k">do</span>
+     out[head.pos] = SYM.discretize(head,cells[head.pos]) <span class="k">end</span>
+  <span class="k">return</span> out
 <span class="k">end</span>
 </pre></div>
 </td>
@@ -258,32 +305,17 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Goal functions</h3>
+
+<p>Feature extractors from a ROW.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretizeCells</span>(i,cells) 
-  out=lst.copy(cells)
-  <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(i.x.cols) <span class="k">do</span>
-     out[head.pos] = sym.discretize(head,cells[head.pos]) <span class="k">end</span>
-  <span class="k">return</span> out
-<span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-10">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-10">&#182;</a>
-  </div>
-  
-<hr/>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">goallast</span>(t,n) 
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">goallast</span>(t,n) 
   <span class="k">return</span> <span class="k">function</span>(r) 
-           <span class="k">return</span> lst.last(r.cells )  <span class="k">end</span>  <span class="k">end</span>
+           <span class="k">return</span> LST.last(r.cells )  <span class="k">end</span>  <span class="k">end</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">goaln</span>(t,n) 
   <span class="k">return</span> <span class="k">function</span>(r) 
@@ -296,10 +328,29 @@ the independent symbolics together etc.</p>
   <span class="k">local</span> b4={}
   <span class="k">return</span> <span class="k">function</span> (r)   
            <span class="k">if</span> <span class="o">not</span> b4[r.id] <span class="k">then</span> 
-             b4[r.id]=row.dominate(r,t) <span class="k">end</span>
+             b4[r.id]=ROW.dominate(r,t) <span class="k">end</span>
            <span class="k">return</span> b4[r.id] <span class="k">end</span> <span class="k">end</span>
 
 <span class="k">local</span> funs={goaln=goaln, goal1=goal1,dom=dom,goallast=goallast}
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Convert a numeric header to symbolic</h3>
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretizeHeaders</span>(spec)
+  <span class="k">return</span> LST.collect(spec, 
+           <span class="k">function</span>(txt) 
+             <span class="k">return</span> string.gsub(txt,<span class="s">"&#37;$"</span>,<span class="s">""</span>) <span class="k">end</span>) <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-11">
@@ -309,14 +360,37 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Discretize rows</h3>
+
+<p>Return a new table with the numerics broken up into
+symbolic ranges.
+Each header on the new table gets an extra variable, <code>bins</code>, which is a list
+specifying how to change a <code>Num</code> into a <code>Sym</code>.
+Using that inormation, all the rows in the old table are turned into
+symbols in the new table.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretizeHeaders</span>(spec)
-  <span class="k">return</span> lst.collect(spec, 
-           <span class="k">function</span>(txt) 
-             <span class="k">return</span> string.gsub(txt,<span class="s">"&#37;$"</span>,<span class="s">""</span>) <span class="k">end</span>) <span class="k">end</span>
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">discretizeRows</span>(i, y)
+  <span class="k">local</span> j = header(create(), 
+             discretizeHeaders(i.spec))
+  <span class="k">local</span> yfun = funs[y](i)
+  <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(i.x.nums) <span class="k">do</span>
+    <span class="k">local</span> cooked = j.all.cols[head.pos]
+    <span class="k">local</span> <span class="k">function</span> <span class="nf">x</span>(r) <span class="k">return</span> r.cells[cooked.pos] <span class="k">end</span>
+    cooked.bins = SUPER(i.rows,x, yfun) 
+  <span class="k">end</span>
+  <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(i.rows) <span class="k">do</span>
+    <span class="k">local</span> tmp=LST.copy(r.cells)
+    <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(i.x.nums) <span class="k">do</span>
+      <span class="k">local</span> cooked    = j.all.cols[head.pos]
+      <span class="k">local</span> old       = tmp[cooked.pos]
+      <span class="k">local</span> new       = SYM.discretize(cooked, old)
+      tmp[cooked.pos] = new  <span class="k">end</span>
+    data(j,tmp,r) <span class="k">end</span> 
+  <span class="k">return</span> j <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-12">
@@ -326,11 +400,16 @@ the independent symbolics together etc.</p>
   </div>
   
 <hr/>
+<h3>Create a table from a csv file</h3>
+
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">discretizeRows</span>(i, y)
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">fromCsv</span>(f)
+  <span class="k">local</span> out = create()
+  CSV(f, <span class="k">function</span> (cells) update(out,cells) <span class="k">end</span>)
+  <span class="k">return</span> out <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-13">
@@ -339,94 +418,22 @@ the independent symbolics together etc.</p>
     <a class="pilcrow" href="#section-13">&#182;</a>
   </div>
   
-<p>'j' is a table where all the numerics and symbols</p>
+<hr/>
+<h3>External interface</h3>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> j = header(create(), 
-             discretizeHeaders(i.spec))
+  <div class="highlight"><pre>
+<span class="k">return</span> {copy=copy, header=header,update=update,
+        create=fromCsv,goal1=goal1,dom=dom,goaln=goaln,goallast=goallast,
+        discretize=discretizeRows,discretize1=discretizeCells}
 </pre></div>
 </td>
 </tr><tr id="section-14">
 <td class="docs">
   <div class="pilwrap">
     <a class="pilcrow" href="#section-14">&#182;</a>
-  </div>
-  
-<p>each header in 'j' gets 'bins': a list saying how to
-change num into a sym</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> yfun = funs[y](i)
-  <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(i.x.nums) <span class="k">do</span>
-    <span class="k">local</span> cooked = j.all.cols[head.pos]
-    <span class="k">local</span> <span class="k">function</span> <span class="nf">x</span>(r) <span class="k">return</span> r.cells[cooked.pos] <span class="k">end</span>
-    cooked.bins = super(i.rows,x, yfun) 
-  <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-15">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-15">&#182;</a>
-  </div>
-  
-<p>each row in 'i' gets transformed, according to 'bins'</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">for</span> _,r <span class="k">in</span> <span class="nt">pairs</span>(i.rows) <span class="k">do</span>
-    <span class="k">local</span> tmp=lst.copy(r.cells)
-    <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(i.x.nums) <span class="k">do</span>
-      <span class="k">local</span> cooked    = j.all.cols[head.pos]
-      <span class="k">local</span> old       = tmp[cooked.pos]
-      <span class="k">local</span> new       = sym.discretize(cooked, old)
-      tmp[cooked.pos] = new  <span class="k">end</span>
-    data(j,tmp,r) <span class="k">end</span> 
-  <span class="k">return</span> j <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-16">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-16">&#182;</a>
-  </div>
-  
-<hr/>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">fromCsv</span>(f)
-  <span class="k">local</span> out = create()
-  csv(f, <span class="k">function</span> (cells) update(out,cells) <span class="k">end</span>)
-  <span class="k">return</span> out <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-17">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-17">&#182;</a>
-  </div>
-  
-<hr/>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">return</span> {copy=copy, header=header,update=update,
-        create=fromCsv,goal1=goal1,dom=dom,goaln=goaln,goallast=goallast,
-        discretize=discretizeRows,discretize1=discretizeCells}
-</pre></div>
-</td>
-</tr><tr id="section-18">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-18">&#182;</a>
   </div>
   
 <hr/>

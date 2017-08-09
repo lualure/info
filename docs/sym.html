@@ -25,7 +25,7 @@ data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblu
 <a href="https://twitter.com/lua_lured">news</a> |
 <a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
 <a href="https://github.com/lualure/src/issues">issues</a> |
-<a href="https://github.com/lualure/src/blob/master/LICENSE.md">license</a> 
+<a href="https://lualure.github.io/info/LICENSE">license</a> 
 </p>
 <h1> 
 LURE: sym
@@ -222,29 +222,17 @@ nothing.</p>
   </div>
   
 <hr/>
-<h3>Map numbers to a range.</h3>
-<p><code>i</code> is a list of pairs {x.label, x.most}.
-Find <code>x</code>'s label with this list.</p>
+<h3>Discretizing a symnol</h3>
+<p>Just returns that symbol.
+If this <code>sym</code> has the magic <code>bins</code> variable
+then use that to convert the number <code>x</code> to
+a symbol. Otherwise, return just return the number.</p>
 
 
 </td>
 <td class="code">
   <div class="highlight"><pre>
-</pre></div>
-</td>
-</tr><tr id="section-9">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
-  </div>
-  
-<p>XXXX why is this even here? discrete syms should be syms???</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">discretize</span>(i,x) 
+<span class="k">local</span> <span class="k">function</span> <span class="nf">discretize</span>(i,x)
   <span class="k">local</span> r
   <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
   <span class="k">if</span> <span class="o">not</span> i.bins    <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
@@ -254,10 +242,10 @@ Find <code>x</code>'s label with this list.</p>
   <span class="k">return</span> r <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-10">
+</tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-10">&#182;</a>
+    <a class="pilcrow" href="#section-9">&#182;</a>
   </div>
   
 <hr/>
@@ -269,10 +257,10 @@ Find <code>x</code>'s label with this list.</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-11">
+</tr><tr id="section-10">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-11">&#182;</a>
+    <a class="pilcrow" href="#section-10">&#182;</a>
   </div>
   
 <p>Takes a little time to calculate.  So we cache the
@@ -294,10 +282,10 @@ new data arrives.</p>
   <span class="k">return</span> i._ent <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-12">
+</tr><tr id="section-11">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-12">&#182;</a>
+    <a class="pilcrow" href="#section-11">&#182;</a>
   </div>
   
 <hr/>
@@ -318,10 +306,10 @@ new data arrives.</p>
   <span class="k">return</span> k,e,k*e <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-13">
+</tr><tr id="section-12">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-13">&#182;</a>
+    <a class="pilcrow" href="#section-12">&#182;</a>
   </div>
   
 <hr/>
@@ -336,10 +324,10 @@ new data arrives.</p>
         ke=ke,watch=watch}
 </pre></div>
 </td>
-</tr><tr id="section-14">
+</tr><tr id="section-13">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-14">&#182;</a>
+    <a class="pilcrow" href="#section-13">&#182;</a>
   </div>
   
 <hr/>
