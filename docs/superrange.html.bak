@@ -52,7 +52,7 @@ are then combined if there is little change in the class diversity across the ra
 <span class="k">local</span> RANGE=<span class="nt">require</span> <span class="s">"range"</span>
 <span class="k">local</span> LST= <span class="nt">require</span> <span class="s">"lists"</span>
 <span class="k">local</span> STR=<span class="nt">require</span> <span class="s">"str"</span>
-replace = STR.replace_char
+<span class="k">local</span> replace = STR.replace_char
 </pre></div>
 </td>
 </tr><tr id="section-2">

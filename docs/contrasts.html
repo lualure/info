@@ -131,7 +131,7 @@ Collects all the <code>attr</code>, <code>val</code> pairs.</p>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">has</span>(branch)
   <span class="k">local</span> out = {}
   <span class="k">for</span> i=1,#branch <span class="k">do</span>
-    step = branch[i]
+    <span class="k">local</span> step = branch[i]
     out[#out+1] = {attr=step.attr, val=step.val} <span class="k">end</span> 
   <span class="k">return</span> out <span class="k">end</span>
 
