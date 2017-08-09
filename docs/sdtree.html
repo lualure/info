@@ -145,12 +145,14 @@ values are used to split the rows.</p>
 column to split the current data.</p>
 
 <p>Terminate tree growth if there are fewer than  <code>the.tree.min</code> in the splits
-or the tree has grown deeper than <code>the.tree.maxDepth</code>.</p>
+or the tree has grown deeper than <code>the.tree.maxDepth</code> or
+if the new tree does not decreases the standard deviation of the parent tree.</p>
 
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">grow1</span>(above,yfun,rows,lvl,b4,pos,attr,val)
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">grow1</span>(above,yfun,rows,lvl,b4,pos,attr,val)
   <span class="k">local</span> <span class="k">function</span> <span class="nf">pad</span>()       <span class="k">return</span> str.fmt(<span class="s">"&#37;-20s"</span>,string.rep(<span class="s">'| '</span>,lvl)) <span class="k">end</span>
   <span class="k">local</span> <span class="k">function</span> <span class="nf">likeAbove</span>() <span class="k">return</span> tbl.copy(above._t,rows)  <span class="k">end</span>
   <span class="k">if</span> #rows &gt;= the.tree.min <span class="k">then</span> 
