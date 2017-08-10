@@ -5,7 +5,7 @@
   <title>index</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="locco.css" />
-</head>
+<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"></head>
 <body>
   <div id="container">
     <div id="background"></div>
@@ -63,6 +63,7 @@
     <li><a href="STYLE.html">STYLE</a> </li>
     <li><a href="WHAT.html">WHAT</a> </li>
     <li><a href="WHY.html">WHY</a> </li>
+    <li><a href="chess.html">chess</a> </li>
     <li><a href="config.html">config</a> </li>
     <li><a href="contrasts.html">contrasts</a> </li>
     <li><a href="csv.html">csv</a> </li>

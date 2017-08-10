@@ -5,7 +5,7 @@
   <title>lists</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" media="all" href="locco.css" />
-</head>
+<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"></head>
 <body>
   <div id="container">
     <div id="background"></div>
@@ -186,6 +186,33 @@ LURE: lists
     <a class="pilcrow" href="#section-10">&#182;</a>
   </div>
   
+<p>Return an iterator that can return
+some items in a list.</p>
+
+<p>e.g.  the following prints 20 then 30</p>
+
+<pre><code>for x in some({10,20,30,40,50,60},{2,3}) do
+   print(x) end
+</code></pre>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">some</span>(t,cols)
+  <span class="k">local</span> i = 0
+  <span class="k">return</span> <span class="k">function</span> ()
+    <span class="k">if</span> i &lt; #cols <span class="k">then</span>
+      i= i+1
+      <span class="k">return</span> t[cols[i]] <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
 <hr/>
 <h3>Sorting.</h3>
 <p>Unlike <code>table.sort</code>, this <code>sort</code> function
@@ -206,10 +233,10 @@ returns the sorted list.</p>
   <span class="k">return</span> last(x) &lt; last(y) <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-11">
+</tr><tr id="section-12">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-11">&#182;</a>
+    <a class="pilcrow" href="#section-12">&#182;</a>
   </div>
   
 <hr/>
@@ -221,10 +248,10 @@ returns the sorted list.</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-12">
+</tr><tr id="section-13">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-12">&#182;</a>
+    <a class="pilcrow" href="#section-13">&#182;</a>
   </div>
   
 <p>Return a list without some item</p>
@@ -241,10 +268,10 @@ returns the sorted list.</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-13">
+</tr><tr id="section-14">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-13">&#182;</a>
+    <a class="pilcrow" href="#section-14">&#182;</a>
   </div>
   
 <p>Search for the index of an item</p>
@@ -265,10 +292,10 @@ returns the sorted list.</p>
   <span class="k">return</span> math.min(lo,#t)  <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-14">
+</tr><tr id="section-15">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-14">&#182;</a>
+    <a class="pilcrow" href="#section-15">&#182;</a>
   </div>
   
 <hr/>
@@ -280,10 +307,10 @@ returns the sorted list.</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-15">
+</tr><tr id="section-16">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-15">&#182;</a>
+    <a class="pilcrow" href="#section-16">&#182;</a>
   </div>
   
 <p>Basic map over items, no return</p>
@@ -296,10 +323,10 @@ returns the sorted list.</p>
     <span class="k">for</span> i,v <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span> f(v) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-16">
+</tr><tr id="section-17">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-16">&#182;</a>
+    <a class="pilcrow" href="#section-17">&#182;</a>
   </div>
   
 <p>Basic maps over items, with some working memory <code>w</code>. </p>
@@ -314,10 +341,10 @@ returns the sorted list.</p>
   <span class="k">return</span> w <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-17">
+</tr><tr id="section-18">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-17">&#182;</a>
+    <a class="pilcrow" href="#section-18">&#182;</a>
   </div>
   
 <p>Return the results of mapping a function over a table</p>
@@ -332,10 +359,10 @@ returns the sorted list.</p>
   <span class="k">return</span> out <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-18">
+</tr><tr id="section-19">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-18">&#182;</a>
+    <a class="pilcrow" href="#section-19">&#182;</a>
   </div>
   
 <hr/>
@@ -347,10 +374,10 @@ returns the sorted list.</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-19">
+</tr><tr id="section-20">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-19">&#182;</a>
+    <a class="pilcrow" href="#section-20">&#182;</a>
   </div>
   
 <p><code>mapprint</code> shows the <code>first</code> m items and
@@ -369,10 +396,10 @@ show everything).</p>
     <span class="k">for</span> j=#t+last, #t <span class="k">do</span> <span class="nt">print</span>(j,t[j]) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-20">
+</tr><tr id="section-21">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-20">&#182;</a>
+    <a class="pilcrow" href="#section-21">&#182;</a>
   </div>
   
 <hr/>
@@ -384,10 +411,10 @@ show everything).</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-21">
+</tr><tr id="section-22">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-21">&#182;</a>
+    <a class="pilcrow" href="#section-22">&#182;</a>
   </div>
   
 <p>The identity function</p>
@@ -398,10 +425,10 @@ show everything).</p>
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">same</span>(x) <span class="k">return</span> x <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-22">
+</tr><tr id="section-23">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-22">&#182;</a>
+    <a class="pilcrow" href="#section-23">&#182;</a>
   </div>
   
 <p>Copy top-level items </p>
@@ -412,10 +439,10 @@ show everything).</p>
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">shallowCopy</span>(t) <span class="k">return</span> collect(t,same) <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-23">
+</tr><tr id="section-24">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-23">&#182;</a>
+    <a class="pilcrow" href="#section-24">&#182;</a>
   </div>
   
 <p>Recursive copy of contents</p>
@@ -427,10 +454,10 @@ show everything).</p>
 </span>  <span class="k">return</span> <span class="nt">type</span>(t) ~= <span class="s">'table'</span> <span class="o">and</span> t <span class="o">or</span> collect(t,copy) <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-24">
+</tr><tr id="section-25">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-24">&#182;</a>
+    <a class="pilcrow" href="#section-25">&#182;</a>
   </div>
   
 <hr/>
@@ -446,10 +473,10 @@ show everything).</p>
          push=push,map2=map2, collect=collect,shuffle=shuffle}
 </pre></div>
 </td>
-</tr><tr id="section-25">
+</tr><tr id="section-26">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-25">&#182;</a>
+    <a class="pilcrow" href="#section-26">&#182;</a>
   </div>
   
 <hr/>

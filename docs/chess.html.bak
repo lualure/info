@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>chess</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+<link rel="shortcut icon" type="image/x-icon" href="img/favicon.ico"></head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+            <h1>
+              /Users/timm/src/lib/chess.lua
+            </h1>
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="nt">require</span> <span class="s">"show"</span>
+<span class="k">local</span> R=<span class="nt">require</span> <span class="s">"random"</span>
+<span class="k">local</span> no=<span class="s">"?"</span>
+<span class="k">local</span> id=0
+<span class="k">local</span> some=1.05
+</pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Misc utils</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">newid</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">zero1</span>(x)
+  <span class="k">if</span> x&gt;1 <span class="k">then</span> <span class="k">return</span> 1 <span class="k">end</span>
+  <span class="k">if</span> x&lt;0 <span class="k">then</span> <span class="k">return</span> 0 <span class="k">end</span>
+<span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">shuffle</span>( t )
+  <span class="k">for</span> i= 1,#t <span class="k">do</span>
+    <span class="k">local</span> j = i + math.floor((#t - i) * R.r() + 0.5)
+    t[i],t[j] = t[j], t[i] 
+  <span class="k">end</span>
+  <span class="k">return</span> t <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Rows of tables</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ROW</span>(tbl,cells)  <span class="k">return</span> {
+  id=newid(),
+  cells=cells } <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+<h3><code>Num</code>eric columns</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">NUM</span>(col) 
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(num,x)
+    <span class="k">return</span> (x - num.lo) / (num.hi - num.lo + 1e-32) 
+  <span class="k">end</span> <span class="c">---------------------------------------------
+</span>  <span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(num,x) 
+    <span class="k">if</span> x ~= no <span class="k">then</span>
+      <span class="k">if</span> x &lt; num.lo <span class="k">then</span> num.lo = x <span class="k">end</span>
+      <span class="k">if</span> x &gt; num.hi <span class="k">then</span> num.hi = x <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="k">return</span> x 
+  <span class="k">end</span> <span class="c">--------------------------------------------
+</span>  <span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(num,x,y) 
+    <span class="k">if</span> x==no <span class="o">and</span> y== no <span class="k">then</span>
+      <span class="k">return</span> 0,0 
+    <span class="k">elseif</span> x==no <span class="k">then</span>
+      y = norm(num,y)
+      x = y &lt; 0.5 <span class="o">and</span> 1 <span class="o">or</span> 0 
+    <span class="k">elseif</span> y==no <span class="k">then</span>
+      x = norm(num,x)
+      y = y &lt; 0.5 <span class="o">and</span> 1 <span class="o">or</span> 0
+    <span class="k">else</span>
+      x = norm(num,x)
+      y = norm(num,y)
+    <span class="k">end</span>
+    <span class="k">return</span> (x-y)^2, 1 
+  <span class="k">end</span> <span class="c">-------------------------------------------
+</span>  <span class="k">local</span> num = {
+      lo=  10^64,
+      hi= -10^64,
+      col= col}
+  num.update = <span class="k">function</span> (x)   <span class="k">return</span> update(num,x) <span class="k">end</span> 
+  num.distance = <span class="k">function</span> (x,y) <span class="k">return</span> distance(num,x,y) <span class="k">end</span>
+  <span class="k">return</span> num
+<span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<hr/>
+<h3><code>Sym</code>bolic columns</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">SYM</span>(col)
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(x,y) 
+    <span class="k">if</span>     x==no <span class="o">and</span> j==no <span class="k">then</span> <span class="k">return</span> 0,0
+    <span class="k">elseif</span> x==no           <span class="k">then</span> <span class="k">return</span> 1,1
+    <span class="k">elseif</span> y==no           <span class="k">then</span> <span class="k">return</span> 1,1
+    <span class="k">elseif</span> x==y            <span class="k">then</span> <span class="k">return</span> 0,1
+    <span class="k">else</span>                        <span class="k">return</span> 1,1 <span class="k">end</span> 
+  <span class="k">end</span> <span class="c">------------------------------------------
+</span>  <span class="k">return</span> {
+    col      = col,
+    update   = <span class="k">function</span> (x) <span class="k">return</span> x <span class="k">end</span>,
+    distance = distance} 
+<span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Tables</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">TABLE</span>(rows0,xcols,ycols) 
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">types</span>(cells,out) 
+    <span class="k">for</span> j,v <span class="k">in</span> <span class="nt">pairs</span>(cells) <span class="k">do</span>
+      what = <span class="nt">type</span>(v) == <span class="s">'number'</span> <span class="o">and</span> NUM <span class="o">or</span> SYM
+      out[#out+1] = what(col) <span class="k">end</span>
+    <span class="k">return</span> out 
+  <span class="k">end</span> <span class="c">----------------------
+</span>  <span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(t,cells) 
+    t.rows[#t.rows] = ROW(cells)
+    <span class="k">for</span> i,x <span class="k">in</span> <span class="nt">pairs</span>(t.headers) <span class="k">do</span> x.update(cells[i]) <span class="k">end</span> 
+  <span class="k">end</span> <span class="c">----------------------
+</span>  <span class="k">local</span> <span class="k">function</span> <span class="nf">updates</span>(t, listOfCells) 
+    <span class="k">for</span> _,cells <span class="k">in</span> <span class="nt">pairs</span>(listOfCells) <span class="k">do</span> update(t,cells) <span class="k">end</span>
+  <span class="k">end</span> <span class="c">---------------------
+</span>  <span class="k">local</span> <span class="k">function</span> <span class="nf">distance</span>(t, row1, row2, cols) 
+    cols = cols <span class="o">or</span> t.xcols
+    <span class="k">local</span> d,n = 0, 10^-64
+    <span class="k">for</span> i <span class="k">in</span> some(cols) <span class="k">do</span> 
+      incd, incn = header[i].dist(row1[i].cells, row2[i].cells)
+      d = d + incd
+      n = n + incn <span class="k">end</span>
+    <span class="k">return</span> d^0.5/n^0.5 
+  <span class="k">end</span> <span class="c">---------------------
+</span>  <span class="k">local</span> <span class="k">function</span> <span class="nf">furthest</span>(t,one)
+     <span class="k">local</span> best,out=-1,one
+     <span class="k">for</span> j,row <span class="k">in</span> <span class="nt">pairs</span>(t.rows) <span class="k">do</span>
+        <span class="k">local</span> d= distance(t,one,two) 
+        <span class="k">if</span> d &gt; best <span class="k">then</span>
+          best,out=d,two <span class="k">end</span> <span class="k">end</span>
+     <span class="k">return</span> out
+  <span class="k">end</span>
+  <span class="k">local</span> reset = <span class="k">nil</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">xy</span>(t,row)
+    <span class="k">if</span> <span class="o">not</span> t.memo[row.id] <span class="k">then</span> 
+      <span class="k">local</span> a= distance(t,row,west)
+      <span class="k">local</span> b= distance(t,row,east)
+      <span class="k">if</span> b &gt; some.c <span class="k">then</span>
+        reset(t, t.west, row)
+        <span class="k">return</span> xy(t,row)
+      <span class="k">elseif</span> a &gt; some.c <span class="k">then</span>
+        reset(t, row, t.east)
+        <span class="k">return</span> xy(t,row)
+      <span class="k">end</span>
+      <span class="k">local</span> x= (a^2 + c^2 - b^2) / (2*c)  
+      <span class="k">local</span> y= a^2 - x^2
+      <span class="k">local</span> tmp= {x= zero1(x),
+                  y= zero1(y &lt; 0 <span class="o">and</span> 0 <span class="o">or</span> y^0.5)}
+      t.memo[row.id] = tmp <span class="k">end</span>
+    <span class="k">return</span> t.memo[row.id]
+  <span class="k">end</span>
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">reset</span>(t,west,east)
+    t.memo = {}
+    t.west = west <span class="o">or</span> any(t.rows)
+    t.east = east <span class="o">or</span> furthest(t,t.west) 
+    t.c    = distance(t,west,east) 
+  <span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">defaultXcols</span>(most,out)
+    <span class="k">for</span> i=1, most - 1 <span class="k">do</span> out[#out+1]  = i <span class="k">end</span>
+    <span class="k">return</span> out
+  <span class="k">end</span> <span class="c">---------------------
+</span>  t= {
+    types = types(rows0[1],{}),
+    xcols = xcols <span class="o">or</span> defaultXcols(#rows0[1], {}),
+    ycols = ycols <span class="o">or</span> {#rows0[1]},
+    rows  = {},
+    updates= <span class="k">function</span> (rows) <span class="k">return</span> updates(t,rows) <span class="k">end</span>  } 
+  reset(t)
+  <span class="k">return</span> t
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>
