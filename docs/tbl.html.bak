@@ -274,6 +274,26 @@ to the old table will not effect the new table).</p>
       data(j, LST.copy(r.cells),r) <span class="k">end</span> <span class="k">end</span>
   <span class="k">return</span> j 
 <span class="k">end</span>
+
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">show</span>(i)
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">worker</span>(t)
+    <span class="k">if</span> #t &gt; 0 <span class="k">then</span>
+      <span class="nt">print</span>(<span class="s">""</span>)
+      <span class="k">local</span> rows={{}}
+      <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span>
+        <span class="k">local</span> about = head.what.about(head)
+        <span class="k">local</span> row,cols={},{}
+        <span class="k">for</span> i=1,#about <span class="k">do</span>
+          <span class="k">for</span> col,val <span class="k">in</span> <span class="nt">pairs</span>(about[i]) <span class="k">do</span>
+            cols[#cols+1] = col
+            row[#row+1] = val  <span class="k">end</span> <span class="k">end</span>
+        rows[1]       = cols
+        rows[#rows+1] = row
+      <span class="k">end</span>
+      LST.mprint(rows,<span class="s">" |  "</span>) <span class="k">end</span> <span class="k">end</span>
+   worker(i.all.syms)
+   worker(i.all.nums) <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-8">
@@ -473,7 +493,7 @@ symbols in the new table.</p>
   <div class="highlight"><pre>
 <span class="k">return</span> {copy=copy, header=header,update=update,
         furthest=furthest, nearest=nearest, knn=knn,
-        createPrim=create,
+        createPrim=create,show=show,
         create=fromCsv,klassfn=klassfn, klass=klass,
         goal1=goal1,dom=dom,goaln=goaln,goallast=goallast,
         discretize=discretizeRows,discretize1=discretizeCells}

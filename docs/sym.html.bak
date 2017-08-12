@@ -76,7 +76,7 @@ print(SYM.ent(i)) end
 <td class="code">
   <div class="highlight"><pre>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>()
-  <span class="k">return</span> {n=0, counts={}, most=0,mode=<span class="k">nil</span>,_ent=<span class="k">nil</span> } <span class="k">end</span>
+  <span class="k">return</span> {n=0, nk=0,counts={}, most=0,mode=<span class="k">nil</span>,_ent=<span class="k">nil</span> } <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-3">
@@ -97,11 +97,20 @@ print(SYM.ent(i)) end
   <span class="k">if</span> x ~= the.ignore <span class="k">then</span>
     i._ent = <span class="k">nil</span> 
     i.n = i.n + 1
-    <span class="k">local</span> seen = i.counts[x]
-    seen = seen <span class="o">and</span> seen+1 <span class="o">or</span> 1
+    <span class="k">if</span> <span class="o">not</span> i.counts[x] <span class="k">then</span>
+      i.nk = i.nk + 1
+      i.counts[x] = 0 <span class="k">end</span>
+    <span class="k">local</span> seen = i.counts[x] + 1
     i.counts[x] = seen 
     <span class="k">if</span> seen &gt; i.most <span class="k">then</span>
       i.most, i.mode = seen,x <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">about</span>(i)
+  <span class="k">local</span> syms=0
+  <span class="k">for</span> _,__ <span class="k">in</span> <span class="nt">pairs</span>(i.counts) <span class="k">do</span> syms=syms+1 <span class="k">end</span>
+  <span class="k">return</span> {{pos=i.pos}, {txt=i.txt}, {n=i.n},
+          {mode=i.mode},{most=i.most},{syms=syms}} <span class="k">end</span>
+
 </pre></div>
 </td>
 </tr><tr id="section-4">
@@ -199,6 +208,10 @@ nothing.</p>
   <div class="highlight"><pre>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(i,x)
   <span class="k">return</span> x <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">like</span>(i,x,prior)
+ <span class="k">return</span> ((i.counts[x] <span class="o">or</span> 0) + the.nb.m*prior) /
+         (i.n + the.nb.m)  <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-8">
@@ -306,7 +319,7 @@ new data arrives.</p>
 <td class="code">
   <div class="highlight"><pre>
 <span class="k">return</span> {create=create, update=update, updates=updates, 
-        distance=distance,
+        distance=distance,about=about,like=like,
         ent=ent, spread=ent, discretize=discretize,
         ke=ke,watch=watch}
 </pre></div>

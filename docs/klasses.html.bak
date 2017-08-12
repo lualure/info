@@ -45,11 +45,13 @@
 <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
   all=TBL.createPrim(),
   eden=<span class="k">true</span>,
+  nk=0,
   klass={} } <span class="k">end</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">thisKlass</span>(i, cells)
   <span class="k">local</span> k = TBL.klass(i.all, cells)
   <span class="k">if</span> <span class="o">not</span> i.klass[k] <span class="k">then</span>
+    i.nk = i.nk + 1
     i.klass[k] = TBL.copy(i.all) <span class="k">end</span>
   <span class="k">return</span> i.klass[k] <span class="k">end</span>
   
@@ -60,15 +62,85 @@
   i.eden = <span class="k">false</span> 
   TBL.update(i.all, cells) <span class="k">end</span>
 
-<span class="k">local</span> <span class="k">function</span> <span class="nf">classify</span>(i, cells)
-
+<span class="k">local</span> <span class="k">function</span> <span class="nf">like</span>(i, cells)
+  guess,best= <span class="k">nil</span>, -1*10^64
+  <span class="k">for</span> this, t <span class="k">in</span> <span class="nt">pairs</span>(i.klass) <span class="k">do</span>
+    guess = guess <span class="o">or</span> this
+    <span class="k">local</span> like = (#t.rows + the.nb.k) / 
+                 (#i.all.rows + the.nb.k*i.nk)
+    <span class="k">local</span> prior= like
+    <span class="k">for</span> _,head <span class="k">in</span> <span class="nt">pairs</span>(t.x.cols) <span class="k">do</span>
+      x = cells[head.pos]
+      <span class="k">if</span> x ~= the.ignore <span class="k">then</span> 
+        like = like * head.what.like(head, x, prior)
+      <span class="k">end</span>  <span class="k">end</span>
+    <span class="k">if</span> like &gt; best <span class="k">then</span>
+      guess,best = this,like <span class="k">end</span> 
+  <span class="k">end</span>
+  <span class="k">return</span> guess
 <span class="k">end</span>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">fromCsv</span>(f)
+<span class="k">local</span> y,n=0,0 <span class="c">-- horrid hack 
+</span></pre></div>
+</td>
+</tr><tr id="section-2">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-2">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">incNB</span>(i, cells, log)
+  <span class="k">if</span> #i.all.rows &gt; 0 <span class="k">then</span> 
+    <span class="k">if</span> like(i,cells) ==  TBL.klass(i.all,cells)  <span class="k">then</span>
+      y = y+1 
+    <span class="k">else</span>
+      n = n+1 
+    <span class="k">end</span>  
+    io.write(<span class="s">" "</span> .. math.floor(100*y/(y+n)))
+  <span class="k">end</span>
+  update(i, cells)  
+<span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-3">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-3">&#182;</a>
+  </div>
+  
+<hr/>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">fromCsv</span>(f)
   <span class="k">local</span> out = create()
   CSV(f, <span class="k">function</span> (cells)  update(out,cells) <span class="k">end</span>)
   <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
 
-<span class="k">return</span> {create=fromCsv, update=update}
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">fromCsv</span>(f,g)
+  g = g <span class="o">or</span> update
+  <span class="k">local</span> out = create()
+  CSV(f, <span class="k">function</span> (cells) g(out,cells) <span class="k">end</span>)
+  <span class="k">return</span> out <span class="k">end</span>
+
+<span class="k">return</span> {create=fromCsv, update=update,incNB=incNB}
 </pre></div>
 </td>
 </tr></tbody>
