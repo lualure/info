@@ -85,8 +85,8 @@ show    id       range   tbl    sdtree
 tests   lists    sample         superrange
         random   spy            trees
         str      sym
-                sk
-                tiles                     
+                 sk
+                 tiles                     
 </code></pre>
 
 <h3>Base code</h3>

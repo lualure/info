@@ -394,12 +394,44 @@ show everything).</p>
   <span class="k">if</span> last <span class="k">then</span>
     <span class="nt">print</span>(<span class="s">"..."</span>)
     <span class="k">for</span> j=#t+last, #t <span class="k">do</span> <span class="nt">print</span>(j,t[j]) <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+
 </pre></div>
 </td>
 </tr><tr id="section-21">
 <td class="docs">
   <div class="pilwrap">
     <a class="pilcrow" href="#section-21">&#182;</a>
+  </div>
+  
+<p><code>mprint</code> = matrix print. Displays a list of lists,
+all the columns (right) aligned.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">mprint</span>(ts,sep) 
+  sep = sep <span class="o">or</span> <span class="s">", "</span>
+  <span class="k">local</span> fmt,w={},{}
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">width</span>(col,x)
+    <span class="k">if</span> <span class="o">not</span> w[col] <span class="k">then</span> w[col]=0 <span class="k">end</span>
+    <span class="k">local</span> tmp= #<span class="nt">tostring</span>(x)
+    <span class="k">if</span> tmp &gt; w[col] <span class="k">then</span> 
+      w[col] = tmp 
+      fmt[col] = <span class="s">"&#37;"</span> .. tmp .. <span class="s">"s"</span> <span class="k">end</span> 
+  <span class="k">end</span> <span class="c">----------------------------
+</span>  <span class="k">for</span> _,t <span class="k">in</span> <span class="nt">pairs</span>(ts) <span class="k">do</span>
+    <span class="k">for</span> col,x <span class="k">in</span> <span class="nt">pairs</span>(t) <span class="k">do</span> width(col,x) <span class="k">end</span> <span class="k">end</span>
+  <span class="k">for</span> i,t <span class="k">in</span> <span class="nt">pairs</span>(ts) <span class="k">do</span>
+    io.write(
+      string.format(
+        table.concat(fmt,sep)  .. <span class="s">"\n"</span>,
+        <span class="nt">unpack</span>(t))) <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-22">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-22">&#182;</a>
   </div>
   
 <hr/>
@@ -411,10 +443,10 @@ show everything).</p>
   <div class="highlight"><pre>
 </pre></div>
 </td>
-</tr><tr id="section-22">
+</tr><tr id="section-23">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-22">&#182;</a>
+    <a class="pilcrow" href="#section-23">&#182;</a>
   </div>
   
 <p>The identity function</p>
@@ -425,10 +457,10 @@ show everything).</p>
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">same</span>(x) <span class="k">return</span> x <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-23">
+</tr><tr id="section-24">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-23">&#182;</a>
+    <a class="pilcrow" href="#section-24">&#182;</a>
   </div>
   
 <p>Copy top-level items </p>
@@ -439,10 +471,10 @@ show everything).</p>
   <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">shallowCopy</span>(t) <span class="k">return</span> collect(t,same) <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-24">
+</tr><tr id="section-25">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-24">&#182;</a>
+    <a class="pilcrow" href="#section-25">&#182;</a>
   </div>
   
 <p>Recursive copy of contents</p>
@@ -454,10 +486,10 @@ show everything).</p>
 </span>  <span class="k">return</span> <span class="nt">type</span>(t) ~= <span class="s">'table'</span> <span class="o">and</span> t <span class="o">or</span> collect(t,copy) <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-25">
+</tr><tr id="section-26">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-25">&#182;</a>
+    <a class="pilcrow" href="#section-26">&#182;</a>
   </div>
   
 <hr/>
@@ -467,16 +499,16 @@ show everything).</p>
 </td>
 <td class="code">
   <div class="highlight"><pre>
-<span class="k">return</span> { maprint=maprint,sort=sort,
+<span class="k">return</span> { maprint=maprint,sort=sort,mprint=mprint,
          without=without, firsts=firsts,lasts=lasts,first=first, last=last,same=same,copy=copy,
          shallowCopy=shallowCopy, member=member,map=map, bsearch=bsearch,
          push=push,map2=map2, collect=collect,shuffle=shuffle}
 </pre></div>
 </td>
-</tr><tr id="section-26">
+</tr><tr id="section-27">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-26">&#182;</a>
+    <a class="pilcrow" href="#section-27">&#182;</a>
   </div>
   
 <hr/>

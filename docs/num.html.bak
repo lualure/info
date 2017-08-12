@@ -202,6 +202,24 @@ Optionally:</p>
   </div>
   
 <hr/>
+<h3>Normalization</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(i,x)
+  <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
+  <span class="k">return</span> (x - i.lo) / (i.hi - i.lo + 1e-32) <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<hr/>
 <h3>Distance</h3>
 <p>Using a watcher <code>i</code>, work of the distance between
 two values <code>j</code> and <code>k</code>. If either is unknown,
@@ -231,10 +249,10 @@ nothing.</p>
   <span class="k">return</span> math.abs(j-k)^2,1 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-8">
+</tr><tr id="section-9">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
+    <a class="pilcrow" href="#section-9">&#182;</a>
   </div>
   
 <hr/>
@@ -253,24 +271,6 @@ Find <code>x</code>'s label with this list.</p>
     r = b.label
     <span class="k">if</span> x&lt;=b.most <span class="k">then</span> <span class="k">break</span> <span class="k">end</span> <span class="k">end</span>
   <span class="k">return</span> r <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-9">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
-  </div>
-  
-<hr/>
-<h3>Normalization</h3>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">norm</span>(i,x)
-  <span class="k">if</span> x==the.ignore <span class="k">then</span> <span class="k">return</span> x <span class="k">end</span>
-  <span class="k">return</span> (x - i.lo) / (i.hi - i.lo + 1e-32) <span class="k">end</span>
 </pre></div>
 </td>
 </tr><tr id="section-10">
@@ -382,6 +382,7 @@ than a trivially small amount; and if they are statistically significantly diffe
 <span class="k">return</span> {create=create, watch=watch,
         update=update, updates=updates,
         norm=norm,
+        distance=distance,
         same=same, ttest=ttest, hedges=hedges}
 </pre></div>
 </td>

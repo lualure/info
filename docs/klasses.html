@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>klasses</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="locco.css" />
+<link rel="shortcut icon" type="image/x-icon" href="https://raw.githubusercontent.com/lualure/info/master/img/favicon.ico"></head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <table cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th class="docs">
+ <a href="https://github.com/lualure/src"><img 
+style="position: absolute; top: 0; right: 0; border: 0;" 
+src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" 
+alt="Fork me on GitHub" 
+data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+<img width=150 align=right src="https://goo.gl/QabuWK">
+<p>
+<a href="index.html">home</a> |
+<a href="https://twitter.com/lua_lured">news</a> |
+<a href="https://groups.google.com/forum/#!forum/lualure">discuss</a> |
+<a href="https://github.com/lualure/src/issues">issues</a> |
+<a href="https://lualure.github.io/info/LICENSE">license</a> 
+</p>
+<h1> 
+LURE: klasses
+</h1>
+              
+          </th>
+          <th class="code">
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+<tr id="section-1">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-1">&#182;</a>
+  </div>
+  
+<h3>Reading classified data</h3>
+
+<p><em>tim@menzies.us</em> <br/>
+<em>August'17</em>   </p>
+
+
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> TBL=<span class="nt">require</span> <span class="s">"tbl"</span>
+<span class="k">local</span> CSV=<span class="nt">require</span> <span class="s">"csv"</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>() <span class="k">return</span> {
+  all=TBL.createPrim(),
+  eden=<span class="k">true</span>,
+  klass={} } <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">thisKlass</span>(i, cells)
+  <span class="k">local</span> k = TBL.klass(i.all, cells)
+  <span class="k">if</span> <span class="o">not</span> i.klass[k] <span class="k">then</span>
+    i.klass[k] = TBL.copy(i.all) <span class="k">end</span>
+  <span class="k">return</span> i.klass[k] <span class="k">end</span>
+  
+<span class="k">local</span> <span class="k">function</span> <span class="nf">update</span>(i,cells) 
+  <span class="k">if</span> <span class="o">not</span> i.eden <span class="k">then</span>
+    TBL.update( thisKlass(i, cells), cells)
+  <span class="k">end</span>
+  i.eden = <span class="k">false</span> 
+  TBL.update(i.all, cells) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">classify</span>(i, cells)
+
+<span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">fromCsv</span>(f)
+  <span class="k">local</span> out = create()
+  CSV(f, <span class="k">function</span> (cells)  update(out,cells) <span class="k">end</span>)
+  <span class="k">return</span> out <span class="k">end</span>
+
+<span class="k">return</span> {create=fromCsv, update=update}
+</pre></div>
+</td>
+</tr></tbody>
+    </table>
+  </div>
+</body>
+</html>

@@ -56,7 +56,9 @@
 
 </td>
 <td class="code">
-  <div class="highlight"><pre><span class="k">local</span> pass,fail = 0,0
+  <div class="highlight"><pre>
+<span class="k">local</span> _ = <span class="nt">require</span> <span class="s">"config"</span>
+<span class="k">local</span> pass,fail = 0,0
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">report</span>() 
   <span class="nt">print</span>(string.format(
@@ -130,6 +132,7 @@ Update the <code>pass</code> and <code>fail</code> counts.</p>
     <span class="nt">print</span>(<span class="s">"# test:"</span>, s) 
     pass = pass + 1
     <span class="k">local</span> t1= os.clock()
+    defaults()
     <span class="k">local</span> passed,err = <span class="nt">pcall</span>(x) 
     <span class="k">local</span> t2= os.clock()
     <span class="nt">print</span>((t2-t1) .. <span class="s">" secs"</span>)

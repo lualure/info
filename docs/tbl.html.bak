@@ -155,7 +155,7 @@ may be stored in multiple categories.</p>
     {when= <span class="s">"&#37;$"</span>, what= NUM, weight= 1, where= {i.all.cols, i.x.cols, i.all.nums,                  i.x.nums}},
     {when= <span class="s">"&lt;"</span>,  what= NUM, weight=-1, where= {i.all.cols, i.y.cols, i.all.nums, i.goals, i.less, i.y.nums}},
     {when= <span class="s">"&gt;"</span>,  what= NUM, weight= 1, where= {i.all.cols, i.y.cols, i.all.nums, i.goals, i.more, i.y.nums}},
-    {when= <span class="s">"!"</span>,  what= SYM, weight= 1, where= {i.all.cols, i.y.cols,             i.all.syms}},
+    {when= <span class="s">"!"</span>,  what= SYM, weight= 1, where= {i.all.cols, i.y.syms, i.y.cols,   i.all.syms}},
     {when= <span class="s">""</span>,   what= SYM, weight= 1, where= {i.all.cols, i.x.cols,             i.all.syms,      i.x.syms}}}
   <span class="k">for</span> _,want <span class="k">in</span> <span class="nt">pairs</span>(spec) <span class="k">do</span>
     <span class="k">if</span> string.find(txt,want.when) ~= <span class="k">nil</span> <span class="k">then</span>
@@ -283,6 +283,45 @@ to the old table will not effect the new table).</p>
   </div>
   
 <hr/>
+<h3>near,far</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">nearfar</span>(i,row1, other, best, better)
+  out   = row1
+  <span class="k">for</span> _,row2 <span class="k">in</span> <span class="nt">pairs</span>(other <span class="o">or</span> i.rows) <span class="k">do</span>
+    <span class="k">if</span> row1.id ~= row2.id <span class="k">then</span> 
+      d = ROW.distance(row1,row2,i)
+      <span class="k">if</span> better(d,best) <span class="k">then</span>
+        best,out = d, row2 <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> out <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">furthest</span>(i,row1, other)
+  <span class="k">return</span> nearfar(i, row1, other, 
+                    -1,   <span class="k">function</span> (x,y) <span class="k">return</span> x &gt; y <span class="k">end</span>)  <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">nearest</span>(i,row1, other)
+  <span class="k">return</span> nearfar(i, row1,  other, 
+                    10^32, <span class="k">function</span> (x,y) <span class="k">return</span> x &lt; y <span class="k">end</span>) <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">knn</span>(i,row1,k,other) 
+  k= k <span class="o">or</span> the.tbl.k
+  tmp,out = {},{}
+  <span class="k">for</span> _,row2 <span class="k">in</span> <span class="nt">pairs</span>(other <span class="o">or</span> i.rows) <span class="k">do</span>
+    tmp[#tmp + 1] = {d= ROW.distance(row1,row2), row=row2} <span class="k">end</span>
+  table.sort(tmp, <span class="k">function</span> (x,y) <span class="k">return</span> x.d &lt; y.d <span class="k">end</span>)
+  <span class="k">for</span> j=1,k <span class="k">do</span> out[j] = tmp[j] <span class="k">end</span>
+  <span class="k">return</span> out <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<hr/>
 <p>suspect this is broken</p>
 
 
@@ -298,10 +337,10 @@ to the old table will not effect the new table).</p>
 <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-9">
+</tr><tr id="section-10">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
+    <a class="pilcrow" href="#section-10">&#182;</a>
   </div>
   
 <hr/>
@@ -313,6 +352,12 @@ to the old table will not effect the new table).</p>
 </td>
 <td class="code">
   <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">klass</span>(t,cells)
+  <span class="k">return</span> cells[t.y.syms[1].pos] <span class="k">end</span> 
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">klassfn</span>(t)
+  <span class="k">return</span> <span class="k">function</span> (r) <span class="k">return</span> klass(t,r.cells) <span class="k">end</span> <span class="k">end</span>
+
 <span class="k">local</span> <span class="k">function</span> <span class="nf">goallast</span>(t,n) 
   <span class="k">return</span> <span class="k">function</span>(r) 
            <span class="k">return</span> LST.last(r.cells )  <span class="k">end</span>  <span class="k">end</span>
@@ -334,10 +379,10 @@ to the old table will not effect the new table).</p>
 <span class="k">local</span> funs={goaln=goaln, goal1=goal1,dom=dom,goallast=goallast}
 </pre></div>
 </td>
-</tr><tr id="section-10">
+</tr><tr id="section-11">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-10">&#182;</a>
+    <a class="pilcrow" href="#section-11">&#182;</a>
   </div>
   
 <hr/>
@@ -353,10 +398,10 @@ to the old table will not effect the new table).</p>
              <span class="k">return</span> string.gsub(txt,<span class="s">"&#37;$"</span>,<span class="s">""</span>) <span class="k">end</span>) <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-11">
+</tr><tr id="section-12">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-11">&#182;</a>
+    <a class="pilcrow" href="#section-12">&#182;</a>
   </div>
   
 <hr/>
@@ -393,10 +438,10 @@ symbols in the new table.</p>
   <span class="k">return</span> j <span class="k">end</span>
 </pre></div>
 </td>
-</tr><tr id="section-12">
+</tr><tr id="section-13">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-12">&#182;</a>
+    <a class="pilcrow" href="#section-13">&#182;</a>
   </div>
   
 <hr/>
@@ -410,12 +455,13 @@ symbols in the new table.</p>
   <span class="k">local</span> out = create()
   CSV(f, <span class="k">function</span> (cells) update(out,cells) <span class="k">end</span>)
   <span class="k">return</span> out <span class="k">end</span>
+
 </pre></div>
 </td>
-</tr><tr id="section-13">
+</tr><tr id="section-14">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-13">&#182;</a>
+    <a class="pilcrow" href="#section-14">&#182;</a>
   </div>
   
 <hr/>
@@ -426,14 +472,17 @@ symbols in the new table.</p>
 <td class="code">
   <div class="highlight"><pre>
 <span class="k">return</span> {copy=copy, header=header,update=update,
-        create=fromCsv,goal1=goal1,dom=dom,goaln=goaln,goallast=goallast,
+        furthest=furthest, nearest=nearest, knn=knn,
+        createPrim=create,
+        create=fromCsv,klassfn=klassfn, klass=klass,
+        goal1=goal1,dom=dom,goaln=goaln,goallast=goallast,
         discretize=discretizeRows,discretize1=discretizeCells}
 </pre></div>
 </td>
-</tr><tr id="section-14">
+</tr><tr id="section-15">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-14">&#182;</a>
+    <a class="pilcrow" href="#section-15">&#182;</a>
   </div>
   
 <hr/>
