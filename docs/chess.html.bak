@@ -272,7 +272,7 @@ Returns a data table, coilum headers initialized to NUM or SYM</p>
 
 </td>
 <td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">header</span>(col,txt)
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">create</span>(col,txt)
     <span class="k">for</span> _,want <span class="k">in</span> <span class="nt">pairs</span>(spec) <span class="k">do</span>
       <span class="k">if</span> string.find(txt,want.when) ~= <span class="k">nil</span> <span class="k">then</span>
         <span class="k">local</span> one = want.what()
@@ -349,7 +349,7 @@ Returns a data table, coilum headers initialized to NUM or SYM</p>
     <span class="k">if</span> n==1 <span class="k">then</span>
       out.spec = line
       <span class="k">for</span> col,txt <span class="k">in</span> <span class="nt">pairs</span>(line) <span class="k">do</span> <span class="c">-- initialize the column headers
-</span>        header(col,txt) <span class="k">end</span>
+</span>        create(col,txt) <span class="k">end</span>
     <span class="k">else</span>
       <span class="k">for</span> _,header <span class="k">in</span> <span class="nt">pairs</span>(out.all.cols) <span class="k">do</span> <span class="c">-- update the column headers
 </span>        header.update(line[ header.pos ]) <span class="k">end</span> 
