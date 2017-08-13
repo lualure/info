@@ -38,7 +38,6 @@
 <span class="k">local</span> no=<span class="s">"?"</span>
 <span class="k">local</span> id=0
 <span class="k">local</span> some=1.05
-<span class="k">local</span> NUM,SYM=<span class="k">nil</span>,<span class="k">nil</span>
 
 <span class="k">local</span> <span class="k">function</span> <span class="nf">NUM</span>() <span class="k">return</span>{1,3,4} <span class="k">end</span>
 <span class="k">local</span> <span class="k">function</span> <span class="nf">SYM</span>() <span class="k">return</span>{1,3,4} <span class="k">end</span>
@@ -147,191 +146,6 @@
   </div>
   
 <hr/>
-<p>csv DATA reader
-Returns a data table, coilum headers initialized to NUM or SYM</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">DATA</span>(csvString)
-  <span class="k">local</span> no       = <span class="s">"?"</span>
-  <span class="k">local</span> sep      = <span class="s">","</span>
-  <span class="k">local</span> dull     = <span class="s">"['\"\t\n\r]*"</span> 
-  <span class="k">local</span> comments = <span class="s">"#.*"</span>           
-  <span class="k">local</span> nonsep   = <span class="s">"([^"</span> .. sep .. <span class="s">"]+)"</span> 
-  <span class="k">local</span> padding  = <span class="s">"&#37;s*(.-)&#37;s*"</span>   
-  <span class="k">local</span> out =  { rows={}, spec={}, goals={} , less={}, more={}, klass={}, 
-                 all={nums={}, syms={}, cols={}}, <span class="c">-- all columns
-</span>                 x  ={nums={}, syms={}, cols={}}, <span class="c">-- all independent columns
-</span>                 y  ={nums={}, syms={}, cols={}}}  <span class="c">-- all depednent   columns
-</span></pre></div>
-</td>
-</tr><tr id="section-3">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-3">&#182;</a>
-  </div>
-  
-<p>column headers have magic symbols that help categorize each column</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> spec =  {
-     {when= <span class="s">"&#37;$"</span>, what= NUM, weight= 1, where= {out.all.cols, out.x.cols, out.all.nums, out.x.nums}},
-     {when= <span class="s">"&lt;"</span>,  what= NUM, weight=-1, where= {out.all.cols, out.y.cols, out.all.nums, out.y.nums, out.goals, out.less}},
-     {when= <span class="s">"&gt;"</span>,  what= NUM, weight= 1, where= {out.all.cols, out.y.cols, out.all.nums, out.y.nums, out.goals, out.more}},
-     {when= <span class="s">"!"</span>,  what= SYM, weight= 1, where= {out.all.cols, out.y.cols, out.all.syms, out.y.syms, out.klass}},
-     {when= <span class="s">""</span>,   what= SYM, weight= 1, where= {out.all.cols, out.x.cols, out.all.syms, out.x.syms}}}
-</pre></div>
-</td>
-</tr><tr id="section-4">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-4">&#182;</a>
-  </div>
-  
-<p>Convert csv text to table, kill white, convert number strings to strings</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> first,use= <span class="k">true</span>,{}
-  <span class="k">local</span> <span class="k">function</span> <span class="nf">cells</span>(txt)
-    txt= txt:gsub(padding,<span class="s">"&#37;1"</span>)
-            :gsub(dull,<span class="s">""</span>)
-            :gsub(comments,<span class="s">""</span>)
-    <span class="k">if</span> #txt &gt; 0 <span class="k">then</span>
-      <span class="k">local</span> out,col={},0
-      <span class="k">for</span> word <span class="k">in</span> string.gmatch(txt,nonsep) <span class="k">do</span>
-        col=col+1
-        <span class="k">if</span> first    <span class="k">then</span> use[col]    = string.find(word,no) == <span class="k">nil</span> <span class="k">end</span>
-        <span class="k">if</span> use[col] <span class="k">then</span> out[#out+1] = <span class="nt">tonumber</span>(word) <span class="o">or</span> word      <span class="k">end</span> 
-      <span class="k">end</span>
-      first = <span class="k">false</span>
-      <span class="k">return</span> out <span class="k">end</span>  <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-5">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-5">&#182;</a>
-  </div>
-  
-<p>Iterator over lines of text, appyling fun to each line  </p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">lines</span>(txt)
-   <span class="k">local</span> n,pos = 0,1          
-   <span class="k">return</span> <span class="k">function</span> ()    
-     <span class="k">while</span> pos &lt; #txt <span class="k">do</span>
-       <span class="k">local</span> s, e = string.find(txt, <span class="s">"[^\r\n]+"</span>, pos)
-       <span class="k">if</span> s <span class="k">then</span>       
-          pos = e + 1 
-          n=n+1
-          <span class="k">return</span> n,cells(string.sub(txt, s, e))
-      <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-6">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-6">&#182;</a>
-  </div>
-  
-<p>initialize NUM or SYM column headers from column header string</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">header</span>(col,txt)
-    <span class="k">for</span> _,want <span class="k">in</span> <span class="nt">pairs</span>(spec) <span class="k">do</span>
-      <span class="k">if</span> string.find(txt,want.when) ~= <span class="k">nil</span> <span class="k">then</span>
-        <span class="k">local</span> one = want.what()
-        one.pos= col
-        one.txt= txt
-        one.weight= want.weight
-        <span class="k">for</span> _,where <span class="k">in</span> <span class="nt">pairs</span>(want.where) <span class="k">do</span>
-          where[ #where+1 ] = one <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
-    <span class="k">return</span> one  <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-7">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-7">&#182;</a>
-  </div>
-  
-<p>main</p>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>  <span class="k">for</span> n,line <span class="k">in</span> lines(csvString) <span class="k">do</span>
-    <span class="k">if</span> n==1 <span class="k">then</span>
-      out.spec = line
-      <span class="k">for</span> col,txt <span class="k">in</span> <span class="nt">pairs</span>(line) <span class="k">do</span> header(col,txt) <span class="k">end</span>
-    <span class="k">else</span>
-      out.rows[#out.rows+1] = line <span class="k">end</span> <span class="k">end</span>
-  <span class="k">return</span> out 
-<span class="k">end</span> <span class="c">-- end data
-</span>
-<span class="nt">print</span>(DATA(nasa93).y)
-</pre></div>
-</td>
-</tr><tr id="section-8">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-8">&#182;</a>
-  </div>
-  
-<hr/>
-<h3>Misc utils</h3>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">newid</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
-
-<span class="k">local</span> <span class="k">function</span> <span class="nf">zero1</span>(x)
-  <span class="k">if</span> x&gt;1 <span class="k">then</span> <span class="k">return</span> 1 <span class="k">end</span>
-  <span class="k">if</span> x&lt;0 <span class="k">then</span> <span class="k">return</span> 0 <span class="k">end</span>
-<span class="k">end</span>
-<span class="k">local</span> <span class="k">function</span> <span class="nf">shuffle</span>( t )
-  <span class="k">for</span> i= 1,#t <span class="k">do</span>
-    <span class="k">local</span> j = i + math.floor((#t - i) * R.r() + 0.5)
-    t[i],t[j] = t[j], t[i] 
-  <span class="k">end</span>
-  <span class="k">return</span> t <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-9">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-9">&#182;</a>
-  </div>
-  
-<hr/>
-<h3>Rows of tables</h3>
-
-
-</td>
-<td class="code">
-  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ROW</span>(tbl,cells)  <span class="k">return</span> {
-  id=newid(),
-  cells=cells } <span class="k">end</span>
-</pre></div>
-</td>
-</tr><tr id="section-10">
-<td class="docs">
-  <div class="pilwrap">
-    <a class="pilcrow" href="#section-10">&#182;</a>
-  </div>
-  
-<hr/>
 <h3><code>Num</code>eric columns</h3>
 
 
@@ -374,10 +188,10 @@ Returns a data table, coilum headers initialized to NUM or SYM</p>
 <span class="k">end</span> 
 </pre></div>
 </td>
-</tr><tr id="section-11">
+</tr><tr id="section-3">
 <td class="docs">
   <div class="pilwrap">
-    <a class="pilcrow" href="#section-11">&#182;</a>
+    <a class="pilcrow" href="#section-3">&#182;</a>
   </div>
   
 <hr/>
@@ -400,6 +214,195 @@ Returns a data table, coilum headers initialized to NUM or SYM</p>
     update   = <span class="k">function</span> (x) <span class="k">return</span> x <span class="k">end</span>,
     distance = distance} 
 <span class="k">end</span> 
+</pre></div>
+</td>
+</tr><tr id="section-4">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-4">&#182;</a>
+  </div>
+  
+<hr/>
+<p>csv DATA reader
+Returns a data table, coilum headers initialized to NUM or SYM</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">DATA</span>(csvString)
+  <span class="k">local</span> no       = <span class="s">"?"</span>
+  <span class="k">local</span> sep      = <span class="s">","</span>
+  <span class="k">local</span> dull     = <span class="s">"['\"\t\n\r]*"</span> 
+  <span class="k">local</span> comments = <span class="s">"#.*"</span>           
+  <span class="k">local</span> nonsep   = <span class="s">"([^"</span> .. sep .. <span class="s">"]+)"</span> 
+  <span class="k">local</span> padding  = <span class="s">"&#37;s*(.-)&#37;s*"</span>   
+  <span class="k">local</span> out =  { rows={}, spec={}, goals={} , less={}, more={}, klass={}, 
+                 all={nums={}, syms={}, cols={}}, <span class="c">-- all columns
+</span>                 x  ={nums={}, syms={}, cols={}}, <span class="c">-- all independent columns
+</span>                 y  ={nums={}, syms={}, cols={}}}  <span class="c">-- all depednent   columns
+</span></pre></div>
+</td>
+</tr><tr id="section-5">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-5">&#182;</a>
+  </div>
+  
+<p>Column headers have magic symbols label them into mutlitple categories.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> spec =  {
+     {when= <span class="s">"&#37;$"</span>, what= NUM, weight= 1, where= {out.all.cols, out.x.cols, out.all.nums, out.x.nums}},
+     {when= <span class="s">"&lt;"</span>,  what= NUM, weight=-1, where= {out.all.cols, out.y.cols, out.all.nums, out.y.nums, out.goals, out.less}},
+     {when= <span class="s">"&gt;"</span>,  what= NUM, weight= 1, where= {out.all.cols, out.y.cols, out.all.nums, out.y.nums, out.goals, out.more}},
+     {when= <span class="s">"!"</span>,  what= SYM, weight= 1, where= {out.all.cols, out.y.cols, out.all.syms, out.y.syms, out.klass}},
+     {when= <span class="s">""</span>,   what= SYM, weight= 1, where= {out.all.cols, out.x.cols, out.all.syms, out.x.syms}}}
+</pre></div>
+</td>
+</tr><tr id="section-6">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-6">&#182;</a>
+  </div>
+  
+<p>Using <code>spec</code>, initial NUM or SYM column headers from column header <code>txt</code>.</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">header</span>(col,txt)
+    <span class="k">for</span> _,want <span class="k">in</span> <span class="nt">pairs</span>(spec) <span class="k">do</span>
+      <span class="k">if</span> string.find(txt,want.when) ~= <span class="k">nil</span> <span class="k">then</span>
+        <span class="k">local</span> one = want.what()
+        one.pos= col
+        one.txt= txt
+        one.weight= want.weight
+        <span class="k">for</span> _,where <span class="k">in</span> <span class="nt">pairs</span>(want.where) <span class="k">do</span>
+          where[ #where+1 ] = one <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+    <span class="k">return</span> one  <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-7">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-7">&#182;</a>
+  </div>
+  
+<p>Convert csv text to table, kill white, convert number strings to strings</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> first,use= <span class="k">true</span>,{}
+  <span class="k">local</span> <span class="k">function</span> <span class="nf">cells</span>(txt)
+    txt= txt:gsub(padding,<span class="s">"&#37;1"</span>)
+            :gsub(dull,<span class="s">""</span>)
+            :gsub(comments,<span class="s">""</span>)
+    <span class="k">if</span> #txt &gt; 0 <span class="k">then</span>
+      <span class="k">local</span> out,col={},0
+      <span class="k">for</span> word <span class="k">in</span> string.gmatch(txt,nonsep) <span class="k">do</span>
+        col=col+1
+        <span class="k">if</span> first    <span class="k">then</span> use[col]    = string.find(word,no) == <span class="k">nil</span> <span class="k">end</span>
+        <span class="k">if</span> use[col] <span class="k">then</span> out[#out+1] = <span class="nt">tonumber</span>(word) <span class="o">or</span> word      <span class="k">end</span> 
+      <span class="k">end</span>
+      first = <span class="k">false</span>
+      <span class="k">return</span> out <span class="k">end</span>  <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-8">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-8">&#182;</a>
+  </div>
+  
+<p>Iterator over lines of text, appyling fun to each line  </p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">local</span> <span class="k">function</span> <span class="nf">lines</span>(txt)
+   <span class="k">local</span> n,pos = 0,1          
+   <span class="k">return</span> <span class="k">function</span> ()    
+     <span class="k">while</span> pos &lt; #txt <span class="k">do</span>
+       <span class="k">local</span> s, e = string.find(txt, <span class="s">"[^\r\n]+"</span>, pos)
+       <span class="k">if</span> s <span class="k">then</span>       
+          pos = e + 1 
+          n=n+1
+          <span class="k">return</span> n,cells(string.sub(txt, s, e))
+      <span class="k">end</span> <span class="k">end</span> <span class="k">end</span> <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-9">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-9">&#182;</a>
+  </div>
+  
+<p>Main</p>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>  <span class="k">for</span> n,line <span class="k">in</span> lines(csvString) <span class="k">do</span>
+    <span class="k">if</span> n==1 <span class="k">then</span>
+      out.spec = line
+      <span class="k">for</span> col,txt <span class="k">in</span> <span class="nt">pairs</span>(line) <span class="k">do</span> <span class="c">-- initialize the column headers
+</span>        header(col,txt) <span class="k">end</span>
+    <span class="k">else</span>
+      <span class="k">for</span> _,header <span class="k">in</span> <span class="nt">pairs</span>(out.all.cols) <span class="k">do</span> <span class="c">-- update the column headers
+</span>        header.update(line[ header.pos ]) <span class="k">end</span> 
+      out.rows[#out.rows+1] = line <span class="k">end</span> <span class="k">end</span>
+  <span class="k">return</span> out 
+<span class="k">end</span> <span class="c">-- end DATA
+</span>
+<span class="nt">print</span>(DATA(nasa93).y)
+</pre></div>
+</td>
+</tr><tr id="section-10">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-10">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Misc utils</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">newid</span>() id=id+1; <span class="k">return</span> id <span class="k">end</span>
+
+<span class="k">local</span> <span class="k">function</span> <span class="nf">zero1</span>(x)
+  <span class="k">if</span> x&gt;1 <span class="k">then</span> <span class="k">return</span> 1 <span class="k">end</span>
+  <span class="k">if</span> x&lt;0 <span class="k">then</span> <span class="k">return</span> 0 <span class="k">end</span>
+<span class="k">end</span>
+<span class="k">local</span> <span class="k">function</span> <span class="nf">shuffle</span>( t )
+  <span class="k">for</span> i= 1,#t <span class="k">do</span>
+    <span class="k">local</span> j = i + math.floor((#t - i) * R.r() + 0.5)
+    t[i],t[j] = t[j], t[i] 
+  <span class="k">end</span>
+  <span class="k">return</span> t <span class="k">end</span>
+</pre></div>
+</td>
+</tr><tr id="section-11">
+<td class="docs">
+  <div class="pilwrap">
+    <a class="pilcrow" href="#section-11">&#182;</a>
+  </div>
+  
+<hr/>
+<h3>Rows of tables</h3>
+
+
+</td>
+<td class="code">
+  <div class="highlight"><pre><span class="k">local</span> <span class="k">function</span> <span class="nf">ROW</span>(tbl,cells)  <span class="k">return</span> {
+  id=newid(),
+  cells=cells } <span class="k">end</span>
+
 </pre></div>
 </td>
 </tr><tr id="section-12">
